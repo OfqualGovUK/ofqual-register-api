@@ -4,7 +4,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using QualificationsRegister.UseCase.Interfaces;
 
-namespace QualificationsRegister
+namespace QualificationsRegister.Functions
 {
     public class Function1
     {
