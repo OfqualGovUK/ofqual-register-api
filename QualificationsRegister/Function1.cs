@@ -4,7 +4,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using QualificationsRegister.UseCase.Interfaces;
 
-namespace QualificationsRegister
+namespace QualificationsRegister.Functions
 {
     public class Function1
     {
@@ -30,7 +30,7 @@ namespace QualificationsRegister
 
             string x = await _getOrganisationByNumber.GetOrganisationByNumber(" ofqual");
             response.WriteString("Welcome to Azure Functions!" + x);
-
+            //IActionResult
             return response;
         }
     }
