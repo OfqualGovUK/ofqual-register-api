@@ -16,7 +16,7 @@ namespace QualificationsRegister.Functions
             IGetOrganisationByNumberUseCase getOrganisationByNumber)
         {
             _logger = loggerFactory.CreateLogger<Function1>();
-            _searchOrganisations = searchOrganisations;
+            //_searchOrganisations = searchOrganisations;
             _getOrganisationByNumber = getOrganisationByNumber;
         }
 
