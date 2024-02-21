@@ -30,7 +30,7 @@ namespace QualificationsRegister.Functions
 
             string x = await _getOrganisationByNumber.GetOrganisationByNumber(" ofqual");
             response.WriteString("Welcome to Azure Functions!" + x);
-
+            //IActionResult
             return response;
         }
     }
