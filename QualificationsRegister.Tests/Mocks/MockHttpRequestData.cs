@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QualificationsRegister.Tests.Mocks
+namespace Ofqual.Common.RegisterAPI.Tests.Mocks
 {
     public sealed class MockHttpRequestData : HttpRequestData
     {

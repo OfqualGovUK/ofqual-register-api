@@ -1,8 +1,8 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using QualificationsRegister.UseCase;
-using QualificationsRegister.UseCase.Interfaces;
+using Ofqual.Common.RegisterAPI.UseCase;
+using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()

@@ -1,4 +1,4 @@
-namespace QualificationsRegister.UseCase.Interfaces
+namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetOrganisationByNumberUseCase
     {

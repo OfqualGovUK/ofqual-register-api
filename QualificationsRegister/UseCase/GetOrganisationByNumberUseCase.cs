@@ -1,6 +1,6 @@
-using QualificationsRegister.UseCase.Interfaces;
+using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
-namespace QualificationsRegister.UseCase
+namespace Ofqual.Common.RegisterAPI.UseCase
 
 {
     public class GetOrganisationByNumberUseCase : IGetOrganisationByNumberUseCase

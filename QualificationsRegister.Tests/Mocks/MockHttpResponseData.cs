@@ -2,7 +2,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker;
 using System.Net;
 
-namespace QualificationsRegister.Tests.Mocks
+namespace Ofqual.Common.RegisterAPI.Tests.Mocks
 {
     public sealed class MockHttpResponseData : HttpResponseData
     {
