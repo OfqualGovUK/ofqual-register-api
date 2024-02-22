@@ -1,6 +1,6 @@
 namespace Ofqual.Common.RegisterAPI.Models
 {
-    public class Organization
+    public class Organisation
     {
         public int Id { get; set; }
         public string Name { get; set; }

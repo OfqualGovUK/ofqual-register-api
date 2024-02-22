@@ -11,7 +11,9 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Dapper" Version="2.1.28" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="NUnit" Version="3.14.0" />
@@ -29,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QualificationsRegister\QualificationsRegister.csproj" />
+    <ProjectReference Include="..\QualificationsRegister\Ofqual.Common.RegisterAPI.csproj" />
   </ItemGroup>
 
 </Project>
