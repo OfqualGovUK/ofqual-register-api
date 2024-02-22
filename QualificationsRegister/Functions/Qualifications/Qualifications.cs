@@ -4,20 +4,20 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
-namespace Ofqual.Common.RegisterAPI.Functions
+namespace Ofqual.Common.RegisterAPI.Functions.Qualifications
 {
     public class Qualifications
     {
         private readonly ILogger _logger;
-        private readonly IGetOrganisationsSearchUseCase _searchOrganisations;
-        private readonly IGetOrganisationByNumberUseCase _getOrganisationByNumber;
+        private readonly IGetQualificationsUseCase _searchQualifications;
+        private readonly IGetQualificationByNumberUseCase _getQualificationByNumber;
 
-        public Qualifications(ILoggerFactory loggerFactory, IGetOrganisationsSearchUseCase searchOrganisations,
-            IGetOrganisationByNumberUseCase getOrganisationByNumber)
+        public Qualifications(ILoggerFactory loggerFactory, IGetQualificationsUseCase searchQualifications,
+            IGetQualificationByNumberUseCase getQualificationByNumber)
         {
             _logger = loggerFactory.CreateLogger<Qualifications>();
-            //_searchOrganisations = searchOrganisations;
-            _getOrganisationByNumber = getOrganisationByNumber;
+            //_searchQualifications = searchQualifications;
+            _getQualificationByNumber = getQualificationByNumber;
         }
 
         [Function("Qualifications")]
@@ -29,7 +29,7 @@ namespace Ofqual.Common.RegisterAPI.Functions
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
-            var x = await _getOrganisationByNumber.GetOrganisationByNumber(" ofqual");
+            var x = await _getQualificationByNumber.GetQualificationByNumber(" ofqual");
             response.WriteString("Welcome to Azure Functions!" + x);
 
             return response;
@@ -46,7 +46,7 @@ namespace Ofqual.Common.RegisterAPI.Functions
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
-            var x = await _getOrganisationByNumber.GetOrganisationByNumber(" ofqual");
+            var x = await _getQualificationByNumber.GetQualificationByNumber(" ofqual");
             response.WriteString("Welcome to Azure Functions!" + x);
 
             return response;

@@ -5,8 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Ofqual.Common.RegisterAPI.Services.Cache;
 using Ofqual.Common.RegisterAPI.Services.Data;
 using Ofqual.Common.RegisterAPI.Services.Data.Repository;
-using Ofqual.Common.RegisterAPI.UseCase;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -34,13 +34,13 @@ host.Run();
 
 static void RegisterUseCases(IServiceCollection services)
 {
-    services.AddScoped<IGetOrganisationByNumberUseCase, GetOrganisationByNumberUseCase>();
-    services.AddScoped<IGetOrganisationsSearchUseCase, GetOrganisationsSearchUseCase>();
+    services.AddScoped<IGetOrganisationByReferenceUseCase, GetOrganisationByReferenceUseCase>();
+    services.AddScoped<IGetOrganisationsUseCase, GetOrganisationsUseCase>();
 
 }
 
 /*static void RegisterGateways(IServiceCollection services)
 {
     services.AddScoped<IQualificationGateway, IQualificationGateway>();
-    services.AddScoped<IGetOrganisationsSearchUseCase, IGetOrganisationsSearchUseCase>();
+    services.AddScoped<IGetOrganisationsUseCase, IGetOrganisationsUseCase>();
 }*/

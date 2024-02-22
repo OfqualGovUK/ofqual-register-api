@@ -10,7 +10,5 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
     public interface IRedisCacheService
     {
         public Task<List<T>> GetCache<T>(string key);
-
-        public Task<List<T>> SetCache<T>(String key);
     }
 }

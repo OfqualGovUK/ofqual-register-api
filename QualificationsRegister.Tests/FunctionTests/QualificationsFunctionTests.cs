@@ -2,6 +2,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions;
+using Ofqual.Common.RegisterAPI.Functions.Qualifications;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
@@ -11,8 +12,8 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
     public class QualificationsFunctionTests
     {
         private Mock<FunctionContext> _functionContext;
-        private Mock<IGetOrganisationsSearchUseCase> _searchUseCaseMock;
-        private Mock<IGetOrganisationByNumberUseCase> _byNumberUseCaseMock;
+        private Mock<IGetQualificationsUseCase> _searchUseCaseMock;
+        private Mock<IGetQualificationByNumberUseCase> _byNumberUseCaseMock;
 
         
 
@@ -20,8 +21,8 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         public void Setup()
         {
             _functionContext = new Mock<FunctionContext>();
-            _searchUseCaseMock = new Mock<IGetOrganisationsSearchUseCase>();
-            _byNumberUseCaseMock = new Mock<IGetOrganisationByNumberUseCase>();
+            _searchUseCaseMock = new Mock<IGetQualificationsUseCase>();
+            _byNumberUseCaseMock = new Mock<IGetQualificationByNumberUseCase>();
         }
         [Test]
         public async Task FunctionReturnsOkResponse()

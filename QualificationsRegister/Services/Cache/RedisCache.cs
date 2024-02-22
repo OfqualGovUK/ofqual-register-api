@@ -42,24 +42,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return retrievedData == null ? default : retrievedData;
         }
 
-        public async Task<List<T>> GetSetCache<T>(string key, Func<Task<List<T>>> onMiss, DateTime expiry)
-        {
-            var existingData = await GetCacheAsync<List<T>>(key);
-
-            if (existingData != null)
-            {
-                return existingData;
-            }
-            else
-            {
-                // _logger.LogInformation(key + " Cache Miss");
-                var data = await onMiss();
-                await SetCacheAsync(key, await onMiss(), expiry);
-                return data;
-            }
-        }
-
-        public async Task<List<T>> SetCache<T>(string key)
+        private async Task<List<T>> SetCache<T>(string key)
         {
             var data = new List<T>();
 
@@ -86,14 +69,6 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             var value = await _redis.GetStringAsync(key);
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
-        private async Task SetCacheAsync<T>(string key, T value, DateTime expiry)
-        {
-            var options = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpiration = expiry
-            };
-            await _redis.SetStringAsync(key, JsonSerializer.Serialize(value), options);
-        }
-
+ 
     }
 }

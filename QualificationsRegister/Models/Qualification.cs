@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Models.DomainModels
+namespace Ofqual.Common.RegisterAPI.Models
 {
     public record class Qualification
     {
-        public Qualification() { }
-
         public int Id { get; init; }
         public string QualificationNumber { get; init; }
         public string QualificationNumberNoObliques { get; init; }
