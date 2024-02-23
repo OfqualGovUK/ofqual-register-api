@@ -1,26 +1,14 @@
 using Dapper;
-<<<<<<< HEAD
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Services.Data;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-=======
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Ofqual.Common.RegisterAPI.Models;
->>>>>>> ff67b6ffa7762dd8234da78187e62c48e0ae65d7
+
 
 namespace Ofqual.Common.RegisterAPI.Services.Repository
 {
     public class RegisterRepository : IRegisterRepository
     {
-<<<<<<< HEAD
+
         private readonly IDapperDbConnection _dapperDbConnection;
         private readonly ILogger _logger;
 
@@ -36,17 +24,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
         public async Task GetOrganisations()
         {
             using (var db = _dapperDbConnection.CreateConnection())
-=======
-        private RegisterDbContext _databaseContext;
-        public RegisterRepository(RegisterDbContext databaseContext)
-        {
-            _databaseContext = databaseContext;
-        }
 
-        public async Task<IEnumerable<Organisation>> GetAllOrganisationsAsync()
-        {
-            using (var db = new SqlConnection(_databaseContext.Database.GetDbConnection().ConnectionString))
->>>>>>> ff67b6ffa7762dd8234da78187e62c48e0ae65d7
             {
                 try
                 {
@@ -80,13 +58,10 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
                             ,[LastUpdatedDate]
                     FROM [MD_Register].[Register_V_Organisation]");
 
-<<<<<<< HEAD
+
                     _logger.Log(LogLevel.Information, "Got Organisations");
 
                     _organisationList = organisations.ToList();
-=======
-                    return organisations;
->>>>>>> ff67b6ffa7762dd8234da78187e62c48e0ae65d7
                 }
                 catch (Exception ex)
                 {
@@ -95,7 +70,6 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             }
         }
 
-<<<<<<< HEAD
         public async Task GetQualifications()
         {
             using (var db = _dapperDbConnection.CreateConnection())
@@ -181,7 +155,5 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 
             return dict;
         }
-=======
->>>>>>> ff67b6ffa7762dd8234da78187e62c48e0ae65d7
     }
 }

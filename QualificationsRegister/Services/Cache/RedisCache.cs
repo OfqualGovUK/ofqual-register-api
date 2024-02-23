@@ -43,14 +43,14 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(2)
+                AbsoluteExpiration = DateTime.Now.AddMinutes(5)
             };
 
             var cacheupdateTasks = new List<Task>();
 
             foreach (var dictKey in data.Keys)
             {
-                var compressed = await CompressAsync(JsonSerializer.Serialize(data[dictKey]));
+                var compressed = CompressAsync(JsonSerializer.Serialize(data[dictKey]));
                 Task updateCache = new Task(() => _redis.SetAsync(dictKey, compressed, options));
 
                 cacheupdateTasks.Add(updateCache);
@@ -71,14 +71,14 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             if (compressed != null)
             {
-                value = await DecompressAsync(compressed);
+                value = DecompressAsync(compressed);
             }
 
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
 
 
-        public static async Task<byte[]> CompressAsync(string str)
+        public byte[] CompressAsync(string str)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(str);
 
@@ -92,7 +92,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return output.ToArray();
         }
 
-        public static async Task<string> DecompressAsync(byte[] value)
+        public string DecompressAsync(byte[] value)
         {
             using var input = new MemoryStream(value);
             using var output = new MemoryStream();
