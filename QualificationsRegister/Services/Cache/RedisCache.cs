@@ -1,15 +1,7 @@
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Models;
-using Ofqual.Common.RegisterAPI.Services.Data;
-using Ofqual.Common.RegisterAPI.Services.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Ofqual.Common.RegisterAPI.Services.Repository;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Ofqual.Common.RegisterAPI.Services.Cache
 {

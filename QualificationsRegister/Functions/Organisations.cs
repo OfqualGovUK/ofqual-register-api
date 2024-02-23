@@ -13,7 +13,7 @@ namespace Ofqual.Common.RegisterAPI.Functions
         private readonly IGetOrganisationByNumberUseCase _getOrganisationByNumber;
 
         public Organisations(ILoggerFactory loggerFactory, IGetOrganisationsSearchUseCase searchOrganisations,
-            IGetOrganisationByNumberUseCase getOrganisationByNumber) : base(_logger)
+            IGetOrganisationByNumberUseCase getOrganisationByNumber)
         {
             _logger = loggerFactory.CreateLogger<Organisations>();
             //_searchOrganisations = searchOrganisations;

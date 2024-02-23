@@ -1,27 +1,21 @@
 using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Ofqual.Common.RegisterAPI.Models;
-using Ofqual.Common.RegisterAPI.Services.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Ofqual.Common.RegisterAPI.Services.Data
+namespace Ofqual.Common.RegisterAPI.Services.Repository
 {
     public class RegisterRepository : IRegisterRepository
     {
-        public IDapperDbConnection _dapperDbConnection;
-        public RegisterRepository(IDapperDbConnection dapperDbConnection)
+        private RegisterDbContext _databaseContext;
+        public RegisterRepository(RegisterDbContext databaseContext)
         {
-            _dapperDbConnection = dapperDbConnection;
+            _databaseContext = databaseContext;
         }
 
         public async Task<IEnumerable<Organisation>> GetAllOrganisationsAsync()
         {
-            using (IDbConnection db = _dapperDbConnection.CreateConnection())
+            using (var db = new SqlConnection(_databaseContext.Database.GetDbConnection().ConnectionString))
             {
                 try
                 {
