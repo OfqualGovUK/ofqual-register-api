@@ -1,8 +1,13 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using QualificationsRegister.UseCase;
-using QualificationsRegister.UseCase.Interfaces;
+using Ofqual.Common.RegisterAPI.Services;
+using Ofqual.Common.RegisterAPI.Services.Cache;
+using Ofqual.Common.RegisterAPI.Services.Data;
+using Ofqual.Common.RegisterAPI.Services.Repository;
+using Ofqual.Common.RegisterAPI.UseCase;
+using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -10,20 +15,29 @@ var host = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
+        
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString").ToString();            
+        });
+
+        services.AddSingleton<IRedisCacheService, RedisCache>();
+        services.AddTransient<IRegisterRepository, RegisterRepository>();
+        services.AddTransient<IDapperDbConnection, DapperDbConnection>();
+
         //RegisterGateways(services);
         RegisterUseCases(services);
     })
     .Build();
 
+
 host.Run();
 
 static void RegisterUseCases(IServiceCollection services)
 {
-    services.AddScoped<IGetOrganisationByNumberUseCase, GetOrganisationByNumberUseCase>();
-    services.AddScoped<IGetOrganisationsSearchUseCase, GetOrganisationsSearchUseCase>();
+    services.AddScoped<IGetOrganisationByReferenceUseCase, GetOrganisationByReferenceUseCase>();
+    services.AddScoped<IGetOrganisationsUseCase, GetOrganisationsUseCase>();
+
+    services.AddScoped<IGetQualificationByNumberUseCase, GetQualificationByNumberUseCase>();
+    services.AddScoped<IGetQualificationsUseCase, GetQualificationsUseCase>();
 }
-/*static void RegisterGateways(IServiceCollection services)
-{
-    services.AddScoped<IQualificationGateway, IQualificationGateway>();
-    services.AddScoped<IGetOrganisationsSearchUseCase, IGetOrganisationsSearchUseCase>();
-}*/
