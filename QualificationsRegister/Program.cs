@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ofqual.Common.RegisterAPI.Services.Cache;
 using Ofqual.Common.RegisterAPI.Services.Data;
-using Ofqual.Common.RegisterAPI.Services.Data.Repository;
+using Ofqual.Common.RegisterAPI.Services.Repository;
 using Ofqual.Common.RegisterAPI.UseCase;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
@@ -42,9 +42,3 @@ static void RegisterUseCases(IServiceCollection services)
     services.AddScoped<IGetQualificationsUseCase, GetQualificationsUseCase>();
 
 }
-
-/*static void RegisterGateways(IServiceCollection services)
-{
-    services.AddScoped<IQualificationGateway, IQualificationGateway>();
-    services.AddScoped<IGetOrganisationsUseCase, IGetOrganisationsUseCase>();
-}*/

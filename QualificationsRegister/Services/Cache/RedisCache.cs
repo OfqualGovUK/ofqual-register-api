@@ -2,7 +2,7 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using Ofqual.Common.RegisterAPI.Services.Data.Repository;
+using Ofqual.Common.RegisterAPI.Services.Repository;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
@@ -85,7 +85,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             using var input = new MemoryStream(Encoding.UTF8.GetBytes(str));
             using var output = new MemoryStream();
-            using var stream = new GZipStream(output, CompressionLevel.Fastest);
+            using var stream = new BrotliStream(output, CompressionLevel.Fastest);
 
             input.CopyTo(stream);
             stream.Flush();
@@ -97,7 +97,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
         {
             using var input = new MemoryStream(value);
             using var output = new MemoryStream();
-            using var stream = new GZipStream(input, CompressionMode.Decompress);
+            using var stream = new BrotliStream(input, CompressionMode.Decompress);
 
             stream.CopyTo(output);
             stream.Flush();

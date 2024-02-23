@@ -1,7 +1,7 @@
 using Dapper;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Models;
-using Ofqual.Common.RegisterAPI.Services.Data.Repository;
+using Ofqual.Common.RegisterAPI.Services.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ofqual.Common.RegisterAPI.Services.Data
+namespace Ofqual.Common.RegisterAPI.Services.Repository
 {
     public class RegisterRepository : IRegisterRepository
     {
@@ -28,7 +28,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Data
 
         public async Task GetOrganisations()
         {
-            using (IDbConnection db = _dapperDbConnection.CreateConnection())
+            using (var db = _dapperDbConnection.CreateConnection())
             {
                 try
                 {
@@ -75,7 +75,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Data
 
         public async Task GetQualifications()
         {
-            using (IDbConnection db = _dapperDbConnection.CreateConnection())
+            using (var db = _dapperDbConnection.CreateConnection())
             {
                 try
                 {
@@ -145,8 +145,8 @@ namespace Ofqual.Common.RegisterAPI.Services.Data
         {
             _logger.Log(LogLevel.Information, "Getting Data from DB");
 
-            Task thread1 = Task.Run(() => GetQualifications());
-            Task thread2 = Task.Run(() => GetOrganisations());
+            var thread1 = Task.Run(() => GetQualifications());
+            var thread2 = Task.Run(() => GetOrganisations());
 
             Task.WaitAll(thread1, thread2);
 

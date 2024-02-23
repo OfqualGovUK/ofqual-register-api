@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ofqual.Common.RegisterAPI.Services.Data.Repository
+namespace Ofqual.Common.RegisterAPI.Services.Repository
 {
     public interface IRegisterRepository
     {
