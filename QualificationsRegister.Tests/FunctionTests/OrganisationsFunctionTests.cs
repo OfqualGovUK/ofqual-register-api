@@ -33,7 +33,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         {
             var httpFunc = new Organisations(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            var res = await httpFunc.GetOrganisation(requestData);
+            var res = await httpFunc.GetOrganisation(requestData, "");
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
         }

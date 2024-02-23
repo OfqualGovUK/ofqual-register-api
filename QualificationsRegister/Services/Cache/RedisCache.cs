@@ -1,15 +1,11 @@
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Models;
-using Ofqual.Common.RegisterAPI.Services.Data;
+using Newtonsoft.Json.Linq;
 using Ofqual.Common.RegisterAPI.Services.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Ofqual.Common.RegisterAPI.Services.Cache
 {
@@ -35,40 +31,78 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
                 //cache missed
                 _logger.LogInformation(key + " Cache Miss");
 
-                retrievedData = await SetCache<T>(key);
+                retrievedData = await SetCacheAsync<T>(key);
 
             }
 
             return retrievedData == null ? default : retrievedData;
         }
 
-        private async Task<List<T>> SetCache<T>(string key)
+        private async Task<List<T>> SetCacheAsync<T>(string key)
         {
-            var data = new List<T>();
+            var data = _registerRepository.GetDataAsync().Result;
 
-            if (key.ToLower() == "organisations")
+            var options = new DistributedCacheEntryOptions
             {
-                data = (List<T>) await _registerRepository.GetAllOrganisationsAsync();
+                AbsoluteExpiration = DateTime.Now.AddMinutes(2)
+            };
+
+            var cacheupdateTasks = new List<Task>();
+
+            foreach (var dictKey in data.Keys)
+            {
+                var compressed = await CompressAsync(JsonSerializer.Serialize(data[dictKey]));
+                Task updateCache = new Task(() => _redis.SetAsync(dictKey, compressed, options));
+
+                cacheupdateTasks.Add(updateCache);
+
+                updateCache.Start();
             }
 
-            if (data.Count > 0)
-            {
-                var options = new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(5)
-                };
+            Task.WaitAll(cacheupdateTasks.ToArray());
 
-                await _redis.SetStringAsync(key, JsonSerializer.Serialize(data), options);
-            }
-
-            return data;
+            return (List<T>) data[key];
         }
 
         private async Task<T> GetCacheAsync<T>(string key)
         {
-            var value = await _redis.GetStringAsync(key);
+            var compressed = await _redis.GetAsync(key);
+
+            string value = null;
+
+            if (compressed != null)
+            {
+                value = await DecompressAsync(compressed);
+            }
+
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
- 
+
+
+        public static async Task<byte[]> CompressAsync(string str)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(str);
+
+            using var input = new MemoryStream(Encoding.UTF8.GetBytes(str));
+            using var output = new MemoryStream();
+            using var stream = new GZipStream(output, CompressionLevel.Fastest);
+
+            input.CopyTo(stream);
+            stream.Flush();
+
+            return output.ToArray();
+        }
+
+        public static async Task<string> DecompressAsync(byte[] value)
+        {
+            using var input = new MemoryStream(value);
+            using var output = new MemoryStream();
+            using var stream = new GZipStream(input, CompressionMode.Decompress);
+
+            stream.CopyTo(output);
+            stream.Flush();
+
+            return Encoding.UTF8.GetString(output.ToArray());
+        }
     }
 }

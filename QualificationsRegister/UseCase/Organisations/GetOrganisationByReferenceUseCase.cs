@@ -21,9 +21,9 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
         {
             var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
 
-            var orgByNumber = organisations.FirstOrDefault(e => e.RecognitionNumber == reference);
+            var orgByRef = organisations.FirstOrDefault(e => e.RecognitionNumber == reference);
 
-            return orgByNumber;
+            return orgByRef;
         }
 
     }

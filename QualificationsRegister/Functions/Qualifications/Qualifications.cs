@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -9,28 +10,28 @@ namespace Ofqual.Common.RegisterAPI.Functions.Qualifications
     public class Qualifications
     {
         private readonly ILogger _logger;
-        private readonly IGetQualificationsUseCase _searchQualifications;
+        private readonly IGetQualificationsUseCase _getQualifications;
         private readonly IGetQualificationByNumberUseCase _getQualificationByNumber;
 
-        public Qualifications(ILoggerFactory loggerFactory, IGetQualificationsUseCase searchQualifications,
+        public Qualifications(ILoggerFactory loggerFactory, IGetQualificationsUseCase getQualifications,
             IGetQualificationByNumberUseCase getQualificationByNumber)
         {
             _logger = loggerFactory.CreateLogger<Qualifications>();
-            //_searchQualifications = searchQualifications;
+            _getQualifications = getQualifications;
             _getQualificationByNumber = getQualificationByNumber;
         }
 
-        [Function("Qualifications")]
+        [Function("QualificationsList")]
         //Returns the list of qualifications
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetQualificationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string? search = "")
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _getQualificationByNumber.GetQualificationByNumber(" ofqual");
-            response.WriteString("Welcome to Azure Functions!" + x);
+            var x = await _getQualifications.GetQualifications(search);
+            response.WriteString(JsonSerializer.Serialize(x));
 
             return response;
         }
@@ -38,15 +39,15 @@ namespace Ofqual.Common.RegisterAPI.Functions.Qualifications
 
         [Function("Qualification")]
         //Returns a single qualification based on the id parameter provided in the HttpRequestData
-        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number)
         {
 
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _getQualificationByNumber.GetQualificationByNumber(" ofqual");
+            var x = await _getQualificationByNumber.GetQualificationByNumber(number);
             response.WriteString("Welcome to Azure Functions!" + x);
 
             return response;

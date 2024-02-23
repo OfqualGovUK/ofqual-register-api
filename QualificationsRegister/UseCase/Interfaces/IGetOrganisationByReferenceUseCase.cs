@@ -4,6 +4,6 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetOrganisationByReferenceUseCase
     {
-        Task<Organisation> GetOrganisationByReference(string orgRef);
+        Task<Organisation> GetOrganisationByReference(string reference);
     }
 }

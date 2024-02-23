@@ -6,47 +6,47 @@ using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.Functions.Qualifications
 {
-    public class QualificationsInternal
+    public class QualificationsPrivate
     {
         private readonly ILogger _logger;
-        private readonly IGetOrganisationsUseCase _searchOrganisations;
-        private readonly IGetOrganisationByReferenceUseCase _getOrganisationByReference;
+        private readonly IGetQualificationsUseCase _getQualifications;
+        private readonly IGetQualificationByNumberUseCase _getQualificationByNumber;
 
-        public QualificationsInternal(ILoggerFactory loggerFactory, IGetOrganisationsUseCase searchOrganisations,
-            IGetOrganisationByReferenceUseCase getOrganisationByReference)
+        public QualificationsPrivate(ILoggerFactory loggerFactory, IGetQualificationsUseCase searchQualifications,
+            IGetQualificationByNumberUseCase getQualificationByNumber)
         {
-            _logger = loggerFactory.CreateLogger<QualificationsInternal>();
-            //_searchOrganisations = searchOrganisations;
-            _getOrganisationByReference = getOrganisationByReference;
+            _logger = loggerFactory.CreateLogger<QualificationsPrivate>();
+            _getQualifications = searchQualifications;
+            _getQualificationByNumber = getQualificationByNumber;
         }
 
-        [Function("QualificationsInternal")]
+        [Function("QualificationsListPrivate")]
         //Returns the list of qualifications
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string search = "")
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _getOrganisationByReference.GetOrganisationByReference(" ofqual");
+            var x = await _getQualifications.GetQualifications(search);
             response.WriteString("Welcome to Azure Functions!" + x);
 
             return response;
         }
 
 
-        [Function("QualificationInternal")]
+        [Function("QualificationPrivate")]
         //Returns a single qualification based on the id parameter provided in the HttpRequestData
-        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number)
         {
 
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _getOrganisationByReference.GetOrganisationByReference(" ofqual");
+            var x = await _getQualificationByNumber.GetQualificationByNumber(number);
             response.WriteString("Welcome to Azure Functions!" + x);
 
             return response;

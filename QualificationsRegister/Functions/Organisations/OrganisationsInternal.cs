@@ -7,47 +7,47 @@ using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.Functions.Organisations
 {
-    public class OrganisationsInternal
+    public class OrganisationsPrivate
     {
         private readonly ILogger _logger;
-        private readonly IGetOrganisationsUseCase _searchOrganisations;
-        private readonly IGetOrganisationByReferenceUseCase _GetOrganisationByReference;
+        private readonly IGetOrganisationsUseCase _getOrganisations;
+        private readonly IGetOrganisationByReferenceUseCase _getOrganisationByReference;
 
-        public OrganisationsInternal(ILoggerFactory loggerFactory, IGetOrganisationsUseCase searchOrganisations,
-            IGetOrganisationByReferenceUseCase GetOrganisationByReference)
+        public OrganisationsPrivate(ILoggerFactory loggerFactory, IGetOrganisationsUseCase getOrganisations,
+            IGetOrganisationByReferenceUseCase getOrganisationByReference)
         {
-            _logger = loggerFactory.CreateLogger<QualificationsInternal>();
-            //_searchOrganisations = searchOrganisations;
-            _GetOrganisationByReference = GetOrganisationByReference;
+            _logger = loggerFactory.CreateLogger<QualificationsPrivate>();
+            _getOrganisations = getOrganisations;
+            _getOrganisationByReference = getOrganisationByReference;
         }
 
-        [Function("OrganisationsInternal")]
+        [Function("OrganisationsListPrivate")]
         //Returns the list of qualifications
-        public async Task<HttpResponseData> ListOrganisations([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string? search = "")
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _GetOrganisationByReference.GetOrganisationByReference(" ofqual");
+            var x = await _getOrganisations.GetOrganisations(search);
             response.WriteString("Welcome to Azure Functions!" + x);
 
             return response;
         }
 
 
-        [Function("OrganisationInternal")]
-        //Returns a single qualification based on the id parameter provided in the HttpRequestData
-        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        [Function("OrganisationPrivate")]
+        //Returns a single organisation based on the id parameter provided in the HttpRequestData
+        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string reference)
         {
 
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _GetOrganisationByReference.GetOrganisationByReference(" ofqual");
+            var x = await _getOrganisationByReference.GetOrganisationByReference(reference);
             response.WriteString("Welcome to Azure Functions!" + x);
 
             return response;

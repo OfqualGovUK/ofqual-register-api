@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Ofqual.Common.RegisterAPI.Services.Cache;
 using Ofqual.Common.RegisterAPI.Services.Data;
 using Ofqual.Common.RegisterAPI.Services.Data.Repository;
+using Ofqual.Common.RegisterAPI.UseCase;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
@@ -17,7 +18,7 @@ var host = new HostBuilder()
         //RegisterGateways(services);
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString").ToString();
+            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString").ToString();            
         });
 
         services.AddSingleton<IRedisCacheService, RedisCache>();
@@ -36,6 +37,9 @@ static void RegisterUseCases(IServiceCollection services)
 {
     services.AddScoped<IGetOrganisationByReferenceUseCase, GetOrganisationByReferenceUseCase>();
     services.AddScoped<IGetOrganisationsUseCase, GetOrganisationsUseCase>();
+
+    services.AddScoped<IGetQualificationByNumberUseCase, GetQualificationByNumberUseCase>();
+    services.AddScoped<IGetQualificationsUseCase, GetQualificationsUseCase>();
 
 }
 

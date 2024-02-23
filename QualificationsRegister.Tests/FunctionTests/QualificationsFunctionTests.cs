@@ -29,7 +29,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         {
             var httpFunc = new Qualifications(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            var res = await httpFunc.ListQualifications(requestData);
+            var res = await httpFunc.GetQualification(requestData, "");
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
         }
