@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -20,34 +21,55 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
             _getQualificationByNumber = getQualificationByNumber;
         }
 
+        /// <summary>
+        /// Returns the list of qualifications based on the search params (if any)
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         [Function("QualificationsPrivate")]
-        //Returns the list of qualifications
         public async Task<HttpResponseData> GetListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string search = "")
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("Get Qualifications Private - search = {}", search);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _getQualifications.GetQualifications(search);
-            response.WriteString("Welcome to Azure Functions!" + x);
+            var qualifications = await _getQualifications.GetQualificationsPrivate(search);
+            await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));
 
             return response;
         }
 
-
+        /// <summary>
+        /// Returns a single qualification based on the number param
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="number"></param>
+        /// <returns></returns>
         [Function("QualificationPrivate")]
-        //Returns a single qualification based on the id parameter provided in the HttpRequestData
-        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number)
+        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number = "")
         {
-
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("Get Qualification Private - number = {}", number);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _getQualificationByNumber.GetQualificationByNumber(number);
-            response.WriteString("Welcome to Azure Functions!" + x);
+            if (string.IsNullOrEmpty(number))
+            {
+                response = req.CreateResponse(HttpStatusCode.BadRequest);
+                return response;
+            }
+
+            var qualification = await _getQualificationByNumber.GetQualificationByNumberPrivate(number);
+
+            if (qualification == null)
+            {
+                response = req.CreateResponse(HttpStatusCode.NotFound);
+                return response;
+            }
+
+            await response.WriteStringAsync(JsonSerializer.Serialize(qualification));
 
             return response;
         }

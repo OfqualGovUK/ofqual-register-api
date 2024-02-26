@@ -8,6 +8,8 @@ using Ofqual.Common.RegisterAPI.Services.Repository;
 using Ofqual.Common.RegisterAPI.UseCase;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -18,15 +20,20 @@ var host = new HostBuilder()
         
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString").ToString();            
+            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString")?.ToString();            
         });
 
         services.AddSingleton<IRedisCacheService, RedisCache>();
         services.AddTransient<IRegisterRepository, RegisterRepository>();
         services.AddTransient<IDapperDbConnection, DapperDbConnection>();
 
-        //RegisterGateways(services);
         RegisterUseCases(services);
+
+        services.Configure<JsonSerializerOptions>(options =>
+        {
+            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.PropertyNameCaseInsensitive = true;
+        });
     })
     .Build();
 

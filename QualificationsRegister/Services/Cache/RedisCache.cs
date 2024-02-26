@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -27,19 +28,21 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             if (retrievedData == null)
             {
-                //cache missed
-                _logger.LogInformation(key + " Cache Miss");
+                _logger.LogInformation("{} Cache Miss", key);
 
-                retrievedData = await SetCacheAsync<T>(key);
-
+                retrievedData = SetCacheAsync<T>(key);
+            }
+            else
+            {
+                _logger.LogInformation("{} Cache retreived", key);
             }
 
-            return retrievedData == null ? default : retrievedData;
+            return retrievedData;
         }
 
-        private async Task<List<T>> SetCacheAsync<T>(string key)
+        private List<T> SetCacheAsync<T>(string key)
         {
-            var data = _registerRepository.GetDataAsync().Result;
+            var data = _registerRepository.GetDataAsync();
 
             var options = new DistributedCacheEntryOptions
             {
@@ -50,7 +53,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             foreach (var dictKey in data.Keys)
             {
-                var compressed = CompressAsync(JsonSerializer.Serialize(data[dictKey]));
+                _logger.LogInformation("Setting {} Cache", dictKey);
+
+                var compressed = Compress(JsonSerializer.Serialize(data[dictKey]));
                 Task updateCache = new Task(() => _redis.SetAsync(dictKey, compressed, options));
 
                 cacheupdateTasks.Add(updateCache);
@@ -60,25 +65,28 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             Task.WaitAll(cacheupdateTasks.ToArray());
 
-            return (List<T>) data[key];
+            _logger.LogInformation("Set Cache");
+
+            return (List<T>)data[key];
         }
 
-        private async Task<T> GetCacheAsync<T>(string key)
+        private async Task<T?> GetCacheAsync<T>(string key)
         {
+            _logger.LogInformation("Checking {} cache", key);
+
             var compressed = await _redis.GetAsync(key);
 
-            string value = null;
-
-            if (compressed != null)
+            if (compressed == null)
             {
-                value = DecompressAsync(compressed);
+                return default;
+            }
+            else
+            {
+                return JsonSerializer.Deserialize<T>(Decompress(compressed));
             }
 
-            return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
-
-
-        public byte[] CompressAsync(string str)
+        public byte[] Compress(string str)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(str);
 
@@ -92,7 +100,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return output.ToArray();
         }
 
-        public string DecompressAsync(byte[] value)
+        public string Decompress(byte[] value)
         {
             using var input = new MemoryStream(value);
             using var output = new MemoryStream();
