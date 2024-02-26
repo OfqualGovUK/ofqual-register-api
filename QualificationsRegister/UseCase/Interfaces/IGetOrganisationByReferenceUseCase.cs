@@ -1,9 +1,9 @@
-using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.Public;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetOrganisationByReferenceUseCase
     {
-        Task<Organisation> GetOrganisationByReference(string reference);
+        Task<OrganisationPublic> GetOrganisationByReference(string reference);
     }
 }

@@ -6,23 +6,23 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
-namespace Ofqual.Common.RegisterAPI.Functions.Organisations
+namespace Ofqual.Common.RegisterAPI.Functions.Public
 {
-    public class Organisations
+    public class OrganisationsPublic
     {
         private readonly ILogger _logger;
         private readonly IGetOrganisationsUseCase _getOrganisations;
         private readonly IGetOrganisationByReferenceUseCase _getOrganisationByReference;
 
-        public Organisations(ILoggerFactory loggerFactory, IGetOrganisationsUseCase getOrganisations,
+        public OrganisationsPublic(ILoggerFactory loggerFactory, IGetOrganisationsUseCase getOrganisations,
             IGetOrganisationByReferenceUseCase getOrganisationByReference) : base()
         {
-            _logger = loggerFactory.CreateLogger<Organisations>();
+            _logger = loggerFactory.CreateLogger<OrganisationsPublic>();
             _getOrganisations = getOrganisations;
             _getOrganisationByReference = getOrganisationByReference;
         }
 
-        [Function("OrganisationsList")]
+        [Function("Organisations")]
         //Returns the list of qualifications based on the search params (if any)
         public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string search = "")
         {

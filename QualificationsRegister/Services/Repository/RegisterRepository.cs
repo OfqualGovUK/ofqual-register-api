@@ -1,6 +1,6 @@
 using Dapper;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.Private;
 using Ofqual.Common.RegisterAPI.Services.Data;
 
 
@@ -12,8 +12,8 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
         private readonly IDapperDbConnection _dapperDbConnection;
         private readonly ILogger _logger;
 
-        private List<Organisation> _organisationList;
-        private List<Qualification> _qualificationsList;
+        private List<OrganisationPrivate> _organisationList;
+        private List<QualificationPrivate> _qualificationsList;
 
         public RegisterRepository(IDapperDbConnection dapperDbConnection, ILoggerFactory loggerFactory)
         {
@@ -29,7 +29,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
                 try
                 {
                     var organisations =
-                     await db.QueryAsync<Organisation>
+                     await db.QueryAsync<OrganisationPrivate>
                         (@"SELECT [Id]
                             ,[Name]
                             ,[RecognitionNumber]
@@ -77,7 +77,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
                 try
                 {
                     var qualifications =
-                     await db.QueryAsync<Qualification>
+                     await db.QueryAsync<QualificationPrivate>
                         (@"SELECT [Id]
                               ,[QualificationNumber]
                               ,[QualifiationNumberNoObliques]
@@ -150,7 +150,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             var dict = new Dictionary<string, object>
             {
                 { "Qualifications", _qualificationsList },
-                {"Organisations", _organisationList }
+                { "Organisations", _organisationList }
             };
 
             return dict;

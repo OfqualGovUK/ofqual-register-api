@@ -1,6 +1,6 @@
-namespace Ofqual.Common.RegisterAPI.Models
+namespace Ofqual.Common.RegisterAPI.Models.Private
 {
-    public record class Qualification
+    public record class QualificationPrivate
     {
         public int Id { get; init; }
         public string QualificationNumber { get; init; }
