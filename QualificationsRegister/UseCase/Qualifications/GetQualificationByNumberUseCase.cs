@@ -19,7 +19,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         public async Task<QualificationPrivate> GetQualificationByNumber(string number)
         {
-            var qualifications = await _redisCacheService.GetCache<QualificationPrivate>("Qualifications");
+            var qualifications = await _redisCacheService.GetCacheAsync<QualificationPrivate>("Qualifications");
             var qualificationByNumber = qualifications.FirstOrDefault(e=>e.QualificationNumberNoObliques  == number);
 
             return qualificationByNumber;

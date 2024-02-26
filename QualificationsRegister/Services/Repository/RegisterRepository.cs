@@ -21,7 +21,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             _dapperDbConnection = dapperDbConnection;
         }
 
-        public async Task GetOrganisations()
+        public async Task<IEnumerable<OrganisationPrivate>> GetOrganisations()
         {
             using (var db = _dapperDbConnection.CreateConnection())
 
@@ -61,7 +61,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 
                     _logger.Log(LogLevel.Information, "Got Organisations");
 
-                    _organisationList = organisations.ToList();
+                    return organisations.ToList();
                 }
                 catch (Exception ex)
                 {

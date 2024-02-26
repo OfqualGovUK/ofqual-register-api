@@ -16,11 +16,9 @@ namespace Ofqual.Common.RegisterAPI.UseCase
             _redisCacheService = redisCacheService;
         }
 
-        public async Task<List<QualificationPrivate>> GetQualifications(string search)
+        public async Task<IEnumerable<QualificationPrivate>> GetQualifications(string search)
         {
-            var qualifications = await _redisCacheService.GetCache<QualificationPrivate>("Qualifications");
-
-            return qualifications;
+            return  await _redisCacheService.GetCacheAsync<QualificationPrivate>("Qualifications");
         }
     }
 }

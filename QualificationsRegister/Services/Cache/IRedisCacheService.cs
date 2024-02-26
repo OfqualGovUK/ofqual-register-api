@@ -9,6 +9,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 {
     public interface IRedisCacheService
     {
-        public Task<List<T>> GetCache<T>(string key);
+        public Task<IEnumerable<T>?> GetCacheAsync<T>(string key);
+        public Task SetCacheAsync<T>(string key, T data, int ttlDays = 1);
     }
 }

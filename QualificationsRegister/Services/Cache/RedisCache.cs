@@ -12,73 +12,40 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
     {
         private readonly ILogger _logger;
         private readonly IDistributedCache _redis;
-        private readonly IRegisterRepository _registerRepository;
 
-        public RedisCache(ILoggerFactory loggerFactory, IDistributedCache redis, IRegisterRepository registerRepository)
+        public RedisCache(ILoggerFactory loggerFactory, IDistributedCache redis)
         {
             _logger = loggerFactory.CreateLogger<RedisCache>();
             _redis = redis;
-            _registerRepository = registerRepository;
         }
 
-        public async Task<List<T>> GetCache<T>(string key)
+        public async Task<IEnumerable<T>?> GetCacheAsync<T>(string key)
         {
-            var retrievedData = await GetCacheAsync<List<T>>(key);
-
-            if (retrievedData == null)
+            _logger.LogInformation($"Getting value for key: {key}");
+            var compressed = await _redis.GetAsync(key);
+            if (compressed != null)
             {
-                //cache missed
-                _logger.LogInformation(key + " Cache Miss");
-
-                retrievedData = await SetCacheAsync<T>(key);
-
+                string value = Decompress(compressed);
+                _logger.LogInformation($"Got and decompressed value for key: {key}");
+                return JsonSerializer.Deserialize<IEnumerable<T>>(value);
             }
 
-            return retrievedData == null ? default : retrievedData;
+            return null;
         }
 
-        private async Task<List<T>> SetCacheAsync<T>(string key)
-        {
-            var data = _registerRepository.GetDataAsync().Result;
 
+        public async Task SetCacheAsync<T>(string key, T data, int ttlDays = 1)
+        {
             var options = new DistributedCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(5)
             };
 
-            var cacheupdateTasks = new List<Task>();
-
-            foreach (var dictKey in data.Keys)
-            {
-                var compressed = CompressAsync(JsonSerializer.Serialize(data[dictKey]));
-                Task updateCache = new Task(() => _redis.SetAsync(dictKey, compressed, options));
-
-                cacheupdateTasks.Add(updateCache);
-
-                updateCache.Start();
-            }
-
-            Task.WaitAll(cacheupdateTasks.ToArray());
-
-            return (List<T>) data[key];
+            var compressed = Compress(JsonSerializer.Serialize(data));
+            await _redis.SetAsync(key, compressed, options);
         }
 
-        private async Task<T> GetCacheAsync<T>(string key)
-        {
-            var compressed = await _redis.GetAsync(key);
-
-            string value = null;
-
-            if (compressed != null)
-            {
-                value = DecompressAsync(compressed);
-            }
-
-            return value == null ? default : JsonSerializer.Deserialize<T>(value);
-        }
-
-
-        public byte[] CompressAsync(string str)
+        private byte[] Compress(string str)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(str);
 
@@ -92,7 +59,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return output.ToArray();
         }
 
-        public string DecompressAsync(byte[] value)
+        private string Decompress(byte[] value)
         {
             using var input = new MemoryStream(value);
             using var output = new MemoryStream();

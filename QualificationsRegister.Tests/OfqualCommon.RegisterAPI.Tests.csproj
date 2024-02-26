@@ -26,11 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GatewaysTests\" />
-    <Folder Include="UseCasesTests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\QualificationsRegister\Ofqual.Common.RegisterAPI.csproj" />
   </ItemGroup>
 
