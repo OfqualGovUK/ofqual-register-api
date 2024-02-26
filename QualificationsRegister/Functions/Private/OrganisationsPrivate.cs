@@ -2,10 +2,9 @@ using System.Net;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Functions.Qualifications;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
-namespace Ofqual.Common.RegisterAPI.Functions.Organisations
+namespace Ofqual.Common.RegisterAPI.Functions.Private
 {
     public class OrganisationsPrivate
     {
@@ -21,7 +20,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Organisations
             _getOrganisationByReference = getOrganisationByReference;
         }
 
-        [Function("OrganisationsListPrivate")]
+        [Function("OrganisationsPrivate")]
         //Returns the list of qualifications
         public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string? search = "")
         {

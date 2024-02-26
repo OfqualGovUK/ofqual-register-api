@@ -1,9 +1,9 @@
-using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.Private;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetQualificationsUseCase
     {
-        Task<List<Qualification>> GetQualifications(string search);
+        Task<List<QualificationPrivate>> GetQualifications(string search);
     }
 }

@@ -2,7 +2,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions;
-using Ofqual.Common.RegisterAPI.Functions.Qualifications;
+using Ofqual.Common.RegisterAPI.Functions.Public;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
@@ -27,7 +27,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task FunctionReturnsOkResponse()
         {
-            var httpFunc = new Qualifications(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
+            var httpFunc = new QualificationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             var res = await httpFunc.GetQualification(requestData, "");
             Console.WriteLine(res.StatusCode);
