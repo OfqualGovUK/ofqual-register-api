@@ -43,7 +43,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             }
             catch (Exception ex)
             {
-                response = req.CreateResponse(HttpStatusCode.InternalServerError);
+                response.StatusCode = HttpStatusCode.InternalServerError;
                 response.WriteString(JsonSerializer.Serialize(new
                 {
                     error = ex.Message,

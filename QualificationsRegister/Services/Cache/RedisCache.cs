@@ -33,56 +33,47 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
                 await _lock.WaitAsync();
                 _logger.LogInformation("{} Cache Miss. Waiting for update", key);
+                _logger.LogDebug("{} Cache Miss. Waiting for update - {}", key, Environment.CurrentManagedThreadId);
 
                 try
                 {
                     if (RetrieveCache<List<T>>(key) == null)
                     {
-                        retrievedData = SetCache<T>(key);
+                        retrievedData = await SetCacheAsync<T>(key);
                     }
                 }
                 finally
                 {
                     _lock.Release();
-                    retrievedData = RetrieveCache<List<T>>(key);
                 }
             }
             else
             {
                 _logger.LogInformation("{} Cache retreived", key);
+                _logger.LogDebug("{} Cache retreived - {}", key, Environment.CurrentManagedThreadId);
             }
 
-            return retrievedData!;
+            //retrieve data for the pending threads if data is null
+            return retrievedData ?? RetrieveCache<List<T>>(key)!;
         }
 
-        private List<T> SetCache<T>(string key)
+        private async Task<List<T>> SetCacheAsync<T>(string key)
         {
-            var data = _registerRepository.GetData();
+            var data = await _registerRepository.GetDataAsync(key);
 
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(20)
+                AbsoluteExpiration = DateTime.Now.AddMinutes(2)
             };
 
-            var cacheupdateTasks = new List<Task>();
+            _logger.LogInformation("Setting {} Cache", key);
 
-            foreach (var dictKey in data.Keys)
-            {
-                _logger.LogInformation("Setting {} Cache", dictKey);
-
-                var compressed = Compress(JsonSerializer.Serialize(data[dictKey]));
-                Task updateCache = new Task(() => _redis.SetAsync(dictKey, compressed, options));
-
-                cacheupdateTasks.Add(updateCache);
-
-                updateCache.Start();
-            }
-
-            Task.WaitAll(cacheupdateTasks.ToArray());
+            var compressed = Compress(JsonSerializer.Serialize(data));
+            await _redis.SetAsync(key, compressed, options);
 
             _logger.LogInformation("Set Cache");
 
-            return (List<T>) data[key];
+            return (List<T>) data;
         }
 
         private T? RetrieveCache<T>(string key)
@@ -103,8 +94,6 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
         }
         public byte[] Compress(string str)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(str);
-
             using var input = new MemoryStream(Encoding.UTF8.GetBytes(str));
             using var output = new MemoryStream();
             using var stream = new BrotliStream(output, CompressionLevel.Fastest);

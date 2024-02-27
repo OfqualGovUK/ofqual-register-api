@@ -21,7 +21,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             _dapperDbConnection = dapperDbConnection;
         }
 
-        public async Task GetOrganisations()
+        public async Task<IEnumerable<Organisation>> GetOrganisations()
         {
             using (var db = _dapperDbConnection.CreateConnection())
 
@@ -29,7 +29,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
                 try
                 {
                     var organisations =
-                     await db.QueryAsync<Organisation>
+                      await db.QueryAsync<Organisation>
                         (@"SELECT [Id]
                             ,[Name]
                             ,[RecognitionNumber]
@@ -61,7 +61,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 
                     _logger.Log(LogLevel.Information, "Got Organisations");
 
-                    _organisationList = organisations.ToList();
+                    return organisations;
                 }
                 catch (Exception ex)
                 {
@@ -70,7 +70,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             }
         }
 
-        public async Task GetQualifications()
+        public async Task<IEnumerable<Qualification>> GetQualifications()
         {
             using (var db = _dapperDbConnection.CreateConnection())
             {
@@ -129,7 +129,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 
                     _logger.Log(LogLevel.Information, "Got Qualifications");
 
-                    _qualificationsList = qualifications.ToList();
+                    return qualifications;
                 }
                 catch (Exception ex)
                 {
@@ -138,22 +138,16 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             }
         }
 
-        public Dictionary<string, object> GetData()
+        public async Task<object> GetDataAsync(string key)
         {
-            _logger.Log(LogLevel.Information, "Getting Data from DB");
+            _logger.Log(LogLevel.Information, "Getting {} data from DB", key);
 
-            var thread1 = Task.Run(() => GetQualifications());
-            var thread2 = Task.Run(() => GetOrganisations());
-
-            Task.WaitAll(thread1, thread2);
-
-            var dict = new Dictionary<string, object>
+            return key.ToLower() switch
             {
-                { "Qualifications", _qualificationsList },
-                { "Organisations", _organisationList }
+                "organisations" => await GetOrganisations(),
+                "qualifications" => await GetQualifications(),
+                _ => throw new NotImplementedException()
             };
-
-            return dict;
         }
     }
 }

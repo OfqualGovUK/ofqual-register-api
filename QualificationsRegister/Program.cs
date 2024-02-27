@@ -10,6 +10,7 @@ using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -35,6 +36,11 @@ var host = new HostBuilder()
             options.PropertyNameCaseInsensitive = true;
         });
     })
+    //.ConfigureLogging((HostBuilderContext hostingContext, ILoggingBuilder logging)=>{
+    //    logging.AddConsole();
+    //    logging.AddDebug().SetMinimumLevel(LogLevel.Debug);
+    //})
+    
     .Build();
 
 
