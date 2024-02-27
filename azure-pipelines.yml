@@ -7,17 +7,16 @@ trigger:
 - dev
 
 variables:
-  # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: '8dc1bbeb-8b9d-4b66-9cdb-0294dab8a4b5'
-
-  # Function app name
-  functionAppName: 'ofq-dev-fn-register-api'
-
+  - group: Register-API-Dev-Variables
+  
   # Agent VM image name
-  vmImageName: 'windows-2019'
+  - name: vmImageName
+    value: 'windows-2019'
 
   # Working Directory
-  workingDirectory: 'directory'
+  - name: workingDirectory
+    value: 'directory'
+
 
 stages:
 - stage: Build
@@ -78,7 +77,7 @@ stages:
           - task: AzureFunctionApp@1
             displayName: 'Azure functions app deploy'
             inputs:
-              azureSubscription: '$(azureSubscription)'
+              azureSubscription: '$(AzureSubscription)'
               appType: functionApp
-              appName: $(functionAppName)
+              appName: $(FunctionAppName)
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
