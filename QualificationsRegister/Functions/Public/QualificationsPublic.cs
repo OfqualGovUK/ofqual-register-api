@@ -39,10 +39,10 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var qualifications = await _getQualifications.GetQualifications(search);
+                var qualifications = await _getQualifications.GetQualificationsPublic(search);
                 response.WriteString(JsonSerializer.Serialize(qualifications));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 response = req.CreateResponse(HttpStatusCode.InternalServerError);
                 response.WriteString(JsonSerializer.Serialize(new
@@ -77,7 +77,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var qualification = await _getQualificationByNumber.GetQualificationByNumber(number);
+                var qualification = await _getQualificationByNumber.GetQualificationByNumberPublic(number);
 
                 if (qualification == null)
                 {

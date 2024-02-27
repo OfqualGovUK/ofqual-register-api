@@ -38,7 +38,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var organisations = await _getOrganisations.GetOrganisationsPublic(search);
+                var organisations = await _getOrganisations.GetOrganisations(search);
                 response.WriteString(JsonSerializer.Serialize(organisations));
             }
             catch (Exception ex)

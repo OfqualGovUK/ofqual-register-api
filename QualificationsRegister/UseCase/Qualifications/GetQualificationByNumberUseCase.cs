@@ -18,10 +18,10 @@ namespace Ofqual.Common.RegisterAPI.UseCase
             _redisCacheService = redisCacheService;
         }
 
-        public async Task<QualificationPublic?> GetQualificationByNumber(string number)
+        public async Task<QualificationPublic?> GetQualificationByNumberPublic(string number)
         {
             var qualifications = await _redisCacheService.GetCache<Qualification>("Qualifications");
-            var qualificationByNumber = qualifications.FirstOrDefault(e => e.QualificationNumber == number);
+            var qualificationByNumber = qualifications.Where(q => q.AppearsOnPublicRegister == true).FirstOrDefault(e => e.QualificationNumber == number);
 
             return qualificationByNumber == null ? null : new QualificationPublic(qualificationByNumber);
         }

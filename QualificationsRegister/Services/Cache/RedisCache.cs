@@ -71,7 +71,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             var compressed = Compress(JsonSerializer.Serialize(data));
             await _redis.SetAsync(key, compressed, options);
 
-            _logger.LogInformation("Set Cache");
+            _logger.LogInformation("Set {} Cache", key);
 
             return (List<T>) data;
         }
@@ -92,7 +92,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             }
 
         }
-        public byte[] Compress(string str)
+        private byte[] Compress(string str)
         {
             using var input = new MemoryStream(Encoding.UTF8.GetBytes(str));
             using var output = new MemoryStream();
@@ -104,7 +104,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return output.ToArray();
         }
 
-        public string Decompress(byte[] value)
+        private string Decompress(byte[] value)
         {
             using var input = new MemoryStream(value);
             using var output = new MemoryStream();

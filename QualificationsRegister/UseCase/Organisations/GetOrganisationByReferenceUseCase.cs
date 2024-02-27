@@ -28,13 +28,5 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             return orgByRef == null ? null : new OrganisationPublic(orgByRef);
         }
 
-        public async Task<OrganisationPrivate?> GetOrganisationByReferencePrivate(string reference)
-        {
-            var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
-
-            var orgByRef = organisations.FirstOrDefault(e => e.RecognitionNumber == reference);
-
-            return orgByRef == null ? null : new OrganisationPrivate(orgByRef);
-        }
     }
 }
