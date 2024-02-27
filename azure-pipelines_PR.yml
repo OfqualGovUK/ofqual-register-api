@@ -1,0 +1,49 @@
+# .NET Core Function App to Windows on Azure
+# Build a .NET Core function app and deploy it to Azure as a Windows function App.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- dev
+
+variables:
+  # Azure Resource Manager connection created during pipeline creation
+  azureSubscription: '0038d0d9-cc57-4b38-a3ff-b31af88453e6'
+
+  # Function app name
+  functionAppName: 'ofq-dev-fn-register-api'
+
+  # Agent VM image name
+  vmImageName: 'windows-2019'
+
+  # Working Directory
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+stages:
+- stage: Build
+  displayName: Build stage
+
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+
+    - task: UseDotNet@2
+      displayName: Use .Net 8.x
+      inputs:
+        version: '8.x'    
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: 'build'
+        projects: |
+          $(workingDirectory)/*.csproj
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
+
+    - task: DotNetCoreCLI@2
+      displayName: 'NUnit Tests'
+      inputs:
+        command: test
