@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Models.Private;
+using Ofqual.Common.RegisterAPI.Models.Public;
 using Ofqual.Common.RegisterAPI.Services.Cache;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
@@ -20,5 +22,15 @@ namespace Ofqual.Common.RegisterAPI.UseCase
         {
             return  await _redisCacheService.GetCacheAsync<QualificationPrivate>("Qualifications");
         }
+
+        public async Task<IEnumerable<QualificationPrivate>> GetQualificationsPrivate(string? search)
+        {
+            var qualifications = await _redisCacheService.GetCache<Qualification>("Qualifications");
+
+            var privateQualifications = qualifications.Select(e => new QualificationPrivate(e));
+
+            return privateQualifications;
+        }
+
     }
 }

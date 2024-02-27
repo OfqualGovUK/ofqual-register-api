@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -10,6 +11,8 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 {
     public class RedisCache : IRedisCacheService
     {
+        // Allow only one thread to access at a time    
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly ILogger _logger;
         private readonly IDistributedCache _redis;
 
@@ -38,7 +41,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
         {
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(5)
+                AbsoluteExpiration = DateTime.Now.AddMinutes(2)
             };
 
             var compressed = Compress(JsonSerializer.Serialize(data));
@@ -47,8 +50,6 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
         private static byte[] Compress(string str)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(str);
-
             using var input = new MemoryStream(Encoding.UTF8.GetBytes(str));
             using var output = new MemoryStream();
             using var stream = new BrotliStream(output, CompressionLevel.Fastest);

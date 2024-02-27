@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Models.Private;
+using Ofqual.Common.RegisterAPI.Models.Public;
 using Ofqual.Common.RegisterAPI.Services.Cache;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
-using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
 namespace Ofqual.Common.RegisterAPI.UseCase
 {
@@ -17,12 +18,21 @@ namespace Ofqual.Common.RegisterAPI.UseCase
             _redisCacheService = redisCacheService;
         }
 
-        public async Task<QualificationPrivate> GetQualificationByNumber(string number)
+        public async Task<QualificationPublic?> GetQualificationByNumber(string number)
         {
-            var qualifications = await _redisCacheService.GetCacheAsync<QualificationPrivate>("Qualifications");
-            var qualificationByNumber = qualifications.FirstOrDefault(e=>e.QualificationNumberNoObliques  == number);
+            var qualifications = await _redisCacheService.GetCache<Qualification>("Qualifications");
+            var qualificationByNumber = qualifications.FirstOrDefault(e => e.QualificationNumber == number);
 
-            return qualificationByNumber;
+            return qualificationByNumber == null ? null : new QualificationPublic(qualificationByNumber);
         }
+
+        public async Task<QualificationPrivate?> GetQualificationByNumberPrivate(string number)
+        {
+            var qualifications = await _redisCacheService.GetCache<Qualification>("Qualifications");
+            var qualificationByNumber = qualifications.FirstOrDefault(e => e.QualificationNumber == number);
+
+            return qualificationByNumber == null ? null : new QualificationPrivate(qualificationByNumber);
+        }
+
     }
 }

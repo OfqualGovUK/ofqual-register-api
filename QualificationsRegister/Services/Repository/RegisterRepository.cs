@@ -1,5 +1,6 @@
 using Dapper;
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Models.Private;
 using Ofqual.Common.RegisterAPI.Services.Data;
 
@@ -8,12 +9,11 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 {
     public class RegisterRepository : IRegisterRepository
     {
-
         private readonly IDapperDbConnection _dapperDbConnection;
         private readonly ILogger _logger;
 
-        private List<OrganisationPrivate> _organisationList;
-        private List<QualificationPrivate> _qualificationsList;
+        private List<Organisation> _organisationList = new List<Organisation>();
+        private List<Qualification> _qualificationsList = new List<Qualification>();
 
         public RegisterRepository(IDapperDbConnection dapperDbConnection, ILoggerFactory loggerFactory)
         {
@@ -21,7 +21,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             _dapperDbConnection = dapperDbConnection;
         }
 
-        public async Task<IEnumerable<OrganisationPrivate>> GetOrganisations()
+        public async Task<IEnumerable<Organisation>> GetOrganisations()
         {
             using (var db = _dapperDbConnection.CreateConnection())
 
@@ -29,7 +29,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
                 try
                 {
                     var organisations =
-                     await db.QueryAsync<OrganisationPrivate>
+                      await db.QueryAsync<Organisation>
                         (@"SELECT [Id]
                             ,[Name]
                             ,[RecognitionNumber]
@@ -61,7 +61,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 
                     _logger.Log(LogLevel.Information, "Got Organisations");
 
-                    return organisations.ToList();
+                    return organisations;
                 }
                 catch (Exception ex)
                 {
@@ -70,14 +70,14 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             }
         }
 
-        public async Task GetQualifications()
+        public async Task<IEnumerable<Qualification>> GetQualifications()
         {
             using (var db = _dapperDbConnection.CreateConnection())
             {
                 try
                 {
                     var qualifications =
-                     await db.QueryAsync<QualificationPrivate>
+                     await db.QueryAsync<Qualification>
                         (@"SELECT [Id]
                               ,[QualificationNumber]
                               ,[QualifiationNumberNoObliques]
@@ -129,7 +129,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 
                     _logger.Log(LogLevel.Information, "Got Qualifications");
 
-                    _qualificationsList = qualifications.ToList();
+                    return qualifications;
                 }
                 catch (Exception ex)
                 {
@@ -138,22 +138,16 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
             }
         }
 
-        async Task<Dictionary<string, object>> IRegisterRepository.GetDataAsync()
+        public async Task<object> GetDataAsync(string key)
         {
-            _logger.Log(LogLevel.Information, "Getting Data from DB");
+            _logger.Log(LogLevel.Information, "Getting {} data from DB", key);
 
-            var thread1 = Task.Run(() => GetQualifications());
-            var thread2 = Task.Run(() => GetOrganisations());
-
-            Task.WaitAll(thread1, thread2);
-
-            var dict = new Dictionary<string, object>
+            return key.ToLower() switch
             {
-                { "Qualifications", _qualificationsList },
-                { "Organisations", _organisationList }
+                "organisations" => await GetOrganisations(),
+                "qualifications" => await GetQualifications(),
+                _ => throw new NotImplementedException()
             };
-
-            return dict;
         }
     }
 }
