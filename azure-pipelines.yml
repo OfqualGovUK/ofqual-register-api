@@ -7,17 +7,24 @@ trigger:
 - dev
 
 variables:
+  - group: Register-API-Dev-Variables
+  
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: '$(AzureSubscription)'
+  - name: azureSubscription
+    value: '$(AzureSubscription)'
 
   # Function app name
-  functionAppName: '$(FunctionAppName)'
+  - name: functionAppName
+    value: '$(FunctionAppName)'
 
   # Agent VM image name
-  vmImageName: 'windows-2019'
+  - name: vmImageName
+    value: 'windows-2019'
 
   # Working Directory
-  workingDirectory: 'directory'
+  - name: workingDirectory
+    value: 'directory'
+
 
 stages:
 - stage: Build
