@@ -8,10 +8,10 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: '8dc1bbeb-8b9d-4b66-9cdb-0294dab8a4b5'
+  azureSubscription: '$(AzureSubscription)'
 
   # Function app name
-  functionAppName: 'ofq-dev-fn-register-api'
+  functionAppName: '$(FunctionAppName)'
 
   # Agent VM image name
   vmImageName: 'windows-2019'
