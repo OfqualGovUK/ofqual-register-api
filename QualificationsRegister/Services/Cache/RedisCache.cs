@@ -11,6 +11,8 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 {
     public class RedisCache : IRedisCacheService
     {
+        // Allow only one thread to access at a time    
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly ILogger _logger;
         private readonly IDistributedCache _redis;
         private readonly IRegisterRepository _registerRepository;
@@ -24,29 +26,42 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
         public async Task<List<T>> GetCache<T>(string key)
         {
-            var retrievedData = await GetCacheAsync<List<T>>(key);
+            var retrievedData = RetrieveCache<List<T>>(key);
 
             if (retrievedData == null)
             {
-                _logger.LogInformation("{} Cache Miss", key);
 
-                retrievedData = SetCacheAsync<T>(key);
+                await _lock.WaitAsync();
+                _logger.LogInformation("{} Cache Miss. Waiting for update", key);
+
+                try
+                {
+                    if (RetrieveCache<List<T>>(key) == null)
+                    {
+                        retrievedData = SetCache<T>(key);
+                    }
+                }
+                finally
+                {
+                    _lock.Release();
+                    retrievedData = RetrieveCache<List<T>>(key);
+                }
             }
             else
             {
                 _logger.LogInformation("{} Cache retreived", key);
             }
 
-            return retrievedData;
+            return retrievedData!;
         }
 
-        private List<T> SetCacheAsync<T>(string key)
+        private List<T> SetCache<T>(string key)
         {
-            var data = _registerRepository.GetDataAsync();
+            var data = _registerRepository.GetData();
 
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(5)
+                AbsoluteExpiration = DateTime.Now.AddSeconds(20)
             };
 
             var cacheupdateTasks = new List<Task>();
@@ -67,14 +82,14 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             _logger.LogInformation("Set Cache");
 
-            return (List<T>)data[key];
+            return (List<T>) data[key];
         }
 
-        private async Task<T?> GetCacheAsync<T>(string key)
+        private T? RetrieveCache<T>(string key)
         {
             _logger.LogInformation("Checking {} cache", key);
 
-            var compressed = await _redis.GetAsync(key);
+            var compressed = _redis.Get(key);
 
             if (compressed == null)
             {

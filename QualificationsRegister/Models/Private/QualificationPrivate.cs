@@ -109,9 +109,10 @@ namespace Ofqual.Common.RegisterAPI.Models.Private
             if (assessmentMethods == null) { return null;}
             else
             {
-                var str = Regex.Replace(assessmentMethods, @"[\[\]]+", "");
+                var str = Regex.Replace(assessmentMethods, @"[\[\\"" \]]+", "");
 
-                return str.Split(",");
+                var x = str.Split(",");
+                return x;
             }
         }
     }
