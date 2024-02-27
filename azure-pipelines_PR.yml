@@ -8,7 +8,7 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: '0038d0d9-cc57-4b38-a3ff-b31af88453e6'
+  azureSubscription: '8dc1bbeb-8b9d-4b66-9cdb-0294dab8a4b5'
 
   # Function app name
   functionAppName: 'ofq-dev-fn-register-api'
@@ -17,7 +17,7 @@ variables:
   vmImageName: 'windows-2019'
 
   # Working Directory
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  workingDirectory: 'directory'
 
 stages:
 - stage: Build
@@ -30,20 +30,30 @@ stages:
       vmImage: $(vmImageName)
 
     steps:
-
     - task: UseDotNet@2
-      displayName: Use .Net 8.x
       inputs:
-        version: '8.x'    
+        version: '8.x'
+
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
         command: 'build'
-        projects: |
-          $(workingDirectory)/*.csproj
+        projects: '**/*.csproj'
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
 
     - task: DotNetCoreCLI@2
       displayName: 'NUnit Tests'
       inputs:
         command: test
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
