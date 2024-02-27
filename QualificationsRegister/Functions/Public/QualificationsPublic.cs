@@ -1,10 +1,11 @@
 using System.Net;
-using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Models.Public;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using Ofqual.Common.RegisterAPI.Models.Public;
+using System.Text.Json;
+
 
 namespace Ofqual.Common.RegisterAPI.Functions.Public
 {
@@ -14,56 +15,87 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         private readonly IGetQualificationsUseCase _getQualifications;
         private readonly IGetQualificationByNumberUseCase _getQualificationByNumber;
 
-        public QualificationsPublic(ILoggerFactory loggerFactory, IGetQualificationsUseCase getQualifications,
+        public QualificationsPublic(ILoggerFactory loggerFactory, IGetQualificationsUseCase searchQualifications,
             IGetQualificationByNumberUseCase getQualificationByNumber)
         {
             _logger = loggerFactory.CreateLogger<QualificationsPublic>();
-            _getQualifications = getQualifications;
+            _getQualifications = searchQualifications;
             _getQualificationByNumber = getQualificationByNumber;
         }
 
+        /// <summary>
+        /// Returns the list of qualifications based on the search params (if any)
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         [Function("Qualifications")]
-        //Returns the list of qualifications
-        public async Task<HttpResponseData> GetQualificationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string? search = "", bool map = true)
+        public async Task<HttpResponseData> GetListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string search = "")
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("Get Qualifications Public - search = {}", search);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _getQualifications.GetQualifications(search);
-
-            if (map)
+            try
             {
-                _logger.LogInformation("start mapping");
-                response.WriteString(JsonSerializer.Serialize(x.Select(e => new QualificationPublic(e))));
-                _logger.LogInformation("end mapping");
+                var qualifications = await _getQualifications.GetQualifications(search);
+                response.WriteString(JsonSerializer.Serialize(qualifications));
             }
-            else
+            catch (Exception ex) 
             {
-                _logger.LogInformation("start no mapping");
-                response.WriteString(JsonSerializer.Serialize(x));
-                _logger.LogInformation("end no mapping");
+                response = req.CreateResponse(HttpStatusCode.InternalServerError);
+                response.WriteString(JsonSerializer.Serialize(new
+                {
+                    error = ex.Message,
+                    innerException = ex.InnerException
+                }));
             }
-
-
 
             return response;
         }
 
-
+        /// <summary>
+        /// Returns a single qualification based on the number param
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="number"></param>
+        /// <returns></returns>
         [Function("Qualification")]
-        //Returns a single qualification based on the id parameter provided in the HttpRequestData
-        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number)
+        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number = "")
         {
-
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("Get Qualification Public - number = {}", number);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var x = await _getQualificationByNumber.GetQualificationByNumber(number);
-            response.WriteString("Welcome to Azure Functions!" + x);
+            if (string.IsNullOrEmpty(number))
+            {
+                response = req.CreateResponse(HttpStatusCode.BadRequest);
+                return response;
+            }
+
+            try
+            {
+                var qualification = await _getQualificationByNumber.GetQualificationByNumber(number);
+
+                if (qualification == null)
+                {
+                    response = req.CreateResponse(HttpStatusCode.NotFound);
+                    return response;
+                }
+
+                await response.WriteStringAsync(JsonSerializer.Serialize(qualification));
+            }
+            catch (Exception ex)
+            {
+                response = req.CreateResponse(HttpStatusCode.InternalServerError);
+                response.WriteString(JsonSerializer.Serialize(new
+                {
+                    error = ex.Message,
+                    innerException = ex.InnerException
+                }));
+            }
 
             return response;
         }

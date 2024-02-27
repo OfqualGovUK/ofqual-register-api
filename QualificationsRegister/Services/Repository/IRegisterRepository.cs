@@ -9,6 +9,6 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 {
     public interface IRegisterRepository
     {
-        public Task<Dictionary<string, object>> GetDataAsync();
+        Task<object> GetDataAsync(string key);
     }
 }

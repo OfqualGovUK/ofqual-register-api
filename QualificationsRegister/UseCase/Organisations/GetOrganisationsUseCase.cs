@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Models.Private;
+using Ofqual.Common.RegisterAPI.Models.Public;
 using Ofqual.Common.RegisterAPI.Services.Cache;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
@@ -16,12 +18,21 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _redisCacheService = redisCacheService;
         }
 
-        public async Task<List<OrganisationPrivate>> GetOrganisations(string search)
+        public async Task<IEnumerable<OrganisationPrivate>> GetOrganisations(string search)
         {
-            var organisations = await _redisCacheService.GetCache<OrganisationPrivate>("Organisations");
-            //filters
+            var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
+            var privateOrganisations = organisations.Select(e => new OrganisationPrivate(e));
 
-            return organisations;
+            return privateOrganisations;
+        }
+
+        public async Task<IEnumerable<OrganisationPublic>> GetOrganisationsPublic(string search)
+        {
+            var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
+
+            var publicOrganisations = organisations.Select(e => new OrganisationPublic(e));
+
+            return publicOrganisations;
         }
     }
 }

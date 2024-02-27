@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -10,6 +11,8 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 {
     public class RedisCache : IRedisCacheService
     {
+        // Allow only one thread to access at a time    
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly ILogger _logger;
         private readonly IDistributedCache _redis;
         private readonly IRegisterRepository _registerRepository;
@@ -23,65 +26,74 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
         public async Task<List<T>> GetCache<T>(string key)
         {
-            var retrievedData = await GetCacheAsync<List<T>>(key);
+            var retrievedData = RetrieveCache<List<T>>(key);
 
             if (retrievedData == null)
             {
-                //cache missed
-                _logger.LogInformation(key + " Cache Miss");
 
-                retrievedData = await SetCacheAsync<T>(key);
+                await _lock.WaitAsync();
+                _logger.LogInformation("{} Cache Miss. Waiting for update", key);
+                _logger.LogDebug("{} Cache Miss. Waiting for update - {}", key, Environment.CurrentManagedThreadId);
 
+                try
+                {
+                    if (RetrieveCache<List<T>>(key) == null)
+                    {
+                        retrievedData = await SetCacheAsync<T>(key);
+                    }
+                }
+                finally
+                {
+                    _lock.Release();
+                }
+            }
+            else
+            {
+                _logger.LogInformation("{} Cache retreived", key);
+                _logger.LogDebug("{} Cache retreived - {}", key, Environment.CurrentManagedThreadId);
             }
 
-            return retrievedData == null ? default : retrievedData;
+            //retrieve data for the pending threads if data is null
+            return retrievedData ?? RetrieveCache<List<T>>(key)!;
         }
 
         private async Task<List<T>> SetCacheAsync<T>(string key)
         {
-            var data = _registerRepository.GetDataAsync().Result;
+            var data = await _registerRepository.GetDataAsync(key);
 
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(5)
+                AbsoluteExpiration = DateTime.Now.AddMinutes(2)
             };
 
-            var cacheupdateTasks = new List<Task>();
+            _logger.LogInformation("Setting {} Cache", key);
 
-            foreach (var dictKey in data.Keys)
-            {
-                var compressed = CompressAsync(JsonSerializer.Serialize(data[dictKey]));
-                Task updateCache = new Task(() => _redis.SetAsync(dictKey, compressed, options));
+            var compressed = Compress(JsonSerializer.Serialize(data));
+            await _redis.SetAsync(key, compressed, options);
 
-                cacheupdateTasks.Add(updateCache);
+            _logger.LogInformation("Set Cache");
 
-                updateCache.Start();
-            }
-
-            Task.WaitAll(cacheupdateTasks.ToArray());
-
-            return (List<T>) data[key];
+            return (List<T>) data;
         }
 
-        private async Task<T> GetCacheAsync<T>(string key)
+        private T? RetrieveCache<T>(string key)
         {
-            var compressed = await _redis.GetAsync(key);
+            _logger.LogInformation("Checking {} cache", key);
 
-            string value = null;
+            var compressed = _redis.Get(key);
 
-            if (compressed != null)
+            if (compressed == null)
             {
-                value = DecompressAsync(compressed);
+                return default;
+            }
+            else
+            {
+                return JsonSerializer.Deserialize<T>(Decompress(compressed));
             }
 
-            return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
-
-
-        public byte[] CompressAsync(string str)
+        public byte[] Compress(string str)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(str);
-
             using var input = new MemoryStream(Encoding.UTF8.GetBytes(str));
             using var output = new MemoryStream();
             using var stream = new BrotliStream(output, CompressionLevel.Fastest);
@@ -92,7 +104,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return output.ToArray();
         }
 
-        public string DecompressAsync(byte[] value)
+        public string Decompress(byte[] value)
         {
             using var input = new MemoryStream(value);
             using var output = new MemoryStream();

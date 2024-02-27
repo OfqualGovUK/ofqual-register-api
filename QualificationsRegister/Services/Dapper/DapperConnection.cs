@@ -15,7 +15,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Data
 
         public DapperDbConnection(IConfiguration configuration)
         {
-            _connectionString = Environment.GetEnvironmentVariable("MDDBConnString");
+            _connectionString = Environment.GetEnvironmentVariable("MDDBConnString")!;
         }
 
         public IDbConnection CreateConnection()
