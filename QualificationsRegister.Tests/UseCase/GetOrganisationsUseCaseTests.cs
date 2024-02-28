@@ -31,6 +31,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
             var stubbedList = _fixture.Create<List<Organisation>>();
             _mockRedisCache.Setup(r => r.GetCache<Organisation>(It.IsAny<string>())).ReturnsAsync(stubbedList);
             var result = await _classUnderTest.GetOrganisations(It.IsAny<string>());
+
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Has.Count.EqualTo(stubbedList.Count));
             Assert.That(result[0].ContactEmail, Is.EqualTo(stubbedList[0].ContactEmail));
