@@ -23,7 +23,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
         {
             var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
 
-            var orgByRef = organisations.FirstOrDefault(e => e.RecognitionNumber == reference);
+            var orgByRef = organisations.FirstOrDefault(e => e.RecognitionNumber.Equals(reference, StringComparison.CurrentCultureIgnoreCase));
 
             return orgByRef == null ? null : new OrganisationPublic(orgByRef);
         }
