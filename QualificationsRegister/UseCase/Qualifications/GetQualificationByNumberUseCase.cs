@@ -20,14 +20,14 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         public async Task<QualificationPublic?> GetQualificationByNumberPublic(string number)
         {
-            var qualification = await GetQualificationByNumber(number.ToUpper());
+            var qualification = await GetQualificationByNumber(number);
 
             return qualification == null || qualification?.AppearsOnPublicRegister == false ? null : new QualificationPublic(qualification!);
         }
 
         public async Task<QualificationPrivate?> GetQualificationByNumberPrivate(string number)
         {
-            var qualification = await GetQualificationByNumber(number.ToUpper());
+            var qualification = await GetQualificationByNumber(number);
 
             return qualification == null ? null : new QualificationPrivate(qualification!);
         }
@@ -36,7 +36,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase
         {
             var qualifications = await _redisCacheService.GetCache<Qualification>("Qualifications");
 
-            return qualifications.Where(e=>e.GetQualificationNumber() == number.Replace("/","")).FirstOrDefault();
+            return qualifications.Where(e=>e.GetQualificationNumber().Equals(number.Replace("/",""), StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
         }
     }
 }
