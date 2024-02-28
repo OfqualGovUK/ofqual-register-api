@@ -1,7 +1,5 @@
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using Ofqual.Common.RegisterAPI.Services.Repository;
 using System.IO.Compression;
 using System.Text;
@@ -57,7 +55,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return retrievedData ?? RetrieveCache<List<T>>(key)!;
         }
 
-        private async Task<List<T>> SetCacheAsync<T>(string key)
+        private async Task<List<T>> SetCacheAsync<T>(string key, int ttlDays = 1)
         {
             var data = await _registerRepository.GetDataAsync(key);
 
@@ -66,9 +64,11 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
                 AbsoluteExpiration = DateTime.Now.AddMinutes(2)
             };
 
-            _logger.LogInformation("Setting {} Cache", key);
+            _logger.LogInformation("Setting Cache with key: {} ", key);
 
             var compressed = Compress(JsonSerializer.Serialize(data));
+            _logger.LogInformation("Got and decompressed value for key: {}", key);
+
             await _redis.SetAsync(key, compressed, options);
 
             _logger.LogInformation("Set Cache");
@@ -78,21 +78,17 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
         private T? RetrieveCache<T>(string key)
         {
-            _logger.LogInformation("Checking {} cache", key);
-
             var compressed = _redis.Get(key);
 
             if (compressed == null)
             {
                 return default;
             }
-            else
-            {
-                return JsonSerializer.Deserialize<T>(Decompress(compressed));
-            }
 
+            return JsonSerializer.Deserialize<T>(Decompress(compressed));
         }
-        public byte[] Compress(string str)
+
+        private static byte[] Compress(string str)
         {
             using var input = new MemoryStream(Encoding.UTF8.GetBytes(str));
             using var output = new MemoryStream();
@@ -104,7 +100,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return output.ToArray();
         }
 
-        public string Decompress(byte[] value)
+        private static string Decompress(byte[] value)
         {
             using var input = new MemoryStream(value);
             using var output = new MemoryStream();

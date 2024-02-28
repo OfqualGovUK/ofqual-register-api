@@ -18,21 +18,21 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _redisCacheService = redisCacheService;
         }
 
-        public async Task<IEnumerable<OrganisationPrivate>> GetOrganisations(string search)
+        public async Task<List<OrganisationPrivate>> GetOrganisations(string search)
         {
             var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
             var privateOrganisations = organisations.Select(e => new OrganisationPrivate(e));
 
-            return privateOrganisations;
+            return privateOrganisations.ToList();
         }
 
-        public async Task<IEnumerable<OrganisationPublic>> GetOrganisationsPublic(string search)
+        public async Task<List<OrganisationPublic>> GetOrganisationsPublic(string search)
         {
             var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
 
             var publicOrganisations = organisations.Select(e => new OrganisationPublic(e));
 
-            return publicOrganisations;
+            return publicOrganisations.ToList();
         }
     }
 }
