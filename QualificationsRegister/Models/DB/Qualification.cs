@@ -74,5 +74,10 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
                 return arr;
             }
         }
+
+        public string GetQualificationNumber()
+        {
+            return QualificationNumberNoObliques ?? QualificationNumber.Replace("/", "");
+        }
     }
 }

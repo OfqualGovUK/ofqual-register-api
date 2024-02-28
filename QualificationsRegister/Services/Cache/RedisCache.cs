@@ -63,7 +63,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(2)
+                AbsoluteExpiration = DateTime.Now.AddHours(1)
             };
 
             _logger.LogInformation("Setting {} Cache", key);
