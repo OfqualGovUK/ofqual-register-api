@@ -1,7 +1,5 @@
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using Ofqual.Common.RegisterAPI.Services.Repository;
 using System.IO.Compression;
 using System.Text;
@@ -11,8 +9,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 {
     public class RedisCache : IRedisCacheService
     {
-        // Allow only one thread to access at a time    
-        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
+
         private readonly ILogger _logger;
         private readonly IDistributedCache _redis;
         private readonly IRegisterRepository _registerRepository;
@@ -24,37 +21,23 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             _registerRepository = registerRepository;
         }
 
-        public async Task<List<T>> GetCache<T>(string key)
+        public async Task<List<T>> GetCacheAsync<T>(string key)
         {
-            var retrievedData = RetrieveCache<List<T>>(key);
+            _logger.LogInformation($"Getting cache value for key: {key}");
+            var compressed = await _redis.GetAsync(key);
 
-            if (retrievedData == null)
+            if (compressed != null) //Cache is available
             {
-
-                await _lock.WaitAsync();
-                _logger.LogInformation("{} Cache Miss. Waiting for update", key);
-                _logger.LogDebug("{} Cache Miss. Waiting for update - {}", key, Environment.CurrentManagedThreadId);
-
-                try
-                {
-                    if (RetrieveCache<List<T>>(key) == null)
-                    {
-                        retrievedData = await SetCacheAsync<T>(key);
-                    }
-                }
-                finally
-                {
-                    _lock.Release();
-                }
+                _logger.LogInformation($"Got cache value for key: {key}");
+                string value = Decompress(compressed);
+                _logger.LogInformation($"Decompressed cache value for key: {key}");
+                return JsonSerializer.Deserialize<List<T>>(value)!;
             }
-            else
+            else //Cache is not available
             {
-                _logger.LogInformation("{} Cache retreived", key);
-                _logger.LogDebug("{} Cache retreived - {}", key, Environment.CurrentManagedThreadId);
+                var data = await SetCacheAsync<T>(key);
+                return data;
             }
-
-            //retrieve data for the pending threads if data is null
-            return retrievedData ?? RetrieveCache<List<T>>(key)!;
         }
 
         private async Task<List<T>> SetCacheAsync<T>(string key)
@@ -66,33 +49,20 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
                 AbsoluteExpiration = DateTime.Now.AddMinutes(2)
             };
 
-            _logger.LogInformation("Setting {} Cache", key);
+            _logger.LogInformation("Setting Cache for key: {} ");
+            _logger.LogInformation("Starting Compression for key: {}", key);
 
             var compressed = Compress(JsonSerializer.Serialize(data));
+            _logger.LogInformation("Compressed value for key: {}", key);
+
             await _redis.SetAsync(key, compressed, options);
 
-            _logger.LogInformation("Set Cache");
+            _logger.LogInformation("Set Cache for key: {}", key);
 
             return (List<T>) data;
         }
 
-        private T? RetrieveCache<T>(string key)
-        {
-            _logger.LogInformation("Checking {} cache", key);
-
-            var compressed = _redis.Get(key);
-
-            if (compressed == null)
-            {
-                return default;
-            }
-            else
-            {
-                return JsonSerializer.Deserialize<T>(Decompress(compressed));
-            }
-
-        }
-        public byte[] Compress(string str)
+        private static byte[] Compress(string str)
         {
             using var input = new MemoryStream(Encoding.UTF8.GetBytes(str));
             using var output = new MemoryStream();
@@ -104,7 +74,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             return output.ToArray();
         }
 
-        public string Decompress(byte[] value)
+        private static string Decompress(byte[] value)
         {
             using var input = new MemoryStream(value);
             using var output = new MemoryStream();
@@ -115,5 +85,6 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
 
             return Encoding.UTF8.GetString(output.ToArray());
         }
+
     }
 }
