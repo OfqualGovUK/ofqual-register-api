@@ -22,9 +22,9 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
         {
             var organisations = await _redisCacheService.GetCacheAsync<Organisation>("Organisations");
 
-            var publicOrganisations = organisations.Select(e => new OrganisationPublic(e));
+            var publicOrganisations = organisations.Select(e => new OrganisationPublic(e)).ToList();
 
-            return publicOrganisations.ToList();
+            return publicOrganisations;
         }
 
     }

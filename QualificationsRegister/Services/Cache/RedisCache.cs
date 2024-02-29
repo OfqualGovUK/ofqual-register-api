@@ -31,7 +31,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
                 _logger.LogInformation($"Got cache value for key: {key}");
                 string value = Decompress(compressed);
                 _logger.LogInformation($"Decompressed cache value for key: {key}");
-                return JsonSerializer.Deserialize<List<T>>(value)!;
+                var list = JsonSerializer.Deserialize<List<T>>(value)!;
+                _logger.LogInformation($"Serialised data for : {key}");
+                return list;
             }
             else //Cache is not available
             {
@@ -55,7 +57,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             var compressed = Compress(JsonSerializer.Serialize(data));
             _logger.LogInformation("Compressed value for key: {}", key);
 
-            await _redis.SetAsync(key, compressed, options);
+            _redis.SetAsync(key, compressed, options);
 
             _logger.LogInformation("Set Cache for key: {}", key);
 

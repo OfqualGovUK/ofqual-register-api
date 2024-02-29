@@ -21,19 +21,25 @@ namespace Ofqual.Common.RegisterAPI.UseCase
         public async Task<List<QualificationPublic>> GetQualificationsPublic(string? search)
         {
             var qualifications = await _redisCacheService.GetCacheAsync<Qualification>("Qualifications");
+            _logger.LogInformation("Got Qualifications data. Converting to the public Model");
 
-            var publicQualifications = qualifications.Select(e => new QualificationPublic(e));
+            var publicQualifications = qualifications.Select(e => new QualificationPublic(e)).ToList();
+            _logger.LogInformation("Converted to the Qualifications Public Model");
 
-            return publicQualifications.ToList();
+            return publicQualifications;
         }
 
         public async Task<List<QualificationPrivate>> GetQualificationsPrivate(string? search)
         {
             var qualifications = await _redisCacheService.GetCacheAsync<Qualification>("Qualifications");
 
-            var privateQualifications = qualifications.Select(e => new QualificationPrivate(e));
+            _logger.LogInformation("Got Qualifications data. Converting to the Gov Model");
+            var privateQualifications = qualifications.Select(e => new QualificationPrivate(e)).ToList();
 
-            return privateQualifications.ToList();
+            _logger.LogInformation("Converted to the Qualifications Gov Model");
+
+
+            return privateQualifications;
         }
 
     }
