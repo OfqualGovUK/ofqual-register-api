@@ -24,7 +24,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
             var publicOrganisations = organisations.Select(e => new OrganisationPublic(e));
 
-            return publicOrganisations;
+            return publicOrganisations.ToList();
         }
 
     }

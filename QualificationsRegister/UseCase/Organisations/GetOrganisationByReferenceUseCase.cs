@@ -21,7 +21,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
         public async Task<OrganisationPublic?> GetOrganisationByReference(string reference)
         {
-            var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
+            var organisations = await _redisCacheService.GetCacheAsync<Organisation>("Organisations");
 
             var orgByRef = organisations.FirstOrDefault(e => e.RecognitionNumber.Equals(reference, StringComparison.CurrentCultureIgnoreCase));
 
