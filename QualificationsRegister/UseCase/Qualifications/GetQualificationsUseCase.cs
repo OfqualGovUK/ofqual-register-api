@@ -19,7 +19,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         public async Task<IEnumerable<Qualification>> GetQualifications(string? search)
         {
-            var qualifications = await _redisCacheService.GetCache<Qualification>("Qualifications");
+            var qualifications = await _redisCacheService.GetCacheAsync<Qualification>("Qualifications");
 
             //var publicQualifications = qualifications.Select(e => new QualificationPublic(e));
 
@@ -28,7 +28,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         public async Task<IEnumerable<QualificationPrivate>> GetQualificationsPrivate(string? search)
         {
-            var qualifications = await _redisCacheService.GetCache<Qualification>("Qualifications");
+            var qualifications = await _redisCacheService.GetCacheAsync<Qualification>("Qualifications");
 
             var privateQualifications = qualifications.Select(e => new QualificationPrivate(e));
 

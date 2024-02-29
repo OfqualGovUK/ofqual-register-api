@@ -20,7 +20,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
         public async Task<List<OrganisationPrivate>> GetOrganisations(string search)
         {
-            var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
+            var organisations = await _redisCacheService.GetCacheAsync<Organisation>("Organisations");
             var privateOrganisations = organisations.Select(e => new OrganisationPrivate(e));
 
             return privateOrganisations.ToList();
@@ -28,7 +28,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
         public async Task<List<OrganisationPublic>> GetOrganisationsPublic(string search)
         {
-            var organisations = await _redisCacheService.GetCache<Organisation>("Organisations");
+            var organisations = await _redisCacheService.GetCacheAsync<Organisation>("Organisations");
 
             var publicOrganisations = organisations.Select(e => new OrganisationPublic(e));
 

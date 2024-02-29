@@ -29,7 +29,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public async Task ReturnsListOfOrganisationsFromTheCache()
         {
             var stubbedList = _fixture.Create<List<Organisation>>();
-            _mockRedisCache.Setup(r => r.GetCache<Organisation>(It.IsAny<string>())).ReturnsAsync(stubbedList);
+            _mockRedisCache.Setup(r => r.GetCacheAsync<Organisation>(It.IsAny<string>())).ReturnsAsync(stubbedList);
             var result = await _classUnderTest.GetOrganisations(It.IsAny<string>());
 
             Assert.That(result, Is.Not.Null);
