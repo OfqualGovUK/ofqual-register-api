@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.Models.Public;
 using System.Text.Json;
+using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
 namespace Ofqual.Common.RegisterAPI.Functions.Public
 {
@@ -12,14 +13,14 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
     {
         private readonly ILogger _logger;
         private readonly IGetOrganisationsUseCase _getOrganisations;
-        private readonly IGetOrganisationByReferenceUseCase _getOrganisationByReference;
+        private readonly IGetOrganisationByNumberUseCase _getOrganisationByNumberUseCase;
 
         public OrganisationsPublic(ILoggerFactory loggerFactory, IGetOrganisationsUseCase getOrganisations,
-            IGetOrganisationByReferenceUseCase getOrganisationByReference)
+            IGetOrganisationByNumberUseCase getOrganisationByNumberUseCase)
         {
             _logger = loggerFactory.CreateLogger<QualificationsPublic>();
             _getOrganisations = getOrganisations;
-            _getOrganisationByReference = getOrganisationByReference;
+            _getOrganisationByNumberUseCase = getOrganisationByNumberUseCase;
         }
 
         /// <summary>
@@ -55,21 +56,21 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         }
 
         /// <summary>
-        /// Returns a single organisation based on the reference param
-        /// Returns 404 if no org is found for the reference provided
+        /// Returns a single organisation based on the number param
+        /// Returns 404 if no org is found for the number provided
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="reference"></param>
+        /// <param name="number"></param>
         /// <returns></returns>
         [Function("Organisation")]
-        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string reference = "")
+        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number = "")
         {
-            _logger.LogInformation("Get Organisation - Public = {}", reference);
+            _logger.LogInformation("Get Organisation - Public = {}", number);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            if (string.IsNullOrEmpty(reference))
+            if (string.IsNullOrEmpty(number))
             {
                 response = req.CreateResponse(HttpStatusCode.BadRequest);
                 return response;
@@ -77,7 +78,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var organisation = await _getOrganisationByReference.GetOrganisationByReference(reference);
+                var organisation = await _getOrganisationByNumberUseCase.GetOrganisationByNumber(number);
 
                 if (organisation == null)
                 {

@@ -49,7 +49,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
                 AbsoluteExpiration = DateTime.Now.AddHours(1)
             };
 
-            _logger.LogInformation("Setting Cache for key: {} ");
+            _logger.LogInformation("Setting Cache for key: {}", key);
             _logger.LogInformation("Starting Compression for key: {}", key);
 
             var compressed = Compress(JsonSerializer.Serialize(data));

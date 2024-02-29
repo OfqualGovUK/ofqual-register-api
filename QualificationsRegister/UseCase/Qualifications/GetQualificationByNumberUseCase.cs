@@ -34,7 +34,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         private async Task<Qualification?> GetQualificationByNumber(string number)
         {
-            var qualifications = await _redisCacheService.GetCache<Qualification>("Qualifications");
+            var qualifications = await _redisCacheService.GetCacheAsync<Qualification>("Qualifications");
 
             return qualifications.Where(e=>e.GetQualificationNumber().Equals(number.Replace("/",""), StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
         }

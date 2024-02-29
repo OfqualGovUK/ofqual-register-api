@@ -88,7 +88,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
                             ,[OrganisationAcronym]
                             ,[OrganisationRecognitionNumber]
                             ,[Type]
-                            ,[SSA_Code]
+                            ,[SSA_Code] AS SSACode
                             ,[SSA]
                             ,[Level]
                             ,[SubLevel]
