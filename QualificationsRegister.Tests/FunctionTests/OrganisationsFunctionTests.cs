@@ -12,19 +12,19 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
     {
         private Mock<FunctionContext> _functionContext;
         private Mock<IGetOrganisationsUseCase> _searchUseCaseMock;
-        private Mock<IGetOrganisationByReferenceUseCase> _byNumberUseCaseMock;
+        private Mock<IGetOrganisationByNumberUseCase> _getOrganisationBybyNumberUseCaseMock;
 
         [SetUp]
         public void Setup()
         {
             _functionContext = new Mock<FunctionContext>();
             _searchUseCaseMock = new Mock<IGetOrganisationsUseCase>();
-            _byNumberUseCaseMock = new Mock<IGetOrganisationByReferenceUseCase>();
+            _getOrganisationBybyNumberUseCaseMock = new Mock<IGetOrganisationByNumberUseCase>();
         }
         [Test]
         public async Task GetOrganisationPublicReturnsBadRequest()
         {
-            var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
+            var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object, _getOrganisationBybyNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             var res = await httpFunc.GetOrganisation(requestData, "");
             Console.WriteLine(res.StatusCode);
@@ -34,7 +34,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task GetOrganisationsListPublicResturnsOkResponse()
         {
-            var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
+            var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object, _getOrganisationBybyNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             var res = await httpFunc.GetOrganisationsList(requestData, "");
             Console.WriteLine(res.StatusCode);

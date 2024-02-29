@@ -48,7 +48,7 @@ host.Run();
 
 static void RegisterUseCases(IServiceCollection services)
 {
-    services.AddScoped<IGetOrganisationByReferenceUseCase, GetOrganisationByReferenceUseCase>();
+    services.AddScoped<IGetOrganisationByNumberUseCase, GetOrganisationByNumberUseCase>();
     services.AddScoped<IGetOrganisationsUseCase, GetOrganisationsUseCase>();
 
     services.AddScoped<IGetQualificationByNumberUseCase, GetQualificationByNumberUseCase>();

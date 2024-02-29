@@ -6,7 +6,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetQualificationsUseCase
     {
-        Task<IEnumerable<Qualification>> GetQualifications(string? search);
-        Task<IEnumerable<QualificationPrivate>> GetQualificationsPrivate(string? search);
+        Task<List<QualificationPublic>> GetQualificationsPublic(string? search);
+        Task<List<QualificationPrivate>> GetQualificationsPrivate(string? search);
     }
 }
