@@ -21,7 +21,7 @@ var host = new HostBuilder()
         
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString")?.ToString();            
+            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString")!.ToString();            
         });
 
         services.AddSingleton<IRedisCacheService, RedisCache>();
@@ -34,6 +34,12 @@ var host = new HostBuilder()
         {
             options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             options.PropertyNameCaseInsensitive = true;
+        });
+
+        services.AddHttpClient();
+        services.AddHttpClient("APIMgmgt", client =>
+        {
+            client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("APIMgmtURL")!.ToString());
         });
     })
     //.ConfigureLogging((HostBuilderContext hostingContext, ILoggingBuilder logging)=>{
