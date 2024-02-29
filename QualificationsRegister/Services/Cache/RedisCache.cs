@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Services.Repository;
 using System.IO.Compression;
 using System.Text;
@@ -57,11 +59,29 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             var compressed = Compress(JsonSerializer.Serialize(data));
             _logger.LogInformation("Compressed value for key: {}", key);
 
-            _redis.SetAsync(key, compressed, options);
-
+            await _redis.SetAsync(key, compressed, options);
             _logger.LogInformation("Set Cache for key: {}", key);
 
             return (List<T>) data;
+        }
+
+        public async Task ResetCacheAsync()
+        {
+            _logger.LogInformation("Removing Cache for key: Qualifications");
+            await _redis.RemoveAsync("Qualifications");
+            _logger.LogInformation("Removed Cache for key: Qualifications");
+
+            _logger.LogInformation("Removing Cache for key: Organisations");
+            await _redis.RemoveAsync("Organisations");
+            _logger.LogInformation("Removed Cache for key: Organisations");
+
+            _logger.LogInformation("Setting Cache for key: Qualifications");
+            await SetCacheAsync<Qualification>("Qualifications");
+            _logger.LogInformation("Set Cache for key: Qualifications");
+
+            _logger.LogInformation("Setting Cache for key: Organisations");
+            await SetCacheAsync<Organisation>("Organisations");
+            _logger.LogInformation("Set Cache for key: Organisations");
         }
 
         private static byte[] Compress(string str)
