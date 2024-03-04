@@ -2,7 +2,7 @@ using System;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Services.Cache;
+using Ofqual.Common.RegisterAPI.Services;
 
 namespace Ofqual.Common.RegisterAPI.Functions
 {

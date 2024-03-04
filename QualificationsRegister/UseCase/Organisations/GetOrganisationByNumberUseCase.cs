@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Models.Private;
 using Ofqual.Common.RegisterAPI.Models.Public;
-using Ofqual.Common.RegisterAPI.Services.Cache;
+using Ofqual.Common.RegisterAPI.Services;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Organisations

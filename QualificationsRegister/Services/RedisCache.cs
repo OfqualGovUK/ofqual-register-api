@@ -1,13 +1,12 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Repository;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 
-namespace Ofqual.Common.RegisterAPI.Services.Cache
+namespace Ofqual.Common.RegisterAPI.Services
 {
     public class RedisCache : IRedisCacheService
     {
@@ -31,7 +30,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Cache
             if (compressed != null) //Cache is available
             {
                 _logger.LogInformation($"Got cache value for key: {key}");
-                string value = Decompress(compressed);
+                var value = Decompress(compressed);
                 _logger.LogInformation($"Decompressed cache value for key: {key}");
                 var list = JsonSerializer.Deserialize<List<T>>(value)!;
                 _logger.LogInformation($"Serialised data for : {key}");

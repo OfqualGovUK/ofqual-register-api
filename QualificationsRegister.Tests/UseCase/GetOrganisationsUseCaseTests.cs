@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Repository;
-using Ofqual.Common.RegisterAPI.Services.Cache;
+using Ofqual.Common.RegisterAPI.Services;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
 namespace Ofqual.Common.RegisterAPI.Tests.UseCase

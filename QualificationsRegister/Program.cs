@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Repository;
-using Ofqual.Common.RegisterAPI.Services.Cache;
+using Ofqual.Common.RegisterAPI.Services;
 using Ofqual.Common.RegisterAPI.UseCase;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
