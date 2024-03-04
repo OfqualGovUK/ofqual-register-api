@@ -1,7 +1,5 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Models.DB;
-using Ofqual.Common.RegisterAPI.Repository;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
@@ -10,77 +8,60 @@ namespace Ofqual.Common.RegisterAPI.Services
 {
     public class RedisCache : IRedisCacheService
     {
+        public static string Organisations = "Organisations";
+        public static string Qualifications = "Qualifications";
 
         private readonly ILogger _logger;
         private readonly IDistributedCache _redis;
-        private readonly IRegisterRepository _registerRepository;
 
-        public RedisCache(ILoggerFactory loggerFactory, IDistributedCache redis, IRegisterRepository registerRepository)
+        public RedisCache(ILoggerFactory loggerFactory, IDistributedCache redis)
         {
             _logger = loggerFactory.CreateLogger<RedisCache>();
             _redis = redis;
-            _registerRepository = registerRepository;
         }
 
-        public async Task<List<T>> GetCacheAsync<T>(string key)
+        public async Task<List<T>> GetAndSetCacheAsync<T>(string key, Func<Task<IEnumerable<T>>> onMiss, int ttlDays = 1)
         {
             _logger.LogInformation($"Getting cache value for key: {key}");
-            var compressed = await _redis.GetAsync(key);
+            var values = await GetCacheAsync<T>(key);
+            if(values != null)
+                return values;
 
+            var data = await onMiss();
+            _logger.LogInformation("Cache miss for key: {}", key);
+            await SetCacheAsync(key, data.ToList());
+            return data.ToList();
+        }
+
+        public async Task<List<T>?> GetCacheAsync<T>(string key)
+        {
+            var compressed = await _redis.GetAsync(key);
             if (compressed != null) //Cache is available
             {
                 _logger.LogInformation($"Got cache value for key: {key}");
                 var value = Decompress(compressed);
                 _logger.LogInformation($"Decompressed cache value for key: {key}");
-                var list = JsonSerializer.Deserialize<List<T>>(value)!;
-                _logger.LogInformation($"Serialised data for : {key}");
-                return list;
+                return JsonSerializer.Deserialize<List<T>>(value)!;
             }
-            else //Cache is not available
-            {
-                var data = await SetCacheAsync<T>(key);
-                return data;
-            }
+            return null;
         }
 
-        private async Task<List<T>> SetCacheAsync<T>(string key)
+        public async Task SetCacheAsync<T>(string key, T data, int ttlDays = 1)
         {
-            var data = await _registerRepository.GetDataAsync(key);
-
             var options = new DistributedCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddHours(1)
             };
 
-            _logger.LogInformation("Setting Cache for key: {}", key);
             _logger.LogInformation("Starting Compression for key: {}", key);
-
             var compressed = Compress(JsonSerializer.Serialize(data));
-            _logger.LogInformation("Compressed value for key: {}", key);
-
             await _redis.SetAsync(key, compressed, options);
-            _logger.LogInformation("Set Cache for key: {}", key);
-
-            return (List<T>) data;
         }
 
-        public async Task ResetCacheAsync()
+        public async Task RemoveAsync(string key)
         {
-            _logger.LogInformation("Removing Cache for key: Qualifications");
-            await _redis.RemoveAsync("Qualifications");
-            _logger.LogInformation("Removed Cache for key: Qualifications");
-
-            _logger.LogInformation("Removing Cache for key: Organisations");
-            await _redis.RemoveAsync("Organisations");
-            _logger.LogInformation("Removed Cache for key: Organisations");
-
-            _logger.LogInformation("Setting Cache for key: Qualifications");
-            await SetCacheAsync<Qualification>("Qualifications");
-            _logger.LogInformation("Set Cache for key: Qualifications");
-
-            _logger.LogInformation("Setting Cache for key: Organisations");
-            await SetCacheAsync<Organisation>("Organisations");
-            _logger.LogInformation("Set Cache for key: Organisations");
+            _logger.LogInformation($"Removing Cache for key: {key}");
+            await _redis.RemoveAsync(key);
         }
 
         private static byte[] Compress(string str)

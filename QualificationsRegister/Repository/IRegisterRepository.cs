@@ -11,7 +11,7 @@ namespace Ofqual.Common.RegisterAPI.Repository
     public interface IRegisterRepository
     {
         Task<object> GetDataAsync(string key);
-        public Task<IEnumerable<Organisation>> GetOrganisations();
-        public Task<IEnumerable<Qualification>> GetQualifications();
+        Task<IEnumerable<Organisation>> GetOrganisations();
+        Task<IEnumerable<Qualification>> GetQualifications();
     }
 }
