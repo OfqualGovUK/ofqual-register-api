@@ -2,7 +2,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ofqual.Common.RegisterAPI.Models.DB;
-using Ofqual.Common.RegisterAPI.Services.Repository;
+using Ofqual.Common.RegisterAPI.Repository;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;

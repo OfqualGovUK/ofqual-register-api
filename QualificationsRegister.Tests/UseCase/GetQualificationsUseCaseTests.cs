@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Models.Private;
 using Ofqual.Common.RegisterAPI.Models.Public;
+using Ofqual.Common.RegisterAPI.Repository;
 using Ofqual.Common.RegisterAPI.Services.Cache;
-using Ofqual.Common.RegisterAPI.Services.Repository;
 using Ofqual.Common.RegisterAPI.UseCase;
 using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
 
