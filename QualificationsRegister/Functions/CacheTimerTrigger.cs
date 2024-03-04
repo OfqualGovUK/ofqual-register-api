@@ -28,11 +28,11 @@ namespace Ofqual.Common.RegisterAPI.Functions
                 _logger.LogInformation($"Next timer schedule at: {myTimer.ScheduleStatus.Next}");
             }
 
-            await _redisCacheService.RemoveAsync(RedisCache.Qualifications);
-            await _redisCacheService.RemoveAsync(RedisCache.Organisations);
-
             var organisations = await _registerRepository.GetOrganisations();
             var qualifications = await _registerRepository.GetQualifications();
+
+            await _redisCacheService.RemoveAsync(RedisCache.Qualifications);
+            await _redisCacheService.RemoveAsync(RedisCache.Organisations);
 
             await _redisCacheService.SetCacheAsync(RedisCache.Organisations, organisations.ToList());
             await _redisCacheService.SetCacheAsync(RedisCache.Organisations, qualifications.ToList());

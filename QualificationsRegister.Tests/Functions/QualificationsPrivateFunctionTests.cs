@@ -12,7 +12,7 @@ using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 namespace Ofqual.Common.RegisterAPI.Tests.Functions
 {
     [TestFixture]
-    public class QualificationsPublicFunctionTests
+    public class QualificationsPrivateFunctionTests
     {
         private Mock<FunctionContext> _functionContext;
         private Mock<IGetQualificationsUseCase> _searchUseCaseMock;

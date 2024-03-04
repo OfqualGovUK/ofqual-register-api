@@ -23,10 +23,12 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         {
             _mockRegisterRepository = new Mock<IRegisterRepository>();
             _mockRedisCache = new Mock<IRedisCacheService>();
-            _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object);
+            _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object,
+                _mockRegisterRepository.Object);
             _fixture = new Fixture();
         }
         [Test]
+        [Ignore("not complete")]
         public async Task ReturnsListOfQualificationsFromTheCache()
         {
             Assert.That(1, Is.EqualTo(1));
@@ -40,6 +42,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         }
 
         [Test]
+        [Ignore("not complete")]
         public async Task ReturnsListOfQualificationsFromTheRepositoryWhenThereIsACacheMiss()
         {
             Assert.That(1, Is.EqualTo(1));
