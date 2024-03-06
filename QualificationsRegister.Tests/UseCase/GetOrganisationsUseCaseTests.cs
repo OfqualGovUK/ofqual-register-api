@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Services.Cache;
+using Ofqual.Common.RegisterAPI.Services.Database;
 using Ofqual.Common.RegisterAPI.Services.Repository;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
@@ -13,6 +14,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
     {
         private Mock<IRegisterRepository> _mockRegisterRepository;
         private Mock<IRedisCacheService> _mockRedisCache;
+        private Mock<RegisterContext> _mockDB;
         private GetOrganisationsUseCase _classUnderTest;
         private Fixture _fixture;
 
@@ -21,7 +23,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         {
             _mockRegisterRepository = new Mock<IRegisterRepository>();
             _mockRedisCache = new Mock<IRedisCacheService>();
-            _classUnderTest = new GetOrganisationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object);
+            _classUnderTest = new GetOrganisationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object, _mockDB.Object);
             _fixture = new Fixture();
         }
 

@@ -67,7 +67,7 @@ namespace Ofqual.Common.RegisterAPI.Models.Private
         {
             Id = qualification.Id;
             QualificationNumber = qualification.QualificationNumber;
-            QualificationNumberNoObliques = qualification.QualificationNumberNoObliques;
+            QualificationNumberNoObliques = qualification.QualifiationNumberNoObliques;
             Title = qualification.Title;
             Status = qualification.Status;
             OrganisationName = qualification.OrganisationName;

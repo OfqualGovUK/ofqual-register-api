@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
 namespace Ofqual.Common.RegisterAPI.Models.DB
@@ -6,13 +7,14 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
     {
         public required int Id { get; set; }
         public required string QualificationNumber { get; set; }
-        public string? QualificationNumberNoObliques { get; set; }
+        public string? QualifiationNumberNoObliques { get; set; }
         public required string Title { get; set; }
         public string? Status { get; set; }
         public required string OrganisationName { get; set; }
         public required string OrganisationAcronym { get; set; }
         public required string OrganisationRecognitionNumber { get; set; }
         public string? Type { get; set; }
+        [Column("SSA_Code")]
         public string? SSACode { get; set; }
         public string? SSA { get; set; }
         public string? Level { get; set; }
@@ -77,7 +79,7 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
 
         public string GetQualificationNumber()
         {
-            return QualificationNumberNoObliques ?? QualificationNumber.Replace("/", "");
+            return QualifiationNumberNoObliques ?? QualificationNumber.Replace("/", "");
         }
     }
 }

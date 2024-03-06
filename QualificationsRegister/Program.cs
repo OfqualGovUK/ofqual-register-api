@@ -11,6 +11,8 @@ using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Services.Database;
+using Microsoft.EntityFrameworkCore;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -18,10 +20,10 @@ var host = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        
+
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString")?.ToString();            
+            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString")?.ToString();
         });
 
         services.AddSingleton<IRedisCacheService, RedisCache>();
@@ -30,17 +32,24 @@ var host = new HostBuilder()
 
         RegisterUseCases(services);
 
-        services.Configure<JsonSerializerOptions>(options =>
-        {
-            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-            options.PropertyNameCaseInsensitive = true;
-        });
+        services.Configure<JsonSerializerOptions>(
+            options =>
+            {
+                options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.PropertyNameCaseInsensitive = true;
+            });
+
+        services.AddDbContext<RegisterContext>(
+            options =>
+            {
+                SqlServerDbContextOptionsExtensions.UseSqlServer(options, Environment.GetEnvironmentVariable("MDDBConnString")?.ToString());
+            });
     })
     //.ConfigureLogging((HostBuilderContext hostingContext, ILoggingBuilder logging)=>{
     //    logging.AddConsole();
     //    logging.AddDebug().SetMinimumLevel(LogLevel.Debug);
     //})
-    
+
     .Build();
 
 

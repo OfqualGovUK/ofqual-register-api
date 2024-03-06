@@ -40,11 +40,13 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             try
             {
                 var qualifications = await _getQualifications.GetQualificationsPublic(search);
+                _logger.LogInformation("Serializing {} Quals", qualifications.Count);
+
                 response.WriteString(JsonSerializer.Serialize(qualifications));
             }
             catch (Exception ex)
             {
-                response = req.CreateResponse(HttpStatusCode.InternalServerError);
+                response.StatusCode = HttpStatusCode.InternalServerError;
                 response.WriteString(JsonSerializer.Serialize(new
                 {
                     error = ex.Message,

@@ -4,6 +4,7 @@ using Moq;
 using Ofqual.Common.RegisterAPI.Models.Private;
 using Ofqual.Common.RegisterAPI.Models.Public;
 using Ofqual.Common.RegisterAPI.Services.Cache;
+using Ofqual.Common.RegisterAPI.Services.Database;
 using Ofqual.Common.RegisterAPI.Services.Repository;
 using Ofqual.Common.RegisterAPI.UseCase;
 using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
@@ -15,6 +16,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
     {
         private Mock<IRegisterRepository> _mockRegisterRepository;
         private Mock<IRedisCacheService> _mockRedisCache;
+        private Mock<RegisterContext> _mockDB;
         private GetQualificationsUseCase _classUnderTest;
         private Fixture _fixture;
 
@@ -23,7 +25,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         {
             _mockRegisterRepository = new Mock<IRegisterRepository>();
             _mockRedisCache = new Mock<IRedisCacheService>();
-            _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object);
+            _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object, _mockDB.Object);
             _fixture = new Fixture();
         }
         [Test]
