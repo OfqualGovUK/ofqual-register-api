@@ -3,8 +3,8 @@ using Ofqual.Common.RegisterAPI.Models.Public;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
-    public interface IGetOrganisationsUseCase
+    public interface IGetOrganisationByNumberUseCase
     {
-        Task<List<OrganisationPublic>> GetOrganisations(string search);
+        Task<OrganisationPublic?> GetOrganisationByNumber(string reference);
     }
 }
