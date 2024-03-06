@@ -37,10 +37,11 @@ var host = new HostBuilder()
         });
 
         services.AddHttpClient();
-        services.AddHttpClient("APIMgmgt", client =>
+        services.AddHttpClient("APIMgmt", client =>
         {
-            client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("APIMgmtURL")!.ToString());
+            client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("APIMgmtURL")!);
         });
+
     })
     //.ConfigureLogging((HostBuilderContext hostingContext, ILoggingBuilder logging)=>{
     //    logging.AddConsole();

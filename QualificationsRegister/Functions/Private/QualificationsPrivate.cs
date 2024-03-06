@@ -48,7 +48,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
         /// <param name="number"></param>
         /// <returns></returns>
         [Function("QualificationPrivate")]
-        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get", "Qualification/{number}")] HttpRequestData req, string number = "")
+        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number = "")
         {
             _logger.LogInformation("Get Qualification Private - number = {}", number);
 
