@@ -70,7 +70,7 @@ stages:
 - stage: SonarQubeAnalyze
   displayName: Sonarqube Analysis
   dependsOn: Build
-  condition: succeded()
+  condition: succeeded()
   jobs:
   - job: SonarQube
     displayName: Run SonarQube Analysis
