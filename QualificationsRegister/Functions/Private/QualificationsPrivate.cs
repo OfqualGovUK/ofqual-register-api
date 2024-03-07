@@ -35,8 +35,22 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            var qualifications = await _getQualifications.GetQualificationsPrivate(search);
-            await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));
+            try
+            {
+                var qualifications = await _getQualifications.GetQualificationsPrivate(search);
+                _logger.LogInformation("Serializing {} Quals", qualifications.Count);
+
+                response.WriteString(JsonSerializer.Serialize(qualifications));
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.WriteString(JsonSerializer.Serialize(new
+                {
+                    error = ex.Message,
+                    innerException = ex.InnerException
+                }));
+            }
 
             return response;
         }
@@ -57,20 +71,31 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
 
             if (string.IsNullOrEmpty(number))
             {
-                response = req.CreateResponse(HttpStatusCode.BadRequest);
+                response.StatusCode = HttpStatusCode.BadRequest;
                 return response;
             }
 
-            var qualification = await _getQualificationByNumber.GetQualificationByNumber(number);
-
-            if (qualification == null)
+            try
             {
-                response = req.CreateResponse(HttpStatusCode.NotFound);
-                return response;
+                var qualification = await _getQualificationByNumber.GetQualificationByNumberPrivate(number);
+
+                if (qualification == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    return response;
+                }
+
+                response.WriteString(JsonSerializer.Serialize(qualification));
             }
-
-            await response.WriteStringAsync(JsonSerializer.Serialize(qualification));
-
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.WriteString(JsonSerializer.Serialize(new
+                {
+                    error = ex.Message,
+                    innerException = ex.InnerException
+                }));
+            }
             return response;
         }
     }
