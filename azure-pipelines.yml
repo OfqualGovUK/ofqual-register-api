@@ -33,6 +33,12 @@ stages:
       inputs:
         version: '8.x'
 
+    - task: SonarQubePrepare@5
+      inputs:
+       SonarQube: 'ofqual-register-api-service-connection'
+       scannerMode: 'MSBuild'
+       projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
+
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
@@ -44,7 +50,12 @@ stages:
       displayName: 'NUnit Tests'
       inputs:
         command: test
-
+    - task: SonarQubeAnalyze@5
+      inputs:
+        jdkversion: 'JAVA_HOME_11_X64'
+    - task: SonarQubePublish@5
+      inputs:
+        pollingTimeoutSec: '300'
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
