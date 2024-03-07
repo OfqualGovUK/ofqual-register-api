@@ -33,13 +33,24 @@ stages:
       inputs:
         version: '8.x'
 
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'ofqual-register-api-service-connection'
+        scannerMode: 'MSBuild'
+        projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
+        projectName: 'Register API'
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
         command: 'build'
         projects: '**/*.csproj'
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
-
+    - task: SonarQubeAnalyze@5
+      inputs:
+        jdkversion: 'JAVA_HOME_11_X64'
+    - task: SonarQubePublish@5
+      inputs:
+        pollingTimeoutSec: '300'
     - task: DotNetCoreCLI@2
       displayName: 'NUnit Tests'
       inputs:
