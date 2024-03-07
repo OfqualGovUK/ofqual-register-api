@@ -4,7 +4,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Public;
-using Ofqual.Common.RegisterAPI.Models.Public;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using System.Collections.Generic;
@@ -73,7 +73,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task GetQualificationsListPublicThrowsInternalServerError()
         {
-            var stubbedListPublic = _fixture.Create<List<OrganisationPublic>>();
+            var stubbedListPublic = _fixture.Create<List<QualificationPublic>>();
             var httpFunc = new QualificationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             _searchUseCaseMock.Setup(m => m.GetQualificationsPublic(It.IsAny<string>())).Throws<Exception>();

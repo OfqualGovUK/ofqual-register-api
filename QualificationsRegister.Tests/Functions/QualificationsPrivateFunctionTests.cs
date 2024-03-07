@@ -3,9 +3,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Private;
-using Ofqual.Common.RegisterAPI.Functions.Public;
-using Ofqual.Common.RegisterAPI.Models.Private;
-using Ofqual.Common.RegisterAPI.Models.Public;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
@@ -32,10 +30,10 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task GetQualificationByNumberPrivateReturnsOkResponse()
         {
-            var stub = _fixture.Create<QualificationPrivate>();
+            var stub = _fixture.Create<Qualification>();
             var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumberPrivate(It.IsAny<string>())).ReturnsAsync(stub);
+            _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).ReturnsAsync(stub);
 
             var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>());
             Console.WriteLine(res.StatusCode);
@@ -45,10 +43,10 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task GetQualificationsByNumberPrivateReturnsBadRequest()
         {
-            var stub = _fixture.Create<QualificationPrivate>();
+            var stub = _fixture.Create<Qualification>();
             var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumberPrivate(It.IsAny<string>())).ReturnsAsync(stub);
+            _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).ReturnsAsync(stub);
 
             var res = await httpFunc.GetQualification(requestData, "");
             Console.WriteLine(res.StatusCode);

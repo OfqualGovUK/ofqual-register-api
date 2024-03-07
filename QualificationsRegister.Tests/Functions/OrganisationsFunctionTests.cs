@@ -5,10 +5,9 @@ using Ofqual.Common.RegisterAPI.Functions.Public;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using AutoFixture;
-using Ofqual.Common.RegisterAPI.Models.DB;
-using Ofqual.Common.RegisterAPI.Models.Public;
 using FluentAssertions;
 using System.Diagnostics;
+using Ofqual.Common.RegisterAPI.Models.DB;
 
 namespace Ofqual.Common.RegisterAPI.Tests.Functions
 {
@@ -54,7 +53,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task GetOrganisationPublicReturnsOkResponse()
         {
-            var stub = _fixture.Create<OrganisationPublic>();
+            var stub = _fixture.Create<Organisation>();
 
             _getOrganisationBybyNumberUseCaseMock.Setup(m => m.GetOrganisationByNumber(It.IsAny<string>())).ReturnsAsync(stub);
             var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object,
@@ -68,7 +67,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task GetOrganisationPublicThrowsException()
         {
-            var stub = _fixture.Create<OrganisationPublic>();
+            var stub = _fixture.Create<Organisation>();
 
             _getOrganisationBybyNumberUseCaseMock.Setup(m => m.GetOrganisationByNumber(It.IsAny<string>())).Throws<Exception>();
             var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object,
@@ -83,7 +82,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task GetOrganisationsListPublicResturnsOkResponse()
         {
-            var stubbedList = _fixture.Create<List<OrganisationPublic>>();
+            var stubbedList = _fixture.Create<List<Organisation>>();
 
             _searchUseCaseMock.Setup(m => m.GetOrganisations(It.IsAny<string>())).ReturnsAsync(stubbedList);
             var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object,

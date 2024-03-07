@@ -3,7 +3,6 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
-using Ofqual.Common.RegisterAPI.Models.Public;
 using System.Text.Json;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
@@ -72,7 +71,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             if (string.IsNullOrEmpty(number))
             {
-                response = req.CreateResponse(HttpStatusCode.BadRequest);
+                response.StatusCode = HttpStatusCode.BadRequest;
                 return response;
             }
 
@@ -82,7 +81,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
                 if (organisation == null)
                 {
-                    response = req.CreateResponse(HttpStatusCode.NotFound);
+                    response.StatusCode = HttpStatusCode.NotFound;
                     return response;
                 }
 
@@ -90,7 +89,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             }
             catch (Exception ex)
             {
-                response = req.CreateResponse(HttpStatusCode.InternalServerError);
+                response.StatusCode = HttpStatusCode.InternalServerError;
                 response.WriteString(JsonSerializer.Serialize(new
                 {
                     error = ex.Message,

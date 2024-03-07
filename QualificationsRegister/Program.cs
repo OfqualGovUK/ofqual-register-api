@@ -1,13 +1,12 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Repository;
-using Ofqual.Common.RegisterAPI.Services;
 using Ofqual.Common.RegisterAPI.UseCase;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 using System.Text.Json;
+using Ofqual.Common.RegisterAPI.Services.Database;
+using Microsoft.EntityFrameworkCore;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -16,19 +15,19 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString")!.ToString();     
-        });
-
         RegisterUseCases(services);
-        RegisterRepositories(services);
 
         services.Configure<JsonSerializerOptions>(options =>
         {
             options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             options.PropertyNameCaseInsensitive = true;
         });
+
+        services.AddDbContext<RegisterDbContext>(
+            options =>
+            {
+                SqlServerDbContextOptionsExtensions.UseSqlServer(options, Environment.GetEnvironmentVariable("MDDBConnString"));
+            });
 
         services.AddHttpClient();
         services.AddHttpClient("APIMgmt", client =>
@@ -54,16 +53,4 @@ static void RegisterUseCases(IServiceCollection services)
 
     services.AddScoped<IGetQualificationByNumberUseCase, GetQualificationByNumberUseCase>();
     services.AddScoped<IGetQualificationsUseCase, GetQualificationsUseCase>();
-}
-
-static void RegisterRepositories(IServiceCollection services)
-{
-    var _connectionString = Environment.GetEnvironmentVariable("MDDBConnString")!;
-    services.AddSingleton<IRedisCacheService, RedisCache>();
-    services.AddTransient<IRegisterRepository, RegisterRepository>(sp =>
-    {
-        var connectionString = _connectionString;
-        var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-        return new RegisterRepository(connectionString, loggerFactory);
-    });
 }
