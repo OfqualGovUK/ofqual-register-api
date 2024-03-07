@@ -67,13 +67,10 @@ stages:
         replaceExistingArchive: true
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
-- stage: SonarQubeAnalyze
-  displayName: Sonarqube Analysis
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
+
   - job: SonarQube
     displayName: Run SonarQube Analysis
+    dependsOn: Build
     pool:
       vmImage: $(vmImageName)
     steps:
