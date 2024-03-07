@@ -32,13 +32,6 @@ stages:
     - task: UseDotNet@2
       inputs:
         version: '8.x'
-
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'ofqual-register-api-service-connection'
-        scannerMode: 'MSBuild'
-        projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
-        projectName: 'Register API'
     - task: PowerShell@2
       displayName: 'Remove sonar.branch.name'
       inputs:
@@ -47,6 +40,12 @@ stages:
           $sonarQubeScannerParams = $($Env:SONARQUBE_SCANNER_PARAMS | ConvertFrom-Json)
           $sonarQubeScannerParams.PSObject.Properties.Remove('sonar.branch.name')
           $Env:SONARQUBE_SCANNER_PARAMS = $($sonarQubeScannerParams | ConvertTo-Json)
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'ofqual-register-api-service-connection'
+        scannerMode: 'MSBuild'
+        projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
+        projectName: 'Register API'
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
