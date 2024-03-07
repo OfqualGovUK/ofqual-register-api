@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Models.Private;
 using Ofqual.Common.RegisterAPI.Models.Public;
-using Ofqual.Common.RegisterAPI.Services.Cache;
-using Ofqual.Common.RegisterAPI.Services.Repository;
+using Ofqual.Common.RegisterAPI.Repository;
+using Ofqual.Common.RegisterAPI.Services;
 using Ofqual.Common.RegisterAPI.UseCase;
 using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
 
@@ -23,10 +23,12 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         {
             _mockRegisterRepository = new Mock<IRegisterRepository>();
             _mockRedisCache = new Mock<IRedisCacheService>();
-            _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object);
+            _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object,
+                _mockRegisterRepository.Object);
             _fixture = new Fixture();
         }
         [Test]
+        [Ignore("not complete")]
         public async Task ReturnsListOfQualificationsFromTheCache()
         {
             Assert.That(1, Is.EqualTo(1));
@@ -40,6 +42,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         }
 
         [Test]
+        [Ignore("not complete")]
         public async Task ReturnsListOfQualificationsFromTheRepositoryWhenThereIsACacheMiss()
         {
             Assert.That(1, Is.EqualTo(1));

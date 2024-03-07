@@ -2,7 +2,8 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Models.Private;
 using Ofqual.Common.RegisterAPI.Models.Public;
-using Ofqual.Common.RegisterAPI.Services.Cache;
+using Ofqual.Common.RegisterAPI.Repository;
+using Ofqual.Common.RegisterAPI.Services;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.UseCase
@@ -11,11 +12,13 @@ namespace Ofqual.Common.RegisterAPI.UseCase
     {
         private readonly IRedisCacheService _redisCacheService;
         private readonly ILogger _logger;
+        private readonly IRegisterRepository _registerRepository;
 
-        public GetQualificationByNumberUseCase(ILoggerFactory loggerFactory, IRedisCacheService redisCacheService)
+        public GetQualificationByNumberUseCase(ILoggerFactory loggerFactory, IRedisCacheService redisCacheService, IRegisterRepository repository)
         {
             _logger = loggerFactory.CreateLogger<GetQualificationByNumberUseCase>();
             _redisCacheService = redisCacheService;
+            _registerRepository = repository;
         }
 
         public async Task<QualificationPublic?> GetQualificationByNumberPublic(string number)
@@ -34,9 +37,11 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         private async Task<Qualification?> GetQualificationByNumber(string number)
         {
-            var qualifications = await _redisCacheService.GetCacheAsync<Qualification>("Qualifications");
-
-            return qualifications.Where(e=>e.GetQualificationNumber().Equals(number.Replace("/",""), StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            var qualifications = await _redisCacheService.GetAndSetCacheAsync(RedisCache.Qualifications, async () =>
+            {
+                return await _registerRepository.GetQualifications();
+            });
+            return qualifications.FirstOrDefault(e => e.GetQualificationNumber().Equals(number.Replace("/", ""), StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

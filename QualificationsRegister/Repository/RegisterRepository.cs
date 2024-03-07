@@ -1,29 +1,26 @@
 using Dapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Models.DB;
-using Ofqual.Common.RegisterAPI.Models.Private;
-using Ofqual.Common.RegisterAPI.Services.Data;
 
 
-namespace Ofqual.Common.RegisterAPI.Services.Repository
+namespace Ofqual.Common.RegisterAPI.Repository
 {
     public class RegisterRepository : IRegisterRepository
     {
-        private readonly IDapperDbConnection _dapperDbConnection;
         private readonly ILogger _logger;
+        private readonly string _connectionString;
 
-        private List<Organisation> _organisationList = new List<Organisation>();
-        private List<Qualification> _qualificationsList = new List<Qualification>();
-
-        public RegisterRepository(IDapperDbConnection dapperDbConnection, ILoggerFactory loggerFactory)
+        public RegisterRepository(string connectionString, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<RegisterRepository>();
-            _dapperDbConnection = dapperDbConnection;
+            _connectionString = connectionString;
         }
 
         public async Task<IEnumerable<Organisation>> GetOrganisations()
         {
-            using (var db = _dapperDbConnection.CreateConnection())
+            _logger.Log(LogLevel.Information, "Getting organisations data from DB");
+            using (var db = new SqlConnection(_connectionString))
 
             {
                 try
@@ -72,7 +69,8 @@ namespace Ofqual.Common.RegisterAPI.Services.Repository
 
         public async Task<IEnumerable<Qualification>> GetQualifications()
         {
-            using (var db = _dapperDbConnection.CreateConnection())
+            _logger.Log(LogLevel.Information, "Getting qualifications data from DB");
+            using (var db = new SqlConnection(_connectionString))
             {
                 try
                 {
