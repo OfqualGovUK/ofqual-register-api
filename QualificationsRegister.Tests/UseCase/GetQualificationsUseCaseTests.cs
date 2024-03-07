@@ -1,31 +1,23 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Ofqual.Common.RegisterAPI.Models.Private;
-using Ofqual.Common.RegisterAPI.Models.Public;
-using Ofqual.Common.RegisterAPI.Services.Cache;
 using Ofqual.Common.RegisterAPI.Services.Database;
-using Ofqual.Common.RegisterAPI.Services.Repository;
 using Ofqual.Common.RegisterAPI.UseCase;
-using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
 
 namespace Ofqual.Common.RegisterAPI.Tests.UseCase
 {
     [TestFixture]
     public class GetQualificationsUseCaseTests
     {
-        private Mock<IRegisterRepository> _mockRegisterRepository;
-        private Mock<IRedisCacheService> _mockRedisCache;
-        private Mock<RegisterContext> _mockDB;
+        private Mock<RegisterDbContext> _mockDB;
         private GetQualificationsUseCase _classUnderTest;
         private Fixture _fixture;
 
         [SetUp]
         public void Setup()
         {
-            _mockRegisterRepository = new Mock<IRegisterRepository>();
-            _mockRedisCache = new Mock<IRedisCacheService>();
-            _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object, _mockDB.Object);
+            _mockDB = new Mock<RegisterDbContext> { CallBase = true };
+            _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockDB.Object);
             _fixture = new Fixture();
         }
         [Test]

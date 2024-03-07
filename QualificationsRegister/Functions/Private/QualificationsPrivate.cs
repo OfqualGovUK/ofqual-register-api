@@ -61,7 +61,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
                 return response;
             }
 
-            var qualification = await _getQualificationByNumber.GetQualificationByNumberPrivate(number);
+            var qualification = await _getQualificationByNumber.GetQualificationByNumber(number);
 
             if (qualification == null)
             {

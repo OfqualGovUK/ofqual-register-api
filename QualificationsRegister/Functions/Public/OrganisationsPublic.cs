@@ -3,7 +3,6 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
-using Ofqual.Common.RegisterAPI.Models.Public;
 using System.Text.Json;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 

@@ -8,22 +8,27 @@ using System.Threading.Tasks;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
-    public class RegisterContext : DbContext
+    public class RegisterDbContext : DbContext
     {
-        public RegisterContext(DbContextOptions<RegisterContext> options) : base(options) { }
+        public RegisterDbContext(DbContextOptions<RegisterDbContext> options) : base(options) { }
 
         public DbSet<Qualification> Qualifications { get; set; }
+        public DbSet<QualificationPublic> QualificationsPublic { get; set; }
         public DbSet<Organisation> Organisations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Qualification>()
-                .ToView("Register_V_Qualification", "MD_Register")
+                .ToTable("Register_T_Qualification", "MD_Register")
+                .HasKey(k => k.Id);
+
+            modelBuilder.Entity<QualificationPublic>()
+                .ToTable("Public_Register_V_Qualification", "MD_Register")
                 .HasKey(k => k.Id);
 
             modelBuilder.Entity<Organisation>()
-                .ToView("Register_V_Organisation", "MD_Register")
+                .ToView("Register_T_Organisation", "MD_Register")
                 .HasKey(k => k.Id);
         }
     }

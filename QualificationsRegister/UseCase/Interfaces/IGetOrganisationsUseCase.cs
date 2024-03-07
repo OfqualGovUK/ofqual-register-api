@@ -1,10 +1,9 @@
-using Ofqual.Common.RegisterAPI.Models.Private;
-using Ofqual.Common.RegisterAPI.Models.Public;
+using Ofqual.Common.RegisterAPI.Models.DB;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetOrganisationsUseCase
     {
-        Task<List<OrganisationPublic>> GetOrganisations(string search);
+        Task<List<Organisation>> GetOrganisations(string search);
     }
 }
