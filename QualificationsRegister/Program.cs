@@ -15,25 +15,26 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString")?.ToString();
-        });
-
         RegisterUseCases(services);
 
-        services.Configure<JsonSerializerOptions>(
-            options =>
-            {
-                options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                options.PropertyNameCaseInsensitive = true;
-            });
+        services.Configure<JsonSerializerOptions>(options =>
+        {
+            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.PropertyNameCaseInsensitive = true;
+        });
 
         services.AddDbContext<RegisterDbContext>(
             options =>
             {
-                SqlServerDbContextOptionsExtensions.UseSqlServer(options, Environment.GetEnvironmentVariable("MDDBConnString")?.ToString());
+                SqlServerDbContextOptionsExtensions.UseSqlServer(options, Environment.GetEnvironmentVariable("MDDBConnString"));
             });
+
+        services.AddHttpClient();
+        services.AddHttpClient("APIMgmt", client =>
+        {
+            client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("APIMgmtURL")!);
+        });
+
     })
     //.ConfigureLogging((HostBuilderContext hostingContext, ILoggingBuilder logging)=>{
     //    logging.AddConsole();
