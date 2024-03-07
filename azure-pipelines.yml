@@ -39,6 +39,8 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
         projectName: 'Register API'
+        extraProperties: |
+          sonar.branch.name=dev
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
