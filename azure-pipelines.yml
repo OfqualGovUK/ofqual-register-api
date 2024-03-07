@@ -39,8 +39,13 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
         projectName: 'Register API'
-        extraProperties: |
-          sonar.branch.name=dev
+      displayName: 'Prepare SonarQube Analysis'
+      env:
+        SONARQUBE_SCANNER_PARAMS: $(SONARQUBE_SCANNER_PARAMS)
+    - script: |
+        $params = "$env:SONARQUBE_SCANNER_PARAMS.PSObject.Properties('sonar.branch.name')"
+        Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
+      displayName: 'Set SonarQube Scanner Params'
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
