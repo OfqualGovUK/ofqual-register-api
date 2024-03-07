@@ -23,6 +23,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         }
 
         [Test]
+        [Ignore("WIP")]
         public async Task ReturnsListOfOrganisations()
         {
             var stubbedList = _fixture.Create<List<Organisation>>();

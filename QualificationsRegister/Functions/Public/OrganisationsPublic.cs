@@ -39,12 +39,12 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             try
             {
                 var organisations = await _getOrganisations.GetOrganisations(search);
-                response.WriteString(JsonSerializer.Serialize(organisations));
+                await response.WriteStringAsync(JsonSerializer.Serialize(organisations));
             }
             catch (Exception ex)
             {
                 response.StatusCode = HttpStatusCode.InternalServerError;
-                response.WriteString(JsonSerializer.Serialize(new
+                await response.WriteStringAsync(JsonSerializer.Serialize(new
                 {
                     error = ex.Message,
                     innerException = ex.InnerException

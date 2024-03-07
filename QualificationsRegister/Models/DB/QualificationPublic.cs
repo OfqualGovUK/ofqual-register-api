@@ -8,6 +8,7 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
     {
         public required int Id { get; set; }
         public required string QualificationNumber { get; set; }
+        [Column("QualifiationNumberNoObliques")]
         public string? QualificationNumberNoObliques { get; set; }
         public required string Title { get; set; }
         public string? Status { get; set; }
