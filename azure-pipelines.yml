@@ -39,6 +39,14 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
         projectName: 'Register API'
+    - task: PowerShell@2
+      displayName: 'Remove sonar.branch.name'
+      inputs:
+        targetType: 'inline'
+        script: |
+          $sonarQubeScannerParams = $($Env:SONARQUBE_SCANNER_PARAMS | ConvertFrom-Json)
+          $sonarQubeScannerParams.PSObject.Properties.Remove('sonar.branch.name')
+          $Env:SONARQUBE_SCANNER_PARAMS = $($sonarQubeScannerParams | ConvertTo-Json)
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
@@ -92,18 +100,3 @@ stages:
               appType: functionApp
               appName: $(FunctionAppName)
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
-
-- stage: SetSonarQubeParams
-  displayName: 'Set SonarQube Scanner Params'
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
-  - job: SetSonarQubeParams
-    displayName: 'Set SonarQube Scanner Params'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - script: |
-        $params = "$env:SONARQUBE_SCANNER_PARAMS.PSObject.Properties('sonar.branch.name')"
-        Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
-      displayName: 'Set SonarQube Scanner Params'
