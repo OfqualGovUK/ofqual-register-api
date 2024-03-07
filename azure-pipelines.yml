@@ -38,20 +38,16 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
         projectName: 'Register API'
+    - powershell: |
+        $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
+        Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
+
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
         command: 'build'
         projects: '**/*.csproj'
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
-    - task: PowerShell@2
-      displayName: 'Remove sonar.branch.name'
-      inputs:
-        targetType: 'inline'
-        script: |
-          $sonarQubeScannerParams = $($Env:SONARQUBE_SCANNER_PARAMS | ConvertFrom-Json)
-          $sonarQubeScannerParams.PSObject.Properties.Remove('sonar.branch.name')
-          $Env:SONARQUBE_SCANNER_PARAMS = $($sonarQubeScannerParams | ConvertTo-Json)
     - task: SonarQubeAnalyze@5
       inputs:
         jdkversion: 'JAVA_HOME_11_X64'
