@@ -38,6 +38,12 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
         projectName: 'Register API'
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
     - task: PowerShell@2
       displayName: 'Remove sonar.branch.name'
       inputs:
@@ -46,12 +52,12 @@ stages:
           $sonarQubeScannerParams = $($Env:SONARQUBE_SCANNER_PARAMS | ConvertFrom-Json)
           $sonarQubeScannerParams.PSObject.Properties.Remove('sonar.branch.name')
           $Env:SONARQUBE_SCANNER_PARAMS = $($sonarQubeScannerParams | ConvertTo-Json)
-    - task: DotNetCoreCLI@2
-      displayName: Build
+    - task: SonarQubeAnalyze@5
       inputs:
-        command: 'build'
-        projects: '**/*.csproj'
-        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
+        jdkversion: 'JAVA_HOME_11_X64'
+    - task: SonarQubePublish@5
+      inputs:
+        pollingTimeoutSec: '300'
     - task: DotNetCoreCLI@2
       displayName: 'NUnit Tests'
       inputs:
@@ -67,19 +73,6 @@ stages:
         replaceExistingArchive: true
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
-
-  - job: SonarQube
-    displayName: Run SonarQube Analysis
-    dependsOn: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: SonarQubeAnalyze@5
-      inputs:
-        jdkversion: 'JAVA_HOME_11_X64'
-    - task: SonarQubePublish@5
-      inputs:
-        pollingTimeOutSec: '300'
 
 - stage: Deploy
   displayName: Deploy stage
