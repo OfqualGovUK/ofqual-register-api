@@ -71,11 +71,11 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'restore'
-          projects: '**/*.csproj'
-        displayName: Restore Nuget Packages
+      # - task: DotNetCoreCLI@2
+      #   inputs:
+      #     command: 'restore'
+      #     projects: '**/*.csproj'
+      #   displayName: Restore Nuget Packages
 
       - task: Bash@3
         displayName: Check NuGet vulnerabilities
