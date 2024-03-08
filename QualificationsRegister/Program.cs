@@ -1,16 +1,12 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Ofqual.Common.RegisterAPI.Services;
-using Ofqual.Common.RegisterAPI.Services.Cache;
-using Ofqual.Common.RegisterAPI.Services.Data;
-using Ofqual.Common.RegisterAPI.Services.Repository;
 using Ofqual.Common.RegisterAPI.UseCase;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
-using System.Text.Json.Serialization;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Services.Database;
+using Microsoft.EntityFrameworkCore;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -18,15 +14,6 @@ var host = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = Environment.GetEnvironmentVariable("RedisConnString")?.ToString();            
-        });
-
-        services.AddSingleton<IRedisCacheService, RedisCache>();
-        services.AddTransient<IRegisterRepository, RegisterRepository>();
-        services.AddTransient<IDapperDbConnection, DapperDbConnection>();
 
         RegisterUseCases(services);
 
@@ -35,12 +22,25 @@ var host = new HostBuilder()
             options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             options.PropertyNameCaseInsensitive = true;
         });
+
+        services.AddDbContext<RegisterDbContext>(
+            options =>
+            {
+                SqlServerDbContextOptionsExtensions.UseSqlServer(options, Environment.GetEnvironmentVariable("MDDBConnString"));
+            });
+
+        services.AddHttpClient();
+        services.AddHttpClient("APIMgmt", client =>
+        {
+            client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("APIMgmtURL")!);
+        });
+
     })
     //.ConfigureLogging((HostBuilderContext hostingContext, ILoggingBuilder logging)=>{
     //    logging.AddConsole();
     //    logging.AddDebug().SetMinimumLevel(LogLevel.Debug);
     //})
-    
+
     .Build();
 
 

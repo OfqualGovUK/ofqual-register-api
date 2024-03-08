@@ -1,11 +1,10 @@
-using Ofqual.Common.RegisterAPI.Models.Private;
-using Ofqual.Common.RegisterAPI.Models.Public;
+using Ofqual.Common.RegisterAPI.Models.DB;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetQualificationByNumberUseCase
     {
         Task<QualificationPublic?> GetQualificationByNumberPublic(string number);
-        Task<QualificationPrivate?> GetQualificationByNumberPrivate(string number);
+        Task<Qualification?> GetQualificationByNumber(string number);
     }
 }

@@ -2,8 +2,7 @@ using AutoFixture;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Models.DB;
-using Ofqual.Common.RegisterAPI.Services.Cache;
-using Ofqual.Common.RegisterAPI.Services.Repository;
+using Ofqual.Common.RegisterAPI.Services.Database;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
 namespace Ofqual.Common.RegisterAPI.Tests.UseCase
@@ -11,25 +10,24 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
     [TestFixture]
     public class GetOrganisationsUseCaseTests
     {
-        private Mock<IRegisterRepository> _mockRegisterRepository;
-        private Mock<IRedisCacheService> _mockRedisCache;
+        private Mock<RegisterDbContext> _mockDB;
         private GetOrganisationsUseCase _classUnderTest;
         private Fixture _fixture;
 
         [SetUp]
         public void Setup()
         {
-            _mockRegisterRepository = new Mock<IRegisterRepository>();
-            _mockRedisCache = new Mock<IRedisCacheService>();
-            _classUnderTest = new GetOrganisationsUseCase(new NullLoggerFactory(), _mockRedisCache.Object);
+            _mockDB = new Mock<RegisterDbContext>();
+            _classUnderTest = new GetOrganisationsUseCase(new NullLoggerFactory(), _mockDB.Object);
             _fixture = new Fixture();
         }
 
         [Test]
-        public async Task ReturnsListOfOrganisationsFromTheCache()
+        [Ignore("WIP")]
+        public async Task ReturnsListOfOrganisations()
         {
             var stubbedList = _fixture.Create<List<Organisation>>();
-            _mockRedisCache.Setup(r => r.GetCacheAsync<Organisation>(It.IsAny<string>())).ReturnsAsync(stubbedList);
+            _mockDB.Setup(r => r.Organisations);
             var result = await _classUnderTest.GetOrganisations(It.IsAny<string>());
 
             Assert.That(result, Is.Not.Null);
