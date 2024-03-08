@@ -8,7 +8,7 @@ trigger:
 
 variables:
   - group: Register-API-Dev-Variables
-  
+
   # Agent VM image name
   - name: vmImageName
     value: 'windows-2019'
@@ -32,6 +32,15 @@ stages:
     - task: UseDotNet@2
       inputs:
         version: '8.x'
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'ofqual-register-api-service-connection'
+        scannerMode: 'MSBuild'
+        projectKey: $(SonarqubeKey)
+        projectName: 'Register API'
+    - powershell: |
+        $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
+        Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
 
     - task: DotNetCoreCLI@2
       displayName: Build
@@ -39,12 +48,16 @@ stages:
         command: 'build'
         projects: '**/*.csproj'
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
-
+    - task: SonarQubeAnalyze@5
+      inputs:
+        jdkversion: 'JAVA_HOME_11_X64'
+    - task: SonarQubePublish@5
+      inputs:
+        pollingTimeoutSec: '300'
     - task: DotNetCoreCLI@2
       displayName: 'NUnit Tests'
       inputs:
         command: test
-
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
@@ -53,14 +66,13 @@ stages:
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
-
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
 
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
-  condition: succeeded()
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
 
   jobs:
   - deployment: Deploy
