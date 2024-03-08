@@ -10,14 +10,14 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
     [TestFixture]
     public class GetOrganisationsUseCaseTests
     {
-        private Mock<RegisterDbContext> _mockDB;
+        private Mock<IRegisterDb> _mockDB;
         private GetOrganisationsUseCase _classUnderTest;
         private Fixture _fixture;
 
         [SetUp]
         public void Setup()
         {
-            _mockDB = new Mock<RegisterDbContext>();
+            _mockDB = new Mock<IRegisterDb>();
             _classUnderTest = new GetOrganisationsUseCase(new NullLoggerFactory(), _mockDB.Object);
             _fixture = new Fixture();
         }
@@ -27,7 +27,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public async Task ReturnsListOfOrganisations()
         {
             var stubbedList = _fixture.Create<List<Organisation>>();
-            _mockDB.Setup(r => r.Organisations);
+            _mockDB.Setup(r => r.GetOrganisations());
             var result = await _classUnderTest.GetOrganisations(It.IsAny<string>());
 
             Assert.That(result, Is.Not.Null);

@@ -17,7 +17,7 @@ namespace Ofqual.Common.RegisterAPI.Functions
         }
 
         [Function("HealthCheck")]
-        public async Task<HealthCheckResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        public async Task<HealthCheckResult> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
         {
             _logger.LogInformation("Health Check triggered");
 

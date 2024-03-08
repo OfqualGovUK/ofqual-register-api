@@ -85,20 +85,6 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
         public bool? EighteenPlus { get; set; }
         public bool? NineteenPlus { get; set; }
 
-        public string[]? GetAssessmentMethodArray()
-        {
-            return null;
-            //if (AssessmentMethods == null) { return null; }
-            //else
-            //{
-            //    //remove [], quotes and spaces from the db value
-            //    var str = Regex.Replace(AssessmentMethods, @"[\[\\""\]]+", "");
-
-            //    var arr = str.Replace(", ", ",").Split(",");
-            //    return arr;
-            //}
-        }
-
         public string GetQualificationNumber()
         {
             return QualificationNumberNoObliques ?? QualificationNumber.Replace("/", "");
