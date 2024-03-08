@@ -9,18 +9,20 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 {
     public class GetOrganisationByNumberUseCase : IGetOrganisationByNumberUseCase
     {
-        private readonly RegisterDbContext _registerDbContext;
+        private readonly IRegisterDb _registerDb;
         private readonly ILogger _logger;
 
-        public GetOrganisationByNumberUseCase(ILoggerFactory loggerFactory, RegisterDbContext registerDbContext)
+        public GetOrganisationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb)
         {
             _logger = loggerFactory.CreateLogger<GetOrganisationByNumberUseCase>();
-            _registerDbContext = registerDbContext;
+            _registerDb = registerDb;
         }
 
         public async Task<Organisation?> GetOrganisationByNumber(string number)
         {
-            return await _registerDbContext.Organisations.FirstOrDefaultAsync();
+            var results = await _registerDb.GetOrganisations();
+
+            return results.FirstOrDefault();
         }
 
     }

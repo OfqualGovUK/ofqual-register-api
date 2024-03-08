@@ -29,6 +29,8 @@ var host = new HostBuilder()
                 SqlServerDbContextOptionsExtensions.UseSqlServer(options, Environment.GetEnvironmentVariable("MDDBConnString"));
             });
 
+        services.AddScoped<IRegisterDb, RegisterDb>();
+
         services.AddHttpClient();
         services.AddHttpClient("APIMgmt", client =>
         {

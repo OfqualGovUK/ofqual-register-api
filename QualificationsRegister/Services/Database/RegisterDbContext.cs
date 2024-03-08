@@ -22,13 +22,13 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             modelBuilder.Entity<Qualification>()
                 .ToTable("Register_T_Qualification", "MD_Register")
                 .HasKey(k => k.Id);
-
+            
             modelBuilder.Entity<QualificationPublic>()
-                .ToTable("Public_Register_V_Qualification", "MD_Register")
+                .ToView("Public_Register_V_Qualification", "MD_Register")
                 .HasKey(k => k.Id);
 
             modelBuilder.Entity<Organisation>()
-                .ToView("Register_T_Organisation", "MD_Register")
+                .ToTable("Register_T_Organisation", "MD_Register")
                 .HasKey(k => k.Id);
         }
     }

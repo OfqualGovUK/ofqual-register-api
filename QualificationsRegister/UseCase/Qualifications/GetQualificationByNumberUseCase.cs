@@ -8,26 +8,27 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 {
     public class GetQualificationByNumberUseCase : IGetQualificationByNumberUseCase
     {
-        private readonly RegisterDbContext _registerDbContext;
+        private readonly IRegisterDb _registerDb;
         private readonly ILogger _logger;
 
-        public GetQualificationByNumberUseCase(ILoggerFactory loggerFactory, RegisterDbContext registerDbContext)
+        public GetQualificationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb)
         {
             _logger = loggerFactory.CreateLogger<GetQualificationByNumberUseCase>();
-            _registerDbContext = registerDbContext;
+            _registerDb = registerDb;
         }
 
         public async Task<QualificationPublic?> GetQualificationByNumberPublic(string number)
         {
-            return await _registerDbContext
-                .QualificationsPublic
-                .FirstOrDefaultAsync();
+            var results = await _registerDb.GetQualificationsPublic();
+
+            return results.FirstOrDefault();
         }
 
         public async Task<Qualification?> GetQualificationByNumber(string number)
         {
-            return await _registerDbContext
-                .Qualifications.FirstOrDefaultAsync();
+            var results = await _registerDb.GetQualifications();
+
+            return results.FirstOrDefault();
         }
     }
 }

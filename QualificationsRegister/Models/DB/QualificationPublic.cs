@@ -31,7 +31,6 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
         public DateTime? OperationalEndDate { get; set; }
         public DateTime? CertificationEndDate { get; set; }
         public DateTime? ReviewDate { get; set; }
-        public DateTime? EmbargoDate { get; set; }
         public bool? OfferedInEngland { get; set; }
         public bool? OfferedInNorthernIreland { get; set; }
         public bool? OfferedInternationally { get; set; }
@@ -67,28 +66,6 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
         public decimal? GCSESizeEquivalence { get; set; }
         public string? EntitlementFrameworkDesignation { get; set; }
         public DateTime? LastUpdatedDate { get; set; }
-        public DateTime UILastUpdatedDate { get; set; }
-        public DateTime? InsertedDate { get; set; }
-        public int? Version { get; set; }
-        public int OrganisationId { get; set; }
-        public int? LevelId { get; set; }
-        public int? TypeId { get; set; }
-        public int? SSAId { get; set; }
-        public int? GradingTypeId { get; set; }
-        public int? GradingScaleId { get; set; }
-
-        public string[]? GetAssessmentMethodArray()
-        {
-            if (AssessmentMethodsString == null) { return null; }
-            else
-            {
-                //remove [], quotes and spaces from the db value
-                var str = Regex.Replace(AssessmentMethodsString, @"[\[\\""\]]+", "");
-
-                var arr = str.Replace(", ", ",").Split(",");
-                return arr;
-            }
-        }
 
         public string GetQualificationNumber()
         {
