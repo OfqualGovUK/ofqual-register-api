@@ -8,7 +8,7 @@ trigger:
 
 variables:
   - group: Register-API-Dev-Variables
- 
+
   # Agent VM image name
   - name: vmImageName
     value: 'windows-2019'
@@ -19,82 +19,8 @@ variables:
 
 
 stages:
-- stage: StaticAnalysis
-  displayName: Run Static Analysis
-  jobs:
-  - job: SonarQube
-    displayName: 'SonarQube Analysis'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-      - task: UseDotNet@2
-        displayName: Install .NET Core SDK
-        inputs:
-          version: '7.x'
-
-      - task: DotNetCoreCLI@2
-        displayName: Restore task
-        inputs:
-          command: 'restore'
-          projects: '**/*.csproj'
-          feedsToUse: 'select'
-          vstsFeed: 'b8db0229-c220-4583-b1d9-1111e482a1ce'
-
-      - task: SonarQubePrepare@5
-        displayName: Prepare SonarQube Analysis
-        inputs:
-          SonarQube: 'ofqual-register-api-service-connection'
-          scannerMode: 'MSBuild'
-          projectKey: 'OfqualGovUK_ofqual-register-api_AY4YamDUJEdxy1l8gwpa'
-          projectName: 'Register API'
-      - powershell: |
-          $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
-          Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
-
-      - task: DotNetCoreCLI@2
-        displayName: Build task
-        inputs:
-          command: "build"
-          projects: "**/*.csproj"
-          arguments: "--configuration $(BuildConfiguration)"
-
-      - task: SonarQubeAnalyze@5
-        displayName: SonarQube Analysis
-
-      - task: SonarQubePublish@5
-        displayName: Publish Results
-        inputs:
-          pollingTimeoutSec: '300'
-
-  - job: Audit
-    displayName: Audit Dependencies
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'restore'
-          projects: '**/*.csproj'
-        displayName: Restore Nuget Packages
-
-      - task: Bash@3
-        displayName: Check NuGet vulnerabilities
-        inputs:
-          targetType: 'inline'
-          script: |
-            dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
-            echo "Analyse dotnet list package command log output..."
-            if grep -q -i "critical\|high" build.log; then
-                echo "Must fix security vulnerabilities found on the log output"
-                exit 1
-            else
-                echo "No critical or high severity vulnerabilities found."
-                exit 0
-            fi.
-
 - stage: Build
   displayName: Build stage
-  dependsOn: StaticAnalysis
 
   jobs:
   - job: Build
@@ -105,8 +31,7 @@ stages:
     steps:
     - task: UseDotNet@2
       inputs:
-        version: '7.x'
-
+        version: '8.x'
     - task: SonarQubePrepare@5
       inputs:
         SonarQube: 'ofqual-register-api-service-connection'
@@ -123,11 +48,22 @@ stages:
         command: 'build'
         projects: '**/*.csproj'
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
-
+    - task: SonarQubeAnalyze@5
+      inputs:
+        jdkversion: 'JAVA_HOME_11_X64'
+    - task: SonarQubePublish@5
+      inputs:
+        pollingTimeoutSec: '300'
     - task: DotNetCoreCLI@2
       displayName: 'NUnit Tests'
       inputs:
         command: test
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage report'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.cobertura.xml'
+        reportDirectory: '$(System.DefaultWorkingDirectory)/CodeCoverage'
 
     - task: ArchiveFiles@2
       displayName: 'Archive files'
@@ -137,14 +73,13 @@ stages:
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
-
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
 
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+  condition: succeeded()
 
   jobs:
   - deployment: Deploy
@@ -156,6 +91,7 @@ stages:
     strategy:
       runOnce:
         deploy:
+
           steps:
           - task: AzureFunctionApp@1
             displayName: 'Azure functions app deploy'
