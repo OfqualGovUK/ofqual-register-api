@@ -10,8 +10,8 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
     public interface IRegisterDb
     {
         public Task<List<Organisation>> GetOrganisations();
-        public Task<List<Qualification>> GetQualifications();
-        public Task<List<QualificationPublic>> GetQualificationsPublic();
+        public Task<List<Qualification>> GetQualifications(string search = "");
+        public Task<List<QualificationPublic>> GetQualificationsPublic(string search = "");
 
     }
 }

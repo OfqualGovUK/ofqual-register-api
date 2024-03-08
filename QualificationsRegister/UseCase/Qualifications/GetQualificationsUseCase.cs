@@ -21,14 +21,14 @@ namespace Ofqual.Common.RegisterAPI.UseCase
         {
             _logger.LogInformation("Getting list of qualifications public");
 
-            return  await _registerDb.GetQualificationsPublic();
+            return  await _registerDb.GetQualificationsPublic(search!);
         }
 
         public async Task<List<Qualification>> GetQualificationsPrivate(string? search)
         {
             _logger.LogInformation("Getting list of qualifications");
 
-            return await _registerDb.GetQualifications();
+            return await _registerDb.GetQualifications(search!);
         }
 
     }
