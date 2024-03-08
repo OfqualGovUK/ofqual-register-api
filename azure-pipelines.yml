@@ -30,7 +30,7 @@ stages:
       - task: UseDotNet@2
         displayName: Install .NET Core SDK
         inputs:
-          version: '8.x'
+          version: '7.x'
 
       - task: DotNetCoreCLI@2
         displayName: Restore task
@@ -71,11 +71,11 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-      # - task: DotNetCoreCLI@2
-      #   inputs:
-      #     command: 'restore'
-      #     projects: '**/*.csproj'
-      #   displayName: Restore Nuget Packages
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
+        displayName: Restore Nuget Packages
 
       - task: Bash@3
         displayName: Check NuGet vulnerabilities
@@ -105,7 +105,7 @@ stages:
     steps:
     - task: UseDotNet@2
       inputs:
-        version: '8.x'
+        version: '7.x'
 
     - task: SonarQubePrepare@5
       inputs:
