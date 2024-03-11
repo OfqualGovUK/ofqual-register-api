@@ -67,9 +67,5 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
         public string? EntitlementFrameworkDesignation { get; set; }
         public DateTime? LastUpdatedDate { get; set; }
 
-        public string GetQualificationNumber()
-        {
-            return QualificationNumberNoObliques ?? QualificationNumber.Replace("/", "");
-        }
     }
 }

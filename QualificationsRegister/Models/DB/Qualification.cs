@@ -84,10 +84,5 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
         public bool? SixteenToEighteen { get; set; }
         public bool? EighteenPlus { get; set; }
         public bool? NineteenPlus { get; set; }
-
-        public string GetQualificationNumber()
-        {
-            return QualificationNumberNoObliques ?? QualificationNumber.Replace("/", "");
-        }
     }
 }
