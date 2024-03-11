@@ -38,7 +38,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var organisations = await _getOrganisations.GetOrganisations(search);
+                var organisations = await _getOrganisations.ListOrganisations(search);
                 await response.WriteStringAsync(JsonSerializer.Serialize(organisations));
             }
             catch (Exception ex)
@@ -62,7 +62,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="number"></param>
         /// <returns></returns>
         [Function("Organisation")]
-        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number = "")
+        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get", "{number:string}")] HttpRequestData req, string number = "")
         {
             _logger.LogInformation("Get Organisation - Public = {}", number);
 

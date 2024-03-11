@@ -1,6 +1,7 @@
 using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using System;
 using System.Collections.Generic;
@@ -29,9 +30,32 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        public async Task<List<Organisation>> GetOrganisations()
+        public List<MDDBOrganisation> GetOrganisationsList(string number, string name)
         {
-            return await _context.Organisations.ToListAsync();
+            var x = _context.Organisations.Where(o => string.IsNullOrEmpty(number) ||
+            o.RecognitionNumber.Equals(number) || o.RecognitionNumber.Equals($"RN{number}"))
+                .Where(o => string.IsNullOrEmpty(name) || o.Name.Equals(name));
+
+            return [.. x];
+
+            //_context.Organisations.Where(o => !string.IsNullOrEmpty(number) ? o.RecognitionNumber.Equals(number) || o.RecognitionNumber.Equals($"RN{number}") : true).ToList();
+            //return _context.Organisations
+            //    .Where(o => !string.IsNullOrEmpty(number) ? o.)
+            //    .ToList();
+        }
+
+        public List<Organisation> GetOrganisationByNumber(string number)
+        {
+            var x = _context.Organisations.Where(o => string.IsNullOrEmpty(number) ||
+            o.RecognitionNumber.Equals(number) || o.RecognitionNumber.Equals($"RN{number}"))
+                .Where(o => string.IsNullOrEmpty(name) || o.Name.Equals(name));
+
+            return [.. x];
+
+            //_context.Organisations.Where(o => !string.IsNullOrEmpty(number) ? o.RecognitionNumber.Equals(number) || o.RecognitionNumber.Equals($"RN{number}") : true).ToList();
+            //return _context.Organisations
+            //    .Where(o => !string.IsNullOrEmpty(number) ? o.)
+            //    .ToList();
         }
 
         public async Task<List<Qualification>> GetQualifications(string search = "")

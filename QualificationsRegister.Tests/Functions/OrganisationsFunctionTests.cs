@@ -1,13 +1,12 @@
+using AutoFixture;
+using FluentAssertions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Public;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
-using AutoFixture;
-using FluentAssertions;
-using System.Diagnostics;
-using Ofqual.Common.RegisterAPI.Models.DB;
 
 namespace Ofqual.Common.RegisterAPI.Tests.Functions
 {
@@ -76,6 +75,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             var res = await httpFunc.GetOrganisation(requestData, "error");
 
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.InternalServerError));
+            
             res.Should().NotBeNull();
         }
 
@@ -89,12 +89,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
                 _getOrganisationBybyNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             var res = await httpFunc.GetOrganisationsList(requestData, "edexcel");
-            string sb;
-            using(var reader = new StreamReader(res.Body))
-            {
-                sb = reader.ReadToEnd();
-            }
-            Debug.WriteLine(sb);
+
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
             res.Should().NotBeNull();
         }

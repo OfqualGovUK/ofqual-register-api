@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ofqual.Common.RegisterAPI.Services.Database
+namespace Ofqual.Common.RegisterAPI.Database
 {
     public class RegisterDbContext : DbContext
     {
@@ -22,7 +22,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             modelBuilder.Entity<Qualification>()
                 .ToTable("Register_T_Qualification", "MD_Register")
                 .HasKey(k => k.Id);
-            
+
             modelBuilder.Entity<QualificationPublic>()
                 .ToView("Public_Register_V_Qualification", "MD_Register")
                 .HasKey(k => k.Id);

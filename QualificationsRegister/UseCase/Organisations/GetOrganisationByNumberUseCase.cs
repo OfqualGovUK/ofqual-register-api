@@ -1,7 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Models.DB;
-using Ofqual.Common.RegisterAPI.Services.Database;
+using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
@@ -20,9 +19,9 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
         public async Task<Organisation?> GetOrganisationByNumber(string number)
         {
-            var results = await _registerDb.GetOrganisations();
-
-            return results.FirstOrDefault();
+            //var results = await _registerDb.GetOrganisations();
+            return Task.FromResult(new Organisation()).Result;
+            //return results.FirstOrDefault();
         }
 
     }

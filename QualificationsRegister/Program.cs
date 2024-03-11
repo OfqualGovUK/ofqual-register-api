@@ -7,6 +7,7 @@ using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 using System.Text.Json;
 using Ofqual.Common.RegisterAPI.Services.Database;
 using Microsoft.EntityFrameworkCore;
+using Ofqual.Common.RegisterAPI.Database;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()

@@ -4,6 +4,6 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetOrganisationsUseCase
     {
-        Task<List<Organisation>> GetOrganisations(string search);
+        Task<List<Organisation>> ListOrganisations(string search);
     }
 }
