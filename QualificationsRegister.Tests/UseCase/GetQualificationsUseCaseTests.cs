@@ -27,7 +27,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public async Task ReturnsListOfQualifications()
         {
             var stubbedList = _fixture.Create<List<Qualification>>();
-            _mockDB.Setup(r => r.GetQualifications());
+            _mockDB.Setup(r => r.GetQualifications(""));
             var result = await _classUnderTest.GetQualificationsPublic(It.IsAny<string>());
 
             Assert.That(result, Is.Not.Null);
