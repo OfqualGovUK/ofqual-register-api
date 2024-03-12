@@ -52,7 +52,7 @@ host.Run();
 static void RegisterUseCases(IServiceCollection services)
 {
     services.AddScoped<IGetOrganisationByNumberUseCase, GetOrganisationByNumberUseCase>();
-    services.AddScoped<IGetOrganisationsUseCase, GetOrganisationsUseCase>();
+    services.AddScoped<IGetOrganisationsListUseCase, GetOrganisationsListUseCase>();
 
     services.AddScoped<IGetQualificationByNumberUseCase, GetQualificationByNumberUseCase>();
     services.AddScoped<IGetQualificationsUseCase, GetQualificationsUseCase>();

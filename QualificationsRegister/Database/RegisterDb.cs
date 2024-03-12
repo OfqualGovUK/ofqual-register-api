@@ -1,15 +1,10 @@
-using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Factories;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
@@ -30,32 +25,21 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        public List<MDDBOrganisation> GetOrganisationsList(string number, string name)
+        public List<Organisation>? GetOrganisationsList(string name)
         {
-            var x = _context.Organisations.Where(o => string.IsNullOrEmpty(number) ||
-            o.RecognitionNumber.Equals(number) || o.RecognitionNumber.Equals($"RN{number}"))
-                .Where(o => string.IsNullOrEmpty(name) || o.Name.Equals(name));
-
-            return [.. x];
-
-            //_context.Organisations.Where(o => !string.IsNullOrEmpty(number) ? o.RecognitionNumber.Equals(number) || o.RecognitionNumber.Equals($"RN{number}") : true).ToList();
-            //return _context.Organisations
-            //    .Where(o => !string.IsNullOrEmpty(number) ? o.)
-            //    .ToList();
+            _logger.LogInformation("Getting list of organisations");
+            var organisations = _context.Organisations.Where(o => EF.Functions.Contains(o.Acronym, name) ||
+            EF.Functions.Contains(o.LegalName, name)).ToList();
+            return organisations?.ToDomain();
         }
 
-        public List<Organisation> GetOrganisationByNumber(string number)
+        public Organisation? GetOrganisationByNumber(string number, string numberRN)
         {
-            var x = _context.Organisations.Where(o => string.IsNullOrEmpty(number) ||
-            o.RecognitionNumber.Equals(number) || o.RecognitionNumber.Equals($"RN{number}"))
-                .Where(o => string.IsNullOrEmpty(name) || o.Name.Equals(name));
+            _logger.LogInformation("Getting an organisation by number");
+            var organisation = _context.Organisations.FirstOrDefault(o => o.RecognitionNumber.Equals(number) ||
+            o.RecognitionNumber.Equals(numberRN));
 
-            return [.. x];
-
-            //_context.Organisations.Where(o => !string.IsNullOrEmpty(number) ? o.RecognitionNumber.Equals(number) || o.RecognitionNumber.Equals($"RN{number}") : true).ToList();
-            //return _context.Organisations
-            //    .Where(o => !string.IsNullOrEmpty(number) ? o.)
-            //    .ToList();
+            return organisation?.ToDomain();
         }
 
         public async Task<List<Qualification>> GetQualifications(string search = "")

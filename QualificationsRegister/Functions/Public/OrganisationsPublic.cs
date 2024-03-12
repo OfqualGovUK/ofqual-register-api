@@ -11,10 +11,10 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
     public class OrganisationsPublic
     {
         private readonly ILogger _logger;
-        private readonly IGetOrganisationsUseCase _getOrganisations;
+        private readonly IGetOrganisationsListUseCase _getOrganisations;
         private readonly IGetOrganisationByNumberUseCase _getOrganisationByNumberUseCase;
 
-        public OrganisationsPublic(ILoggerFactory loggerFactory, IGetOrganisationsUseCase getOrganisations,
+        public OrganisationsPublic(ILoggerFactory loggerFactory, IGetOrganisationsListUseCase getOrganisations,
             IGetOrganisationByNumberUseCase getOrganisationByNumberUseCase)
         {
             _logger = loggerFactory.CreateLogger<QualificationsPublic>();
@@ -29,7 +29,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="search"></param>
         /// <returns></returns>
         [Function("Organisations")]
-        public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string search = "")
+        public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string? search)
         {
             _logger.LogInformation("Get Organisations Public - search = {}", search);
 
@@ -38,7 +38,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var organisations = await _getOrganisations.ListOrganisations(search);
+                var organisations = _getOrganisations.ListOrganisations(search);
                 await response.WriteStringAsync(JsonSerializer.Serialize(organisations));
             }
             catch (Exception ex)
@@ -62,7 +62,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="number"></param>
         /// <returns></returns>
         [Function("Organisation")]
-        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get", "{number:string}")] HttpRequestData req, string number = "")
+        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get", "{number:string?}")] HttpRequestData req, string? number)
         {
             _logger.LogInformation("Get Organisation - Public = {}", number);
 
@@ -77,7 +77,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var organisation = await _getOrganisationByNumberUseCase.GetOrganisationByNumber(number);
+                var organisation =  _getOrganisationByNumberUseCase.GetOrganisationByNumber(number);
 
                 if (organisation == null)
                 {

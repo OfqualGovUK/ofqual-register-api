@@ -9,15 +9,15 @@ namespace Ofqual.Common.RegisterAPI.Models
 {
     public class Organisation
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public string RecognitionNumber { get; set; }
+        public required string RecognitionNumber { get; set; }
 
-        public string LegalName { get; set; }
+        public required string LegalName { get; set; }
 
-        public string Acronym { get; set; }
+        public required string Acronym { get; set; }
 
         public string? OfqualOrganisationStatus { get; set; }
 
