@@ -1,12 +1,12 @@
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 
-namespace Ofqual.Common.RegisterAPI.Factories
+namespace Ofqual.Common.RegisterAPI.Mappers
 {
-    public static class MDDBOrganisationEntityFactory
+    public static class DbOrganisationEntityMapper
     {
 
-        public static Organisation ToDomain(this MDDBOrganisation mDDBOrganisationEntity)
+        public static Organisation ToDomain(this DbOrganisation mDDBOrganisationEntity)
         {
             return new Organisation
             {

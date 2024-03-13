@@ -9,7 +9,7 @@ namespace Ofqual.Common.RegisterAPI.Database
 
         public DbSet<Qualification> Qualifications { get; set; }
         public DbSet<QualificationPublic> QualificationsPublic { get; set; }
-        public DbSet<MDDBOrganisation> Organisations { get; set; }
+        public DbSet<DbOrganisation> Organisations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace Ofqual.Common.RegisterAPI.Database
                 .ToView("Public_Register_V_Qualification", "MD_Register")
                 .HasKey(k => k.Id);
 
-            modelBuilder.Entity<MDDBOrganisation>()
+            modelBuilder.Entity<DbOrganisation>()
                 .ToTable("Register_T_Organisation", "MD_Register")
                 .HasKey(k => k.Id);
         }

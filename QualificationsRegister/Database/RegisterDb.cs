@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
-using Ofqual.Common.RegisterAPI.Factories;
+using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using System.Text.RegularExpressions;

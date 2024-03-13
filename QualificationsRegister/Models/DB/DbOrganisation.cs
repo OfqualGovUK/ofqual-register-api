@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ofqual.Common.RegisterAPI.Models.DB
 {
-    public class MDDBOrganisation
+    public class DbOrganisation
     {
         public required int Id { get; set; }
 
