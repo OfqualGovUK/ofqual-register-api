@@ -1,10 +1,9 @@
-using System.Net;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using System.Net;
 using System.Text.Json;
-using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 
 namespace Ofqual.Common.RegisterAPI.Functions.Public
 {
@@ -62,18 +61,13 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="number"></param>
         /// <returns></returns>
         [Function("Organisation")]
-        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get", "{number:string?}")] HttpRequestData req, string? number)
+        public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get",
+            Route = "organisation/{number?}")] HttpRequestData req, string? number)
         {
             _logger.LogInformation("Get Organisation - Public = {}", number);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-
-            if (string.IsNullOrEmpty(number))
-            {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                return response;
-            }
 
             try
             {
@@ -89,13 +83,9 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             }
             catch (Exception ex)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                response.WriteString(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message,
-                    innerException = ex.InnerException
-                }));
-
+                var error = req.CreateResponse(HttpStatusCode.BadRequest);
+                error.WriteString(ex.Message);
+                return error;
             }
 
             return response;

@@ -18,7 +18,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = register;
         }
 
-        public List<Organisation>? ListOrganisations(string search)
+        public List<Organisation>? ListOrganisations(string? search)
         {
             _logger.LogInformation("Getting list of orgs");
             return _registerDb.GetOrganisationsList(search);

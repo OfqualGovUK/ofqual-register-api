@@ -1,7 +1,9 @@
+using Azure;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
@@ -18,17 +20,21 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = registerDb;
         }
 
-        public Organisation? GetOrganisationByNumber(string number)
+        public Organisation? GetOrganisationByNumber(string? number)
         {
+            if (string.IsNullOrEmpty(number))
+            {
+            }
+
             string numberRN = string.Empty, numberNoRN = string.Empty;
 
-            if (Regex.IsMatch(number, @"^\d+$"))
+            if (Regex.IsMatch(number!, @"^\d+$"))
             {
-                numberNoRN = number;
+                numberNoRN = number!;
                 numberRN = $"RN{number}";
             }
 
-            if (number.Substring(0, 2).ToLower().Equals("rn"))
+            if (number!.Substring(0, 2).ToLower().Equals("rn"))
             {
                 numberNoRN = number[2..];
                 numberRN = number;

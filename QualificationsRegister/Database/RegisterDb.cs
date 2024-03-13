@@ -25,11 +25,13 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
         {
             var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
 
-            _logger.LogInformation("Getting list of organisations");
+            _logger.LogInformation($"Getting list of organisations: {name}");
             var organisations = _context.Organisations.Where(o =>
             EF.Functions.Like(o.Acronym.Replace(" ", ""), nameSearchPattern) ||
             EF.Functions.Like(o.LegalName.Replace(" ", ""), nameSearchPattern))
-                .OrderBy(o => o.LegalName)
+                .OrderBy(o => o.Name)
+                .ThenBy(o => o.LegalName)
+                .ThenBy(o => o.Acronym)
                 .ToList();
 
             return organisations?.ToDomain();
@@ -37,7 +39,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         public Organisation? GetOrganisationByNumber(string number, string numberRN)
         {
-            _logger.LogInformation("Getting an organisation by number");
+            _logger.LogInformation($"Getting an organisation by number: {numberRN} or {number}");
             var organisation = _context.Organisations.FirstOrDefault(o => o.RecognitionNumber.Equals(number) ||
             o.RecognitionNumber.Equals(numberRN));
 
