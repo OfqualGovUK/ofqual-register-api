@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Ofqual.Common.RegisterAPI.Models.DB;
-using Ofqual.Common.RegisterAPI.Services.Database;
+using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
@@ -18,11 +18,23 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = registerDb;
         }
 
-        public async Task<Organisation?> GetOrganisationByNumber(string number)
+        public Organisation? GetOrganisationByNumber(string number)
         {
-            var results = await _registerDb.GetOrganisations();
+            string numberRN = string.Empty, numberNoRN = string.Empty;
 
-            return results.FirstOrDefault();
+            if (Regex.IsMatch(number, @"^\d+$"))
+            {
+                numberNoRN = number;
+                numberRN = $"RN{number}";
+            }
+
+            if (number.Substring(0, 2).ToLower().Equals("rn"))
+            {
+                numberNoRN = number[2..];
+                numberRN = number;
+            }
+
+            return _registerDb.GetOrganisationByNumber(numberNoRN, numberRN);
         }
 
     }

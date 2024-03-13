@@ -1,14 +1,10 @@
-using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Mappers;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
@@ -29,9 +25,21 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        public async Task<List<Organisation>> GetOrganisations()
+        public List<Organisation>? GetOrganisationsList(string name)
         {
-            return await _context.Organisations.ToListAsync();
+            _logger.LogInformation("Getting list of organisations");
+            var organisations = _context.Organisations.Where(o => EF.Functions.Contains(o.Acronym, name) ||
+            EF.Functions.Contains(o.LegalName, name)).ToList();
+            return organisations?.ToDomain();
+        }
+
+        public Organisation? GetOrganisationByNumber(string number, string numberRN)
+        {
+            _logger.LogInformation("Getting an organisation by number");
+            var organisation = _context.Organisations.FirstOrDefault(o => o.RecognitionNumber.Equals(number) ||
+            o.RecognitionNumber.Equals(numberRN));
+
+            return organisation?.ToDomain();
         }
 
         public async Task<List<Qualification>> GetQualifications(string search = "")

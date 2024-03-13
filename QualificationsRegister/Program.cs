@@ -7,6 +7,7 @@ using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 using System.Text.Json;
 using Ofqual.Common.RegisterAPI.Services.Database;
 using Microsoft.EntityFrameworkCore;
+using Ofqual.Common.RegisterAPI.Database;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -51,7 +52,7 @@ host.Run();
 static void RegisterUseCases(IServiceCollection services)
 {
     services.AddScoped<IGetOrganisationByNumberUseCase, GetOrganisationByNumberUseCase>();
-    services.AddScoped<IGetOrganisationsUseCase, GetOrganisationsUseCase>();
+    services.AddScoped<IGetOrganisationsListUseCase, GetOrganisationsListUseCase>();
 
     services.AddScoped<IGetQualificationByNumberUseCase, GetQualificationByNumberUseCase>();
     services.AddScoped<IGetQualificationsUseCase, GetQualificationsUseCase>();
