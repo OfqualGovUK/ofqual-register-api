@@ -1,7 +1,9 @@
 using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Ofqual.Common.RegisterAPI.Models.DB;
+using Ofqual.Common.RegisterAPI.Models.MetaData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +68,36 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             return await quals.Where(e => e.Title.Contains(search)).ToListAsync();
+        }
+
+
+
+        public QualificationMetaData GetQualificationMeta(List<Qualification> qualifications)
+        {
+            var meta = new QualificationMetaData
+            {
+                AssessmentMethod = qualifications.SelectMany(c => c.AssessmentMethods ?? Array.Empty<string>()).GroupWithCount(),
+                AssessmentType = qualifications.Select(c => c.Type ?? "").GroupWithCount(),
+                AwardingOrganision = qualifications.Select(c => c.OrganisationName).GroupWithCount(),
+                Availability = qualifications.Select(c => c.Status ?? "").GroupWithCount(),
+                GradingType = qualifications.Select(c => c.GradingType ?? "").GroupWithCount(),
+                NationalAvailability = new[]
+                {
+                    new KeyValuePair<string, int>("England", qualifications.Count(p => p.OfferedInEngland == true)),
+                    new KeyValuePair<string, int>("Northern Ireland", qualifications.Count(p => p.OfferedInNorthernIreland == true)),
+                    new KeyValuePair<string, int>("International", qualifications.Count(p => p.OfferedInternationally == true))
+                }.ToDictionary(),
+                QualificationType = qualifications.Select(c => c.Type ?? "").GroupWithCount(),
+                QualificationLevel = qualifications.Select(c => c.Level ?? "").GroupWithCount(),
+                QualificationSubLevel = qualifications.Select(c => c.SubLevel ?? "").GroupWithCount(),
+                SectorSubjectArea = qualifications.Select(c => c.SSA ?? "").GroupWithCount(),
+                MinGuidedLearningHours = qualifications.Select(c => (c.MinimumGLH == 1 ? "1 Hour" : $"{c.MinimumGLH} Hours") ?? "None").GroupWithCount(),
+                MaxGuidedLearningHours = qualifications.Select(c => (c.MaximumGLH == 1 ? "1 Hour" : $"{c.MaximumGLH} Hours") ?? "None").GroupWithCount(),
+                MinTotalQualificationTime = qualifications.Select(c => (c.TQT == 1 ? "1 Hour" : $"{c.TQT} Hours") ?? "None").GroupWithCount(),
+                MaxTotalQualificationTime = qualifications.Select(c => (c.TQT == 1 ? "1 Hour" : $"{c.TQT} Hours") ?? "None").GroupWithCount()
+            };
+
+            return meta;
         }
 
         public async Task<List<QualificationPublic>> GetQualificationsPublic(string search = "")
