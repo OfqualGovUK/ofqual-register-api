@@ -27,9 +27,15 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         public List<Organisation>? GetOrganisationsList(string name)
         {
+            var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
+
             _logger.LogInformation("Getting list of organisations");
-            var organisations = _context.Organisations.Where(o => EF.Functions.Contains(o.Acronym, name) ||
-            EF.Functions.Contains(o.LegalName, name)).ToList();
+            var organisations = _context.Organisations.Where(o =>
+            EF.Functions.Like(o.Acronym.Replace(" ", ""), nameSearchPattern) ||
+            EF.Functions.Like(o.LegalName.Replace(" ", ""), nameSearchPattern))
+                .OrderBy(o => o.LegalName)
+                .ToList();
+
             return organisations?.ToDomain();
         }
 
