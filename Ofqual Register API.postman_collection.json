@@ -1,0 +1,297 @@
+{
+	"info": {
+		"_postman_id": "8cc5f9ee-c44b-447c-9653-498bf161e9cb",
+		"name": "Ofqual Register API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31683579"
+	},
+	"item": [
+		{
+			"name": "Public",
+			"item": [
+				{
+					"name": "Organisations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/Organisations?search=pearson",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"Organisations"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "pearson"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Organisation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/Organisation?number=RN5353",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"Organisation"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "rn5353",
+									"disabled": true
+								},
+								{
+									"key": "number",
+									"value": "RN5353"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Qualifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/qualifications",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"qualifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Qualification",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/qualification?number=500/1522/9",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"qualification"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "500/1522/9"
+								},
+								{
+									"key": "number",
+									"value": "50015229",
+									"disabled": true
+								},
+								{
+									"key": "number",
+									"value": "50037122",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gov",
+			"item": [
+				{
+					"name": "Organisations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/Organisations",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"Organisations"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "cmi",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Organisation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/Organisation?number=RN5353",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"Organisation"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "RN5353"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Qualifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/qualifications",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"qualifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Qualification",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/qualification?number=50037122",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"qualification"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "500/1522/9",
+									"disabled": true
+								},
+								{
+									"key": "number",
+									"value": "50015229",
+									"disabled": true
+								},
+								{
+									"key": "number",
+									"value": "50037122"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var subKey = pm.environment.get('APISubKey');",
+							"",
+							"pm.request.headers.add({",
+							"    key: 'Ocp-Apim-Subscription-Key',",
+							"    value: subKey",
+							"    //value: '055f720347534f66828e4c830cde8561'",
+							"})"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "HealthCheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{APIMgmgt_URL}}/healthCheck",
+					"host": [
+						"{{APIMgmgt_URL}}"
+					],
+					"path": [
+						"healthCheck"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "APIMgmgt_URL",
+			"value": "https://ofq-dev-apim-register-api.azure-api.net",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
