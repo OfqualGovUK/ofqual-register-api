@@ -13,8 +13,8 @@ namespace Ofqual.Common.RegisterAPI.UseCase
         private readonly IRegisterDb _registerDb;
         private readonly ILogger _logger;
 
-        private const string QualificationNumRegex = "\\b\\d{3}\\/\\d{4}\\/\\w\\b";
-        private const string QualificationNumNoObliquesRegex = "\\b\\d{7}\\w\\b";
+        private const string QualificationNumRegex = @"\b\d{3}\/\d{4}\/\w\b";
+        private const string QualificationNumNoObliquesRegex = @"\b\d{7}\w\b";
 
         //[GeneratedRegex("\\b\\d{3}\\/\\d{4}\\/\\w\\b")]
         //private static partial Regex QualificationNumRegex();
@@ -33,12 +33,12 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         public QualificationPublic? GetQualificationPublicByNumber(string number)
         {           
-            if (Regex.IsMatch(QualificationNumRegex, number))
+            if (Regex.IsMatch(number, QualificationNumRegex))
             {
                 return _registerDb.GetQualificationPublicByNumber(number, "");
             }
 
-            if (Regex.IsMatch(QualificationNumNoObliquesRegex, number))
+            if (Regex.IsMatch(number, QualificationNumNoObliquesRegex))
             {
                 return _registerDb.GetQualificationPublicByNumber("", number);
 
@@ -49,12 +49,12 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         public Qualification? GetQualificationByNumber(string number)
         {
-            if (Regex.IsMatch(QualificationNumRegex, number))
+            if (Regex.IsMatch(number, QualificationNumRegex))
             {
                 return _registerDb.GetQualificationByNumber(number, "");
             }
 
-            if (Regex.IsMatch(QualificationNumNoObliquesRegex, number))
+            if (Regex.IsMatch(number, QualificationNumNoObliquesRegex))
             {
                 return _registerDb.GetQualificationByNumber("", number);
 

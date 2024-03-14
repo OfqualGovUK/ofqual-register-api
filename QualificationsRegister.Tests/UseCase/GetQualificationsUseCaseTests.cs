@@ -4,6 +4,7 @@ using Moq;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
+using Ofqual.Common.RegisterAPI.Services.Database;
 using Ofqual.Common.RegisterAPI.UseCase;
 
 namespace Ofqual.Common.RegisterAPI.Tests.UseCase
@@ -11,25 +12,25 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
     [TestFixture]
     public class GetQualificationsUseCaseTests
     {
-        private Mock<IRegisterDb> _mockDB;
+        private Mock<RegisterDb> _mockDB;
         private GetQualificationsUseCase _classUnderTest;
         private Fixture _fixture;
 
         [SetUp]
         public void Setup()
         {
-            _mockDB = new Mock<IRegisterDb> { CallBase = true };
+            _mockDB = new Mock<RegisterDb> { CallBase = true };
             _classUnderTest = new GetQualificationsUseCase(new NullLoggerFactory(), _mockDB.Object);
             _fixture = new Fixture();
         }
 
         [Test]
         [Ignore("WIP")]
-        public async Task ReturnsListOfQualifications()
+        public void ReturnsListOfQualifications()
         {
             var stubbedList = _fixture.Create<List<Qualification>>();
-            _mockDB.Setup(r => r.GetQualifications(""));
-            var result = await _classUnderTest.GetQualificationsPublic(It.IsAny<string>());
+            _mockDB.Setup(r => r.GetQualificationPublicByNumber("",""));
+            var result = _classUnderTest.ListQualificationsPublic(It.IsAny<string>());
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Has.Count.EqualTo(stubbedList.Count));

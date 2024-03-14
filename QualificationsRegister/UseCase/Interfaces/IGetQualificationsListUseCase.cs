@@ -5,7 +5,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetQualificationsListUseCase
     {
-        List<QualificationPublic> ListQualificationsPublic(string? search);
-        List<Qualification> ListQualificationsPrivate(string? search);
+        List<QualificationPublic> ListQualificationsPublic(string? title);
+        List<Qualification> ListQualificationsPrivate(string? title);
     }
 }

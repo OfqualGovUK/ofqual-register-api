@@ -5,7 +5,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Interfaces
 {
     public interface IGetQualificationByNumberUseCase
     {
-        Task<QualificationPublic?> GetQualificationByNumberPublic(string number);
-        Task<Qualification?> GetQualificationByNumber(string number);
+        QualificationPublic? GetQualificationPublicByNumber(string number);
+        Qualification? GetQualificationByNumber(string number);
     }
 }
