@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace Ofqual.Common.RegisterAPI.UseCase
 {
@@ -11,24 +13,55 @@ namespace Ofqual.Common.RegisterAPI.UseCase
         private readonly IRegisterDb _registerDb;
         private readonly ILogger _logger;
 
+        private const string QualificationNumRegex = "\\b\\d{3}\\/\\d{4}\\/\\w\\b";
+        private const string QualificationNumNoObliquesRegex = "\\b\\d{7}\\w\\b";
+
+        //[GeneratedRegex("\\b\\d{3}\\/\\d{4}\\/\\w\\b")]
+        //private static partial Regex QualificationNumRegex();
+
+        //[GeneratedRegex("\\b\\d{7}\\w\\b")]
+        //private static partial Regex QualificationNumNoObliquesRegex();
+
+        //[GeneratedRegex("\\b\\d{3}\\/\\d{4}\\/\\w\\b|\\b\\d{7}\\w\\b")]
+        //private static partial Regex QualificationNum();
+
         public GetQualificationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb)
         {
             _logger = loggerFactory.CreateLogger<GetQualificationByNumberUseCase>();
             _registerDb = registerDb;
         }
 
-        public async Task<QualificationPublic?> GetQualificationByNumberPublic(string number)
-        {
-            var results = await _registerDb.GetQualificationsPublic();
+        public QualificationPublic? GetQualificationPublicByNumber(string number)
+        {           
+            if (Regex.IsMatch(QualificationNumRegex, number))
+            {
+                return _registerDb.GetQualificationPublicByNumber(number, "");
+            }
 
-            return results.FirstOrDefault();
+            if (Regex.IsMatch(QualificationNumNoObliquesRegex, number))
+            {
+                return _registerDb.GetQualificationPublicByNumber("", number);
+
+            }
+
+            return null;
         }
 
-        public async Task<Qualification?> GetQualificationByNumber(string number)
+        public Qualification? GetQualificationByNumber(string number)
         {
-            var results = await _registerDb.GetQualifications();
+            if (Regex.IsMatch(QualificationNumRegex, number))
+            {
+                return _registerDb.GetQualificationByNumber(number, "");
+            }
 
-            return results.FirstOrDefault();
+            if (Regex.IsMatch(QualificationNumNoObliquesRegex, number))
+            {
+                return _registerDb.GetQualificationByNumber("", number);
+
+            }
+
+            return null;
         }
+
     }
 }

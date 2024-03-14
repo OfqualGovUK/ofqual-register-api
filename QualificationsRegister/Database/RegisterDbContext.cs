@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 
 namespace Ofqual.Common.RegisterAPI.Database
@@ -7,18 +8,18 @@ namespace Ofqual.Common.RegisterAPI.Database
     {
         public RegisterDbContext(DbContextOptions<RegisterDbContext> options) : base(options) { }
 
-        public DbSet<Qualification> Qualifications { get; set; }
-        public DbSet<QualificationPublic> QualificationsPublic { get; set; }
+        public DbSet<DbQualification> Qualifications { get; set; }
+        public DbSet<DbQualificationPublic> QualificationsPublic { get; set; }
         public DbSet<DbOrganisation> Organisations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Qualification>()
+            modelBuilder.Entity<DbQualification>()
                 .ToTable("Register_T_Qualification", "MD_Register")
                 .HasKey(k => k.Id);
 
-            modelBuilder.Entity<QualificationPublic>()
+            modelBuilder.Entity<DbQualificationPublic>()
                 .ToView("Public_Register_V_Qualification", "MD_Register")
                 .HasKey(k => k.Id);
 

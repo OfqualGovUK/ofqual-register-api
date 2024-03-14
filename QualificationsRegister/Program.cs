@@ -55,5 +55,5 @@ static void RegisterUseCases(IServiceCollection services)
     services.AddScoped<IGetOrganisationsListUseCase, GetOrganisationsListUseCase>();
 
     services.AddScoped<IGetQualificationByNumberUseCase, GetQualificationByNumberUseCase>();
-    services.AddScoped<IGetQualificationsUseCase, GetQualificationsUseCase>();
+    services.AddScoped<IGetQualificationsListUseCase, GetQualificationsListUseCase>();
 }

@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Private;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
@@ -13,7 +14,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
     public class QualificationsPrivateFunctionTests
     {
         private Mock<FunctionContext> _functionContext;
-        private Mock<IGetQualificationsUseCase> _searchUseCaseMock;
+        private Mock<IGetQualificationsListUseCase> _searchUseCaseMock;
         private Mock<IGetQualificationByNumberUseCase> _byNumberUseCaseMock;
         private Fixture _fixture;
 
@@ -21,7 +22,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         public void Setup()
         {
             _functionContext = new Mock<FunctionContext>();
-            _searchUseCaseMock = new Mock<IGetQualificationsUseCase>();
+            _searchUseCaseMock = new Mock<IGetQualificationsListUseCase>();
             _byNumberUseCaseMock = new Mock<IGetQualificationByNumberUseCase>();
             _fixture = new Fixture();
         }

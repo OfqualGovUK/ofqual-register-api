@@ -7,8 +7,11 @@ namespace Ofqual.Common.RegisterAPI.Database
     {
         List<Organisation>? GetOrganisationsList(string name);
         Organisation? GetOrganisationByNumber(string number, string numberRN);
-        Task<List<Qualification>> GetQualifications(string search = "");
-        Task<List<QualificationPublic>> GetQualificationsPublic(string search = "");
+        List<Qualification> GetQualificationsByName(string name);
+        List<QualificationPublic> GetQualificationsPublicByName(string name);
+
+        Qualification GetQualificationByNumber(string numberObliques, string numberNoOblique);
+        QualificationPublic GetQualificationPublicByNumber(string numberObliques, string numberNoObliques);
 
     }
 }
