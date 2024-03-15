@@ -26,19 +26,19 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// Returns the list of qualifications based on the search params (if any)
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="search"></param>
+        /// <param name="title"></param>
         /// <returns></returns>
         [Function("Qualifications")]
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string name = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string title = "")
         {
-            _logger.LogInformation("List Qualifications Public - name = {}", name);
+            _logger.LogInformation("List Qualifications Public - title = {}", title);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
             try
             {
-                var qualifications = _getQualifications.ListQualificationsPublic(name);
+                var qualifications = _getQualifications.ListQualificationsPublic(title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));

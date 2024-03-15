@@ -1,8 +1,10 @@
 using AutoFixture;
+using FluentAssertions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Private;
+using Ofqual.Common.RegisterAPI.Functions.Public;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
@@ -14,7 +16,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
     public class QualificationsPrivateFunctionTests
     {
         private Mock<FunctionContext> _functionContext;
-        private Mock<IGetQualificationsListUseCase> _searchUseCaseMock;
+        private Mock<IGetQualificationsListUseCase> _listUseCaseMock;
         private Mock<IGetQualificationByNumberUseCase> _byNumberUseCaseMock;
         private Fixture _fixture;
 
@@ -22,36 +24,52 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         public void Setup()
         {
             _functionContext = new Mock<FunctionContext>();
-            _searchUseCaseMock = new Mock<IGetQualificationsListUseCase>();
+            _listUseCaseMock = new Mock<IGetQualificationsListUseCase>();
             _byNumberUseCaseMock = new Mock<IGetQualificationByNumberUseCase>();
             _fixture = new Fixture();
         }
 
-      
         [Test]
-        public async Task GetQualificationByNumberPrivateReturnsOkResponse()
+        public async Task GetQualificationByNumberReturnsOkResponse()
         {
             var stub = _fixture.Create<Qualification>();
-            var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
+            var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _listUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).Returns(stub);
 
             var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>());
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
+            res.Should().NotBeNull();
         }
 
         [Test]
-        public async Task GetQualificationsByNumberPrivateReturnsBadRequest()
+        public async Task GetQualificationByNumberReturnsBadRequest()
         {
             var stub = _fixture.Create<Qualification>();
-            var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
+            var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _listUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).Returns(stub);
 
             var res = await httpFunc.GetQualification(requestData, "");
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.BadRequest));
+            res.Should().NotBeNull();
+        }
+
+        [Test]
+        public async Task GetQualificationByTitleReturnsOkResponse()
+        {
+            var stubbedList = _fixture.Create<List<Qualification>>();
+
+            _listUseCaseMock.Setup(m => m.ListQualificationsPrivate(It.IsAny<string>())).Returns(stubbedList);
+            var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _listUseCaseMock.Object,
+                _byNumberUseCaseMock.Object);
+            MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
+            var res = await httpFunc.ListQualifications(requestData, "edexcel");
+
+            Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
+            res.Should().NotBeNull();
         }
     }
 }
