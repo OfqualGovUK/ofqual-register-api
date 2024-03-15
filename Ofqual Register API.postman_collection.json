@@ -15,18 +15,18 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/api/Organisations?search=pearson",
+							"raw": "{{APIMgmgt_URL}}/api/organisations?search=Chartered Management Institute",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"api",
-								"Organisations"
+								"organisations"
 							],
 							"query": [
 								{
 									"key": "search",
-									"value": "pearson"
+									"value": "Chartered Management Institute"
 								}
 							]
 						}
@@ -39,13 +39,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/api/Organisation?number=RN5353",
+							"raw": "{{APIMgmgt_URL}}/api/organisation?number=RN5353",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"api",
-								"Organisation"
+								"organisation"
 							],
 							"query": [
 								{
@@ -68,13 +68,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/api/qualifications",
+							"raw": "{{APIMgmgt_URL}}/api/qualifications?title=GNVQ",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"api",
 								"qualifications"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "GNVQ"
+								}
 							]
 						}
 					},
@@ -101,12 +107,12 @@
 								},
 								{
 									"key": "number",
-									"value": "50015229",
+									"value": "50024024",
 									"disabled": true
 								},
 								{
 									"key": "number",
-									"value": "50037122",
+									"value": "500/37122",
 									"disabled": true
 								}
 							]
@@ -125,13 +131,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/gov/Organisations",
+							"raw": "{{APIMgmgt_URL}}/gov/organisations",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"gov",
-								"Organisations"
+								"organisations"
 							],
 							"query": [
 								{
@@ -150,13 +156,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/gov/Organisation?number=RN5353",
+							"raw": "{{APIMgmgt_URL}}/gov/organisation?number=RN5353",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"gov",
-								"Organisation"
+								"organisation"
 							],
 							"query": [
 								{
@@ -174,13 +180,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/gov/qualifications",
+							"raw": "{{APIMgmgt_URL}}/gov/qualifications?title=vtct",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"gov",
 								"qualifications"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "vtct"
+								}
 							]
 						}
 					},
@@ -232,7 +244,6 @@
 							"pm.request.headers.add({",
 							"    key: 'Ocp-Apim-Subscription-Key',",
 							"    value: subKey",
-							"    //value: '055f720347534f66828e4c830cde8561'",
 							"})"
 						]
 					}
