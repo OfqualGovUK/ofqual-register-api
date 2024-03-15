@@ -34,7 +34,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             var stub = _fixture.Create<Qualification>();
             var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).ReturnsAsync(stub);
+            _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).Returns(stub);
 
             var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>());
             Console.WriteLine(res.StatusCode);
@@ -47,7 +47,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             var stub = _fixture.Create<Qualification>();
             var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _searchUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).ReturnsAsync(stub);
+            _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).Returns(stub);
 
             var res = await httpFunc.GetQualification(requestData, "");
             Console.WriteLine(res.StatusCode);
