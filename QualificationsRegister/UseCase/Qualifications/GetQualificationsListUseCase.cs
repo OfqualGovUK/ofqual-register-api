@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
+using Ofqual.Common.RegisterAPI.Services.Database;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.UseCase
 {
-    public class GetQualificationsUseCase : IGetQualificationsUseCase
+    public class GetQualificationsUseCase : IGetQualificationsListUseCase
     {
         private readonly ILogger _logger;
         private readonly IRegisterDb _registerDb;
@@ -17,18 +19,18 @@ namespace Ofqual.Common.RegisterAPI.UseCase
             _registerDb = registerdb;
         }
 
-        public async Task<List<QualificationPublic>> GetQualificationsPublic(string? search)
+        public List<QualificationPublic> ListQualificationsPublic(string? title)
         {
-            _logger.LogInformation("Getting list of qualifications public");
+            _logger.LogInformation("Getting list of public qualifications");
 
-            return  await _registerDb.GetQualificationsPublic(search!);
+            return  _registerDb.GetQualificationsPublicByName(title!);
         }
 
-        public async Task<List<Qualification>> GetQualificationsPrivate(string? search)
+        public List<Qualification> ListQualificationsPrivate(string? title)
         {
             _logger.LogInformation("Getting list of qualifications");
 
-            return await _registerDb.GetQualifications(search!);
+            return _registerDb.GetQualificationsByName(title!);
         }
 
     }

@@ -10,10 +10,10 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
     public class QualificationsPrivate
     {
         private readonly ILogger _logger;
-        private readonly IGetQualificationsUseCase _getQualifications;
+        private readonly IGetQualificationsListUseCase _getQualifications;
         private readonly IGetQualificationByNumberUseCase _getQualificationByNumber;
 
-        public QualificationsPrivate(ILoggerFactory loggerFactory, IGetQualificationsUseCase searchQualifications,
+        public QualificationsPrivate(ILoggerFactory loggerFactory, IGetQualificationsListUseCase searchQualifications,
             IGetQualificationByNumberUseCase getQualificationByNumber)
         {
             _logger = loggerFactory.CreateLogger<QualificationsPrivate>();
@@ -28,24 +28,24 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
         /// <param name="search"></param>
         /// <returns></returns>
         [Function("QualificationsPrivate")]
-        public async Task<HttpResponseData> GetListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string search = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string title = "")
         {
-            _logger.LogInformation("Get Qualifications Private - search = {}", search);
+            _logger.LogInformation("Get Qualifications Private - search = {}", title);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
             try
             {
-                var qualifications = await _getQualifications.GetQualificationsPrivate(search);
+                var qualifications = _getQualifications.ListQualificationsPrivate(title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
-                response.WriteString(JsonSerializer.Serialize(qualifications));
+                await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));
             }
             catch (Exception ex)
             {
                 response.StatusCode = HttpStatusCode.InternalServerError;
-                response.WriteString(JsonSerializer.Serialize(new
+                await response.WriteStringAsync(JsonSerializer.Serialize(new
                 {
                     error = ex.Message,
                     innerException = ex.InnerException
@@ -77,7 +77,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
 
             try
             {
-                var qualification = await _getQualificationByNumber.GetQualificationByNumber(number);
+                var qualification = _getQualificationByNumber.GetQualificationByNumber(number);
 
                 if (qualification == null)
                 {
@@ -85,12 +85,12 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
                     return response;
                 }
 
-                response.WriteString(JsonSerializer.Serialize(qualification));
+                await response.WriteStringAsync(JsonSerializer.Serialize(qualification));
             }
             catch (Exception ex)
             {
                 response.StatusCode = HttpStatusCode.InternalServerError;
-                response.WriteString(JsonSerializer.Serialize(new
+                await response.WriteStringAsync(JsonSerializer.Serialize(new
                 {
                     error = ex.Message,
                     innerException = ex.InnerException

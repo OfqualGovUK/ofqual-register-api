@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Ofqual.Common.RegisterAPI.Models.DB
 {
-    public class Qualification
+    public class DbQualificationPublic
     {
         public required int Id { get; set; }
         public required string QualificationNumber { get; set; }
@@ -15,8 +15,6 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
         public required string OrganisationAcronym { get; set; }
         public required string OrganisationRecognitionNumber { get; set; }
         public string? Type { get; set; }
-        [Column("SSA_Code")]
-        public string? SSACode { get; set; }
         public string? SSA { get; set; }
         public string? Level { get; set; }
         public string? SubLevel { get; set; }
@@ -33,33 +31,12 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
         public DateTime? OperationalEndDate { get; set; }
         public DateTime? CertificationEndDate { get; set; }
         public DateTime? ReviewDate { get; set; }
-        public DateTime? EmbargoDate { get; set; }
         public bool? OfferedInEngland { get; set; }
         public bool? OfferedInNorthernIreland { get; set; }
         public bool? OfferedInternationally { get; set; }
         public string? Specialism { get; set; }
         public string? Pathways { get; set; }
-
-        [Column("AssessmentMethods")]
-        [JsonIgnore]
-        public string? AssessmentMethodsString { get; set; }
-        [NotMapped]
-        public string[]? AssessmentMethods
-        {
-            get
-            {
-                if (AssessmentMethodsString == null) { return null; }
-                else
-                {
-                    //remove [], quotes and spaces from the db value
-                    var str = Regex.Replace(AssessmentMethodsString, @"[\[\\""\]]+", "");
-
-                    var arr = str.Replace(", ", ",").Split(",");
-                    return arr;
-                }
-            }
-            set { }
-        }
+        public string? AssessmentMethods { get; set; }
         public bool? ApprovedForDELFundedProgramme { get; set; }
         public string? LinkToSpecification { get; set; }
         public string? ApprenticeshipStandardReferenceNumber { get; set; }
@@ -70,19 +47,5 @@ namespace Ofqual.Common.RegisterAPI.Models.DB
         public decimal? GCSESizeEquivalence { get; set; }
         public string? EntitlementFrameworkDesignation { get; set; }
         public DateTime? LastUpdatedDate { get; set; }
-        public DateTime UILastUpdatedDate { get; set; }
-        public DateTime? InsertedDate { get; set; }
-        public int? Version { get; set; }
-        public bool AppearsOnPublicRegister { get; set; }
-        public int OrganisationId { get; set; }
-        public int? LevelId { get; set; }
-        public int? TypeId { get; set; }
-        public int? SSAId { get; set; }
-        public int? GradingTypeId { get; set; }
-        public int? GradingScaleId { get; set; }
-        public bool? PreSixteen { get; set; }
-        public bool? SixteenToEighteen { get; set; }
-        public bool? EighteenPlus { get; set; }
-        public bool? NineteenPlus { get; set; }
     }
 }
