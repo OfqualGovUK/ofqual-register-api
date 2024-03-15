@@ -28,7 +28,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="search"></param>
         /// <returns></returns>
         [Function("Organisations")]
-        public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string? search)
+        public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string? search, int page = 0)
         {
             _logger.LogInformation("Get Organisations Public - search = {}", search);
 

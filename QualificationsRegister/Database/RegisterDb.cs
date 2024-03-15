@@ -19,9 +19,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        #region Organisations
-
-        public List<Organisation>? GetOrganisationsList(string name)
+        public List<Organisation>? GetOrganisationsList(int limit, int offSet, string name)
         {
             var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
 
@@ -32,6 +30,8 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
                 .OrderBy(o => o.Name)
                 .ThenBy(o => o.LegalName)
                 .ThenBy(o => o.Acronym)
+                .Skip(offSet)
+                .Take(limit)
                 .ToList();
 
             return organisations?.ToDomain();

@@ -34,7 +34,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
                 numberRN = $"RN{number}";
             }
 
-            if (number!.Substring(0, 2).ToLower().Equals("rn"))
+            if (number!.Substring(0, 2).Equals("rn", StringComparison.InvariantCultureIgnoreCase))
             {
                 numberNoRN = number[2..];
                 numberRN = number;
