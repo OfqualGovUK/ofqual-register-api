@@ -39,28 +39,14 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: $(SonarqubeKey)
         projectName: 'Register API'
-      condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
-    # SonarQube preparation step for the pull request branch
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'ofqual-register-api-service-connection'
-        scannerMode: 'MSBuild'
-        projectKey: $(SonarqubeKey)
-        projectName: 'Register API'
-      condition: startsWith(variables['Build.SourceBranch'], 'refs/pull/')
-    # SonarQube preparation step for manual testing branch
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'ofqual-register-api-service-connection'
-        scannerMode: 'MSBuild'
-        projectKey: $(SonarqubeKey)
-        projectName: 'Register API'
-      condition: contains(variables['Build.Reason'], 'Manual')
     - powershell: |
-        $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
+        if ($env:BUILD_REASON -eq "PullRequest") {
+            $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.pullrequest.name":"[\w,/,-]*"\,?'
+        } else {
+            $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
+        }
         Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
-      condition: or(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'), contains(variables['Build.Reason'], 'Manual'))
-
+      displayName: 'Set SonarQube Scanner Parameters'
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
