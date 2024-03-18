@@ -8,8 +8,8 @@ namespace Ofqual.Common.RegisterAPI.Database
         List<Organisation>? GetOrganisationsList(string name);
         Organisation? GetOrganisationByNumber(string number, string numberRN);
 
-        List<Qualification> GetQualificationsByName(string title);
-        List<QualificationPublic> GetQualificationsPublicByName(string title);
+        ListResponse<Qualification> GetQualificationsByName(int page, int limit, string title);
+        ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, string title);
 
         Qualification? GetQualificationByNumber(string numberObliques, string numberNoOblique);
         QualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques);

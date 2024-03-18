@@ -21,7 +21,7 @@ var host = new HostBuilder()
         services.Configure<JsonSerializerOptions>(options =>
         {
             options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-            options.PropertyNameCaseInsensitive = true;
+            options.WriteIndented = true;
         });
 
         services.AddDbContext<RegisterDbContext>(

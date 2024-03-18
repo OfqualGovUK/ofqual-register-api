@@ -60,13 +60,13 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         [Test]
         public async Task GetQualificationByTitleReturnsOkResponse()
         {
-            var stubbedList = _fixture.Create<List<Qualification>>();
+            var stubbedList = _fixture.Create<ListResponse<Qualification>>();
 
-            _listUseCaseMock.Setup(m => m.ListQualificationsPrivate(It.IsAny<string>())).Returns(stubbedList);
+            _listUseCaseMock.Setup(m => m.ListQualificationsPrivate(It.IsAny<int>(), It.IsAny<int>(),It.IsAny<string>())).Returns(stubbedList);
             var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _listUseCaseMock.Object,
                 _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            var res = await httpFunc.ListQualifications(requestData, "edexcel");
+            var res = await httpFunc.ListQualifications(requestData, 1, 15, "edexcel");
 
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
             res.Should().NotBeNull();

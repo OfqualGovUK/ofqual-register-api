@@ -1,11 +1,10 @@
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
-using Ofqual.Common.RegisterAPI.Models.DB;
-using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Collections.Generic;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
@@ -49,16 +48,26 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         #region Qualifications Private
 
-        public List<Qualification> GetQualificationsByName(string title = "")
+        public ListResponse<Qualification> GetQualificationsByName(int page, int limit, string title = "")
         {
             var quals = _context.Qualifications.OrderBy(e => e.QualificationNumber);
+            var count = 0;
 
             if (!string.IsNullOrEmpty(title))
             {
-                return quals.Where(q => q.Title.Contains(title)).ToDomain();
+                var filteredList = quals.Where(q => q.Title.Contains(title));
+
+                count = filteredList.Count();
+
+                filteredList = filteredList.Skip((page - 1) * limit).Take(limit);
+
+                return Utilities.CreateListResponseModel(filteredList.ToDomain(), count, page, limit);
             }
 
-            return quals.ToDomain();
+            count = quals.Count();
+            var list = quals.Skip((page - 1) * limit).Take(limit);
+
+            return Utilities.CreateListResponseModel(list.ToDomain(), count, page, limit);
         }
 
         public Qualification? GetQualificationByNumber(string numberObliques = "", string numberNoObliques = "")
@@ -79,16 +88,26 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
         #endregion
 
         #region Qualifications Public
-        public List<QualificationPublic> GetQualificationsPublicByName(string title = "")
+        public ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, string title = "")
         {
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
+            var count = 0;
 
             if (!string.IsNullOrEmpty(title))
             {
-                return quals.Where(q => q.Title.Contains(title)).ToDomain();
+                var filteredList = quals.Where(q => q.Title.Contains(title));
+
+                count = filteredList.Count();
+
+                filteredList = filteredList.Skip((page - 1) * limit).Take(limit);
+
+                return Utilities.CreateListResponseModel(filteredList.ToDomain(), count, page, limit);
             }
 
-            return quals.ToDomain();
+            count = quals.Count();
+            var list = quals.Skip((page - 1) * limit).Take(limit);
+
+            return Utilities.CreateListResponseModel(list.ToDomain(), count, page, limit);
         }
 
         public QualificationPublic? GetQualificationPublicByNumber(string numberObliques = "", string numberNoObliques = "")
