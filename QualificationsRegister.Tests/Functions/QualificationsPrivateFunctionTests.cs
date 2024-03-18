@@ -4,9 +4,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Private;
-using Ofqual.Common.RegisterAPI.Functions.Public;
 using Ofqual.Common.RegisterAPI.Models;
-using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 

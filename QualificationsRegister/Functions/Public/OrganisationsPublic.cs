@@ -1,6 +1,7 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using System.Net;
 using System.Text.Json;
@@ -81,7 +82,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(organisation));
             }
-            catch (Exception ex)
+            catch (BadRequestException ex)
             {
                 var error = req.CreateResponse(HttpStatusCode.BadRequest);
                 error.WriteString(ex.Message);

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
-using System.Collections.Generic;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
@@ -46,7 +45,6 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             return organisation?.ToDomain();
         }
 
-        #endregion
 
         #region Qualifications Private
 
