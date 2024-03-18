@@ -39,9 +39,13 @@ stages:
         projectKey: $(SonarqubeKey)
         projectName: 'Register API'
     - powershell: |
-        $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
+        if ($env:BUILD_REASON -eq "PullRequest") {
+            $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.pullrequest.name":"[\w,/,-]*"\,?'
+        } else {
+            $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
+        }
         Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
-
+      displayName: 'Set SonarQube Scanner Parameters'
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
