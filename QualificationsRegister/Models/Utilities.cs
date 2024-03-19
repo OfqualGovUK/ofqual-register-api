@@ -1,3 +1,4 @@
+using Azure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,17 @@ namespace Ofqual.Common.RegisterAPI.Models
                 var arr = str.Replace(", ", ",").Split(",");
                 return arr;
             }
+        }
+
+        public static ListResponse<T> CreateListResponseModel<T>(List<T> list,int count, int currentPage, int limit)
+        {
+            return new ListResponse<T>()
+            {
+                Count = count,
+                CurrentPage = currentPage,
+                Limit = limit,
+                Results = list
+            };
         }
         #endregion
     }

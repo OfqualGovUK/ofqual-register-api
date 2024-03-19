@@ -55,19 +55,19 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             var res = await httpFunc.GetQualification(requestData, "");
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.BadRequest));
-            res.Should().NotBeNull();   
+            res.Should().NotBeNull();
         }
 
         [Test]
         public async Task GetQualificationByTitlePublicReturnsOkResponse()
         {
-            var stubbedList = _fixture.Create<List<QualificationPublic>>();
+            var stubbedList = _fixture.Create<ListResponse<QualificationPublic>>();
 
-            _listUseCaseMock.Setup(m => m.ListQualificationsPublic(It.IsAny<string>())).Returns(stubbedList);
+            _listUseCaseMock.Setup(m => m.ListQualificationsPublic(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(stubbedList);
             var httpFunc = new QualificationsPublic(new NullLoggerFactory(), _listUseCaseMock.Object,
                 _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            var res = await httpFunc.ListQualifications(requestData, "edexcel");
+            var res = await httpFunc.ListQualifications(requestData, 1, 15, "edexcel");
 
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
             res.Should().NotBeNull();

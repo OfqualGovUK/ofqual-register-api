@@ -29,16 +29,27 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="title"></param>
         /// <returns></returns>
         [Function("Qualifications")]
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string title = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 15, string title = "")
         {
             _logger.LogInformation("List Qualifications Public - title = {}", title);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
+            if (page < 1 || limit > 100 || limit < 1)
+            {
+                response.StatusCode = HttpStatusCode.BadRequest;
+                await response.WriteStringAsync(System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    error = "Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= 100"
+                }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+
+                return response;
+            }
+
             try
             {
-                var qualifications = _getQualifications.ListQualificationsPublic(title);
+                var qualifications = _getQualifications.ListQualificationsPublic(page, limit, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));

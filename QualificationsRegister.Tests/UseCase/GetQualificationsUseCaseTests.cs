@@ -29,12 +29,12 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public void ReturnsListOfQualifications()
         {
             var stubbedList = _fixture.Create<List<Qualification>>();
-            _mockDB.Setup(r => r.GetQualificationPublicByNumber("",""));
-            var result = _classUnderTest.ListQualificationsPublic(It.IsAny<string>());
+            _mockDB.Setup(r => r.GetQualificationPublicByNumber("", ""));
+            var result = _classUnderTest.ListQualificationsPublic(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>());
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Has.Count.EqualTo(stubbedList.Count));
-            Assert.That(result[0].OrganisationName, Is.EqualTo(stubbedList[0].OrganisationName));
+            Assert.That(result.Results[0].OrganisationName, Is.EqualTo(stubbedList[0].OrganisationName));
         }
 
         [Test]
