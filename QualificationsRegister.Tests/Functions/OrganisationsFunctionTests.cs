@@ -95,20 +95,21 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             }
 
             body.Organisations.Count.Should().Be(response.Organisations.Count);
-            res.StatusCode.Equals(System.Net.HttpStatusCode.OK);
+            res.StatusCode.Equals(HttpStatusCode.OK);
             res.Should().NotBeNull();
         }
 
         [Test]
         public async Task GetOrganisationsListPublicThrowsInternalServerError()
         {
-            _searchUseCaseMock.Setup(m => m.ListOrganisations(It.IsAny<string>(), 1, 15)).Throws<Exception>();
+            _searchUseCaseMock.Setup(m => m.ListOrganisations(It.IsAny<string>(), 1, 16))
+                .Throws(new ForbiddenRequestException("Please use a limit size between 1 to 15 inclusive"));
             var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object,
                 _getOrganisationBybyNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             var res = await httpFunc.GetOrganisationsList(requestData, "error");
 
-            Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.InternalServerError));
+            res.StatusCode.Equals(HttpStatusCode.Forbidden);
             res.Should().NotBeNull();
         }
     }

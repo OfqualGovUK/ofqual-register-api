@@ -18,22 +18,25 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        public List<Organisation>? GetOrganisationsList(int limit, int offSet, string name)
+        public (List<Organisation>?, int count) GetOrganisationsList(int limit, int offSet, string name)
         {
             var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
 
             _logger.LogInformation($"Getting list of organisations: {name}");
-            var organisations = _context.Organisations.Where(o =>
-            EF.Functions.Like(o.Acronym.Replace(" ", ""), nameSearchPattern) ||
-            EF.Functions.Like(o.LegalName.Replace(" ", ""), nameSearchPattern))
-                .OrderBy(o => o.Name)
-                .ThenBy(o => o.LegalName)
-                .ThenBy(o => o.Acronym)
-                .Skip(offSet)
-                .Take(limit)
-                .ToList();
 
-            return organisations?.ToDomain();
+            var result = _context.Organisations.Where(o =>
+            EF.Functions.Like(o.Acronym.Replace(" ", ""), nameSearchPattern) ||
+            EF.Functions.Like(o.LegalName.Replace(" ", ""), nameSearchPattern));
+
+            int count = result.Count();
+            var organisations = result.OrderBy(o => o.Name)
+               .ThenBy(o => o.LegalName)
+               .ThenBy(o => o.Acronym)
+               .Skip(offSet)
+               .Take(limit)
+               .ToList();
+
+            return (organisations?.ToDomain(), count);
         }
 
         public Organisation? GetOrganisationByNumber(string number, string numberRN)

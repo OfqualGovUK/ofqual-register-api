@@ -5,7 +5,7 @@ namespace Ofqual.Common.RegisterAPI.Database
 {
     public interface IRegisterDb
     {
-        List<Organisation>? GetOrganisationsList(int limit, int offSet, string name);
+        (List<Organisation>?, int count) GetOrganisationsList(int limit, int offSet, string name);
         Organisation? GetOrganisationByNumber(string number, string numberRN);
 
         ListResponse<Qualification> GetQualificationsByName(int page, int limit, string title);

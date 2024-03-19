@@ -1,10 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
-using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.Models.Response;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
-using System.Text.RegularExpressions;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 {
@@ -19,17 +17,26 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = register;
         }
 
-        public ListOrganisationsResponse ListOrganisations(string? search, int offSet = 1, int limit = 15)
+        public ListOrganisationsResponse? ListOrganisations(string? search, int offSet, int limit)
         {
             _logger.LogInformation("Getting list of organisations");
-            var _offSet = (offSet - 1) * limit;
 
-            var organisations = _registerDb.GetOrganisationsList(limit, _offSet, search!);
+            if(Math.Clamp(limit, 1, 15) != limit)
+            {
+                throw new ForbiddenRequestException("Please use a limit size between 1 to 15 inclusive");
+            }
+               
+            var _offSet = (offSet - 1) * limit;
+            var (organisations, count) = _registerDb.GetOrganisationsList(limit, _offSet, search!);
+            if (count == 0)
+                return null;
 
             return new ListOrganisationsResponse
             {
+                Count = count,
+                CurrentPage = offSet,
+                Limit = limit,
                 Organisations = organisations,
-                NextPage = organisations?.Count == limit ? Convert.ToString(offSet + 1) : null
             };
         }
 

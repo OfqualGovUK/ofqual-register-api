@@ -29,7 +29,8 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="search"></param>
         /// <returns></returns>
         [Function("Organisations")]
-        public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string? search, int page = 0)
+        public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req,
+            string? search, int page = 1, int limit = 15)
         {
             _logger.LogInformation("Get Organisations Public - search = {}", search);
 
@@ -38,17 +39,21 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var organisations = _getOrganisations.ListOrganisations(search);
+                var organisations = _getOrganisations.ListOrganisations(search, page, limit);
+                if (organisations == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    return response;
+                }
+
                 await response.WriteStringAsync(JsonSerializer.Serialize(organisations));
             }
-            catch (Exception ex)
+            catch (ForbiddenRequestException ex)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message,
-                    innerException = ex.InnerException
-                }));
+                var error = req.CreateResponse(HttpStatusCode.Forbidden);
+                error.WriteString(ex.Message);
+                return error;
+
             }
 
             return response;
