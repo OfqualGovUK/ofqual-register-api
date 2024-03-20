@@ -40,12 +40,6 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             try
             {
                 var organisations = _getOrganisations.ListOrganisations(search, page, limit);
-                if (organisations == null)
-                {
-                    response.StatusCode = HttpStatusCode.NotFound;
-                    return response;
-                }
-
                 await response.WriteStringAsync(JsonSerializer.Serialize(organisations));
             }
             catch (BadRequestException ex)
