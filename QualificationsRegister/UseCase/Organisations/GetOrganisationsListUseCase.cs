@@ -21,12 +21,12 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
         {
             _logger.LogInformation("Getting list of organisations");
 
-            if(Math.Clamp(limit, 1, 15) != limit)
+            var _offSet = (offSet - 1) * limit;    
+            if (Math.Clamp(limit, 1, 15) != limit || _offSet < 0)
             {
-                throw new ForbiddenRequestException("Please use a limit size between 1 to 15 inclusive");
+                throw new ForbiddenRequestException("Please use a limit size between 1 to 15 inclusive and page size greater than 0");
             }
                
-            var _offSet = (offSet - 1) * limit;
             var (organisations, count) = _registerDb.GetOrganisationsList(limit, _offSet, search!);
             if (count == 0)
                 return null;
