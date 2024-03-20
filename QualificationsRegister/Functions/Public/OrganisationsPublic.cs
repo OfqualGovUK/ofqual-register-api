@@ -56,7 +56,15 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                     error = ex.Message
                 }));
                 return error;
-
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                await response.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = ex.Message,
+                    innerException = ex.InnerException
+                }));
             }
 
             return response;
@@ -98,6 +106,15 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                     error = ex.Message
                 }));
                 return error;
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                await response.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = ex.Message,
+                    innerException = ex.InnerException
+                }));
             }
 
             return response;
