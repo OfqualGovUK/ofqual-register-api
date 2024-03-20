@@ -48,7 +48,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(organisations));
             }
-            catch (ForbiddenRequestException ex)
+            catch (BadRequestException ex)
             {
                 var error = req.CreateResponse(HttpStatusCode.Forbidden);
                 error.WriteString(JsonSerializer.Serialize(new

@@ -99,10 +99,11 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         }
 
         [Test]
-        public async Task GetOrganisationsListPublicThrowsInternalServerError()
+        public async Task GetOrganisationsListPublicCatchesBadRequestException()
         {
             _searchUseCaseMock.Setup(m => m.ListOrganisations(It.IsAny<string>(), 1, 16))
-                .Throws(new ForbiddenRequestException("Please use a limit size between 1 to 15 inclusive"));
+                .Throws(new BadRequestException("Please use a limit size between 1 to 15 inclusive " +
+                    "and page size greater than 0"));
             var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object,
                 _getOrganisationBybyNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
