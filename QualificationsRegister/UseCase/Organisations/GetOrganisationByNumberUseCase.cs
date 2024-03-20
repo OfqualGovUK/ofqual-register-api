@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using System.Text.RegularExpressions;
 
@@ -18,21 +19,28 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = registerDb;
         }
 
-        public Organisation? GetOrganisationByNumber(string number)
+        public Organisation? GetOrganisationByNumber(string? number)
         {
-            string numberRN = string.Empty, numberNoRN = string.Empty;
-
-            if (Regex.IsMatch(number, @"^\d+$"))
+            if (string.IsNullOrEmpty(number))
             {
-                numberNoRN = number;
-                numberRN = $"RN{number}";
+                throw new BadRequestException("Organisation number is null or empty");
             }
 
-            if (number.Substring(0, 2).ToLower().Equals("rn"))
+            string numberNoRN, numberRN;
+
+            if (Regex.IsMatch(number!, @"^\d+$"))
+            {
+                numberNoRN = number!;
+                numberRN = $"RN{number}";
+            }
+            else if (number!.Substring(0, 2).Equals("rn", StringComparison.InvariantCultureIgnoreCase))
             {
                 numberNoRN = number[2..];
                 numberRN = number;
             }
+            else
+                throw new BadRequestException("Please provide a valid organisation number");
+
 
             return _registerDb.GetOrganisationByNumber(numberNoRN, numberRN);
         }

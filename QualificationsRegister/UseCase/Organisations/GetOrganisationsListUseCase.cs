@@ -1,9 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
-using System.Text.RegularExpressions;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 {
@@ -18,10 +17,25 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = register;
         }
 
-        public List<Organisation>? ListOrganisations(string search)
+        public ListResponse<Organisation>? ListOrganisations(string? search, int offSet, int limit)
         {
-            _logger.LogInformation("Getting list of orgs");
-            return _registerDb.GetOrganisationsList(search);
+            _logger.LogInformation("Getting list of organisations");
+
+            var _offSet = (offSet - 1) * limit;    
+            if (Math.Clamp(limit, 1, 15) != limit || _offSet < 0)
+            {
+                throw new BadRequestException("Please use a limit size between 1 to 15 inclusive " +
+                    "and page size greater than 0");
+            }
+               
+            var (organisations, count) = _registerDb.GetOrganisationsList(limit, _offSet, search!);
+            return new ListResponse<Organisation>
+            {
+                Count = count,
+                CurrentPage = offSet,
+                Limit = limit,
+                Results = organisations ?? ([])
+            };
         }
 
     }

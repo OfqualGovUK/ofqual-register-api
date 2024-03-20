@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
-using System.Collections.Generic;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
@@ -19,32 +18,36 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        #region Organisations
-
-        public List<Organisation>? GetOrganisationsList(string name)
+        public (List<Organisation>?, int count) GetOrganisationsList(int limit, int offSet, string name)
         {
             var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
 
-            _logger.LogInformation("Getting list of organisations");
-            var organisations = _context.Organisations.Where(o =>
-            EF.Functions.Like(o.Acronym.Replace(" ", ""), nameSearchPattern) ||
-            EF.Functions.Like(o.LegalName.Replace(" ", ""), nameSearchPattern))
-                .OrderBy(o => o.LegalName)
-                .ToList();
+            _logger.LogInformation($"Getting list of organisations: {name}");
 
-            return organisations?.ToDomain();
+            var result = _context.Organisations.Where(o =>
+            EF.Functions.Like(o.Acronym.Replace(" ", ""), nameSearchPattern) ||
+            EF.Functions.Like(o.LegalName.Replace(" ", ""), nameSearchPattern));
+
+            int count = result.Count();
+            var organisations = result.OrderBy(o => o.Name)
+               .ThenBy(o => o.LegalName)
+               .ThenBy(o => o.Acronym)
+               .Skip(offSet)
+               .Take(limit)
+               .ToList();
+
+            return (organisations?.ToDomain(), count);
         }
 
         public Organisation? GetOrganisationByNumber(string number, string numberRN)
         {
-            _logger.LogInformation("Getting an organisation by number");
+            _logger.LogInformation($"Getting an organisation by number: {numberRN} or {number}");
             var organisation = _context.Organisations.FirstOrDefault(o => o.RecognitionNumber.Equals(number) ||
             o.RecognitionNumber.Equals(numberRN));
 
             return organisation?.ToDomain();
         }
 
-        #endregion
 
         #region Qualifications Private
 
