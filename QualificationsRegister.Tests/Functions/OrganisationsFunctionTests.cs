@@ -6,7 +6,6 @@ using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Public;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
-using Ofqual.Common.RegisterAPI.Models.Response;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using System.Net;
@@ -75,9 +74,9 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         public async Task GetOrganisationsListPublicResturnsOkResponse()
         {
             var stubbedList = _fixture.Create<List<Organisation>>();
-            var response = new ListOrganisationsResponse
+            var response = new ListResponse<Organisation>
             {
-                Organisations = stubbedList,
+                Results = stubbedList,
 
             };
 
@@ -87,14 +86,14 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             var res = await httpFunc.GetOrganisationsList(requestData, "edexcel");
 
-            ListOrganisationsResponse body;
+            ListResponse<Organisation> body;
             using (var reader = new StreamReader(res.Body))
             {
                 res.Body.Seek(0, SeekOrigin.Begin);
-                body = JsonSerializer.Deserialize<ListOrganisationsResponse>(reader.ReadToEnd());
+                body = JsonSerializer.Deserialize<ListResponse<Organisation>>(reader.ReadToEnd());
             }
 
-            body.Organisations.Count.Should().Be(response.Organisations.Count);
+            body.Results.Count.Should().Be(response.Results.Count);
             res.StatusCode.Equals(HttpStatusCode.OK);
             res.Should().NotBeNull();
         }
