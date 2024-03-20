@@ -51,7 +51,10 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             catch (ForbiddenRequestException ex)
             {
                 var error = req.CreateResponse(HttpStatusCode.Forbidden);
-                error.WriteString(ex.Message);
+                error.WriteString(JsonSerializer.Serialize(new
+                {
+                    error = ex.Message
+                }));
                 return error;
 
             }
@@ -90,7 +93,10 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             catch (BadRequestException ex)
             {
                 var error = req.CreateResponse(HttpStatusCode.BadRequest);
-                error.WriteString(ex.Message);
+                error.WriteString(JsonSerializer.Serialize(new
+                {
+                    error = ex.Message
+                }));
                 return error;
             }
 
