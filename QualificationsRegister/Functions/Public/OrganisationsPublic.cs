@@ -73,7 +73,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <returns></returns>
         [Function("Organisation")]
         public async Task<HttpResponseData> GetOrganisation([HttpTrigger(AuthorizationLevel.Function, "get",
-            Route = "organisations/{number?}")] HttpRequestData req, string? number)
+            Route = "organisations/{number}")] HttpRequestData req, string? number)
         {
             _logger.LogInformation("Get Organisation - Public = {}", number);
 
