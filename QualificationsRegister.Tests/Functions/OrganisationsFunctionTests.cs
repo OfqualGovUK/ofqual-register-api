@@ -109,7 +109,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             var res = await httpFunc.GetOrganisationsList(requestData, "error");
 
-            res.StatusCode.Equals(HttpStatusCode.Forbidden);
+            res.StatusCode.Equals(HttpStatusCode.BadRequest);
             res.Should().NotBeNull();
         }
     }
