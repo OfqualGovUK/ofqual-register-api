@@ -9,7 +9,7 @@ namespace Ofqual.Common.RegisterAPI.Database
         Organisation? GetOrganisationByNumber(string number, string numberRN);
 
         ListResponse<Qualification> GetQualificationsByName(int page, int limit, string title);
-        ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, string title);
+        ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title );
 
         Qualification? GetQualificationByNumber(string numberObliques, string numberNoOblique);
         QualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques);

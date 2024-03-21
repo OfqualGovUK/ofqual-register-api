@@ -19,11 +19,11 @@ namespace Ofqual.Common.RegisterAPI.UseCase
             _registerDb = registerdb;
         }
 
-        public ListResponse<QualificationPublic> ListQualificationsPublic(int page, int limit, string? title)
+        public ListResponse<QualificationPublic> ListQualificationsPublic(int page, int limit, QualificationFilter? query, string? title)
         {
             _logger.LogInformation("Getting list of public qualifications");
 
-            return  _registerDb.GetQualificationsPublicByName(page,limit, title!);
+            return _registerDb.GetQualificationsPublicByName(page, limit, query, title!);
         }
 
         public ListResponse<Qualification> ListQualificationsPrivate(int page, int limit, string? title)

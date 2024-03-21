@@ -5,6 +5,7 @@ using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using System.Net;
 using System.Text.Json;
 using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Mappers;
 
 
 namespace Ofqual.Common.RegisterAPI.Functions.Public
@@ -34,7 +35,6 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         {
             _logger.LogInformation("List Qualifications Public - title = {}", title);
 
-            var queryParams = new QualificationFilter(req.Query);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
@@ -52,7 +52,9 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var qualifications = _getQualifications.ListQualificationsPublic(page, limit, title);
+                var query = req.Query.GetQualificationFilterQuery();
+
+                var qualifications = _getQualifications.ListQualificationsPublic(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));

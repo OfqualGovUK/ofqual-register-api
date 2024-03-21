@@ -103,7 +103,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
         #endregion
 
         #region Qualifications Public
-        public ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, string title = "")
+        public ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title = "")
         {
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
             var count = 0;
