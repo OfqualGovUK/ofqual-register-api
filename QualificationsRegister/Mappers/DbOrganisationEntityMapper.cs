@@ -10,7 +10,6 @@ namespace Ofqual.Common.RegisterAPI.Mappers
         {
             return new Organisation
             {
-                Id = mDDBOrganisationEntity.Id,
                 Name = mDDBOrganisationEntity.Name,
                 RecognitionNumber = mDDBOrganisationEntity.RecognitionNumber,
                 LegalName = mDDBOrganisationEntity.LegalName,

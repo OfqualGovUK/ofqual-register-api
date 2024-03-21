@@ -6,7 +6,6 @@ namespace Ofqual.Common.RegisterAPI.Models
 {
     public class Qualification
     {
-        public required int Id { get; set; }
         public required string QualificationNumber { get; set; }
         public string? QualificationNumberNoObliques { get; set; }
         public required string Title { get; set; }
