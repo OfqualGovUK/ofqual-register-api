@@ -64,13 +64,25 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
                 filteredList = filteredList.Skip((page - 1) * limit).Take(limit);
 
-                return Utilities.CreateListResponseModel(filteredList.ToDomain(), count, page, limit);
+                return new ListResponse<Qualification>
+                {
+                    Count = count,
+                    CurrentPage = page,
+                    Limit = limit,
+                    Results = filteredList.ToDomain()
+                };
             }
 
             count = quals.Count();
             var list = quals.Skip((page - 1) * limit).Take(limit);
 
-            return Utilities.CreateListResponseModel(list.ToDomain(), count, page, limit);
+            return new ListResponse<Qualification>
+            {
+                Count = count,
+                CurrentPage = page,
+                Limit = limit,
+                Results = list.ToDomain()
+            };
         }
 
         public Qualification? GetQualificationByNumber(string numberObliques = "", string numberNoObliques = "")
@@ -104,13 +116,25 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
                 filteredList = filteredList.Skip((page - 1) * limit).Take(limit);
 
-                return Utilities.CreateListResponseModel(filteredList.ToDomain(), count, page, limit);
+                return new ListResponse<QualificationPublic>
+                {
+                    Count = count,
+                    CurrentPage = page,
+                    Limit = limit,
+                    Results = filteredList.ToDomain()
+                };
             }
 
             count = quals.Count();
             var list = quals.Skip((page - 1) * limit).Take(limit);
 
-            return Utilities.CreateListResponseModel(list.ToDomain(), count, page, limit);
+            return new ListResponse<QualificationPublic>
+            {
+                Count = count,
+                CurrentPage = page,
+                Limit = limit,
+                Results = list.ToDomain()
+            };
         }
 
         public QualificationPublic? GetQualificationPublicByNumber(string numberObliques = "", string numberNoObliques = "")

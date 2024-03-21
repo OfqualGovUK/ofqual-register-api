@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using System.Net;
 using System.Text.Json;
+using Ofqual.Common.RegisterAPI.Models;
 
 
 namespace Ofqual.Common.RegisterAPI.Functions.Public
@@ -32,6 +33,8 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 15, string title = "")
         {
             _logger.LogInformation("List Qualifications Public - title = {}", title);
+
+            var queryParams = new QualificationFilter(req.Query);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");

@@ -1,3 +1,4 @@
+using Ofqual.Common.RegisterAPI.Extensions;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 
@@ -39,7 +40,7 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 OfferedInternationally = dbQualificationPublic.OfferedInternationally,
                 Specialism = dbQualificationPublic.Specialism,
                 Pathways = dbQualificationPublic.Pathways,
-                AssessmentMethods = Utilities.GetAssessmentMethods(dbQualificationPublic.AssessmentMethods),
+                AssessmentMethods = dbQualificationPublic.AssessmentMethods?.GetSubStrings(),
                 ApprovedForDELFundedProgramme = dbQualificationPublic.ApprovedForDELFundedProgramme,
                 LinkToSpecification = dbQualificationPublic.LinkToSpecification,
                 ApprenticeshipStandardReferenceNumber = dbQualificationPublic.ApprenticeshipStandardReferenceNumber,
