@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "8cc5f9ee-c44b-447c-9653-498bf161e9cb",
+		"_postman_id": "872633c2-0cea-49f1-8d2b-42bef43656d9",
 		"name": "Ofqual Register API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31683579"
@@ -15,7 +15,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/api/organisations?search=Chartered Management Institute",
+							"raw": "{{APIMgmgt_URL}}/api/organisations?page=1&limit=15",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
@@ -26,7 +26,16 @@
 							"query": [
 								{
 									"key": "search",
-									"value": "Chartered Management Institute"
+									"value": "Chartered Management Institute",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "15"
 								}
 							]
 						}
@@ -39,23 +48,20 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/api/organisation?number=RN5353",
+							"raw": "{{APIMgmgt_URL}}/api/organisations/RN5353",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"api",
-								"organisation"
+								"organisations",
+								"RN5353"
 							],
 							"query": [
 								{
 									"key": "number",
 									"value": "rn5353",
 									"disabled": true
-								},
-								{
-									"key": "number",
-									"value": "RN5353"
 								}
 							]
 						}
@@ -131,7 +137,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/gov/organisations",
+							"raw": "{{APIMgmgt_URL}}/gov/organisations?page=1&limit=15",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
@@ -144,6 +150,14 @@
 									"key": "search",
 									"value": "cmi",
 									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "15"
 								}
 							]
 						}
@@ -156,19 +170,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/gov/organisation?number=RN5353",
+							"raw": "{{APIMgmgt_URL}}/gov/organisations/RN5353",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"gov",
-								"organisation"
-							],
-							"query": [
-								{
-									"key": "number",
-									"value": "RN5353"
-								}
+								"organisations",
+								"RN5353"
 							]
 						}
 					},
