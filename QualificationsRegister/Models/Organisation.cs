@@ -9,8 +9,6 @@ namespace Ofqual.Common.RegisterAPI.Models
 {
     public class Organisation
     {
-        public required int Id { get; set; }
-
         public required string Name { get; set; }
 
         public required string RecognitionNumber { get; set; }
