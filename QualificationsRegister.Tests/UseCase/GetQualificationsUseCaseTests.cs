@@ -30,7 +30,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         {
             var stubbedList = _fixture.Create<List<Qualification>>();
             _mockDB.Setup(r => r.GetQualificationPublicByNumber("", ""));
-            var result = _classUnderTest.ListQualificationsPublic(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>());
+            var result = _classUnderTest.ListQualificationsPublic(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<QualificationFilter>(), null);
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Has.Count.EqualTo(stubbedList.Count));

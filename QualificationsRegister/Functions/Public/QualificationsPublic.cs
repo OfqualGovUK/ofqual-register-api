@@ -52,7 +52,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var query = req.Query.GetQualificationFilterQuery();
+                var query = req.Query == null ? null : req.Query.GetQualificationFilterQuery();
 
                 var qualifications = _getQualifications.ListQualificationsPublic(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);

@@ -35,7 +35,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).Returns(stub);
 
-            var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>());
+            var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>(), null, null);
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
             res.Should().NotBeNull();
@@ -49,7 +49,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             _byNumberUseCaseMock.Setup(m => m.GetQualificationByNumber(It.IsAny<string>())).Returns(stub);
 
-            var res = await httpFunc.GetQualification(requestData, "");
+            var res = await httpFunc.GetQualification(requestData, "", null, null);
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.BadRequest));
             res.Should().NotBeNull();
