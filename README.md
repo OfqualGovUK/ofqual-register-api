@@ -274,7 +274,7 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 
 > | http code     | content-type                      | response                                  |Description                          |
 > |---------------|-----------------------------------|-------------------------------------------|-------------------------------------|
-> | `200`         | `application/json`              | Qualifications List response JSON                     | Paging metadata with list of Organisation records                                    |
+> | `200`         | `application/json`              | Qualifications List response JSON                     | Paging metadata with list of Qualification records                                    |
 > | `400`         | `application/json`                | `{"message": {error description}}`  | Parameters provided are not correct / data not supported                            |
 
 ##### Example Requests
@@ -295,37 +295,51 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 
 ```
  {
-    "count": 27,
-    "currentPage": 1,
-    "limit": 15,
-    "results": [
+    "Count": 44787,
+    "CurrentPage": 6,
+    "Limit": 20,
+    "Results": [
         {
-            "id": 123, // Integer
-            "name": "Example Organization", // String
-            "recognitionNumber": "ABC123", // String
-            "legalName": "Legal Organization Name", // String
-            "acronym": "EO", // String
-            "ofqualOrganisationStatus": null, // Nullable String
-            "cceaOrganisationStatus": null, // Nullable String
-            "ofqualRecognisedOn": null, // Nullable DateTime
-            "ofqualRecognisedTo": null, // Nullable Date
-            "ofqualSurrenderedOn": null, // Nullable DateTime
-            "ofqualWithdrawnOn": null, // Nullable DateTime
-            "cceaRecognisedOn": null, // Nullable DateTime
-            "cceaRecognisedTo": null, // Nullable Date
-            "cceaSurrenderedOn": null, // Nullable DateTime
-            "cceaWithdrawnOn": null, // Nullable DateTime
-            "contactEmail": "contact@example.org", // String
-            "website": "https://example.org", // String
-            "phoneNumber": "+1 123-456-7890", // String
-            "feesUrl": "https://example.org/fees", // String
-            "addressLine1": "123 Main Street", // String
-            "addressLine2": "Suite 456", // String
-            "addressCity": "Cityville", // String
-            "addressCounty": "Countyshire", // String
-            "addressCountry": "United Kingdom", // String
-            "addressPostCode": "AB12 3CD", // String
-            "lastUpdatedDate": "2024-02-20T09:07:22Z" // DateTime
+            "QualificationNumber": "100/0102/5",
+            "QualificationNumberNoObliques": "10001025",
+            "Title": "AQA Advanced GCE in English Language A",
+            "Status": "No longer awarded",
+            "OrganisationName": "AQA Education DEMO2.2",
+            "OrganisationAcronym": "AQA Education",
+            "OrganisationRecognitionNumber": "RN5196",
+            "Type": "GCE A Level",
+            "SSA": "Languages, literature and culture of the British Isles",
+            "Level": "Level 2",
+            "SubLevel": "None",
+            "EQFLevel": "Level 3",
+            "GradingType": "Graded",
+            "GradingScale": "A/B/C/D/E",
+            "TotalCredits": 0,
+            "TQT": null,
+            "GLH": null,
+            "MinimumGLH": 360,
+            "MaximumGLH": 360,
+            "RegulationStartDate": "2000-09-01T00:00:00",
+            "OperationalStartDate": "2000-09-01T00:00:00",
+            "OperationalEndDate": "2009-08-31T00:00:00",
+            "CertificationEndDate": "2010-08-31T00:00:00",
+            "ReviewDate": "2005-09-01T00:00:00",
+            "OfferedInEngland": true,
+            "OfferedInNorthernIreland": false,
+            "OfferedInternationally": null,
+            "Specialism": null,
+            "Pathways": null,
+            "AssessmentMethods": null,
+            "ApprovedForDELFundedProgramme": null,
+            "LinkToSpecification": null,
+            "ApprenticeshipStandardReferenceNumber": null,
+            "ApprenticeshipStandardTitle": null,
+            "RegulatedByNorthernIreland": false,
+            "NIDiscountCode": null,
+            "GCESizeEquivalence": null,
+            "GCSESizeEquivalence": null,
+            "EntitlementFrameworkDesignation": null,
+            "LastUpdatedDate": "2021-09-20T15:17:09.427"
         },
         ....
     ]
@@ -333,3 +347,113 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
  ```
  </details>
 
+
+
+### Qualifications Private
+ 
+<details>
+ <summary><code>GET</code> <code><b>gov/Qualifications?search={search}&page={page}&limit={limit}</b></code> </summary>
+
+
+####
+Retrieves a list of qualifications along with with the paging metadata ordered by the qualification number.
+
+##### Parameters
+Same as the parameters on Qualifications Public
+
+##### Headers
+Requires the <code>Ocp-Apim-Subscription-Key</code> key for subscription access
+
+
+##### Responses
+Same as the responses on Qualifications Public
+
+##### Example Requests
+
+> ```javascript
+>  gov/Qualifications?search=Chartered&assessmentMethods=Coursework,E-assessment&organisations=Trinity College London,ABE,AIM Qualifications&page=1&limit=10
+> ```
+
+> ```javascript
+>  gov/Qualifications?page=5&limit=15
+> ```
+
+> ```javascript
+>  gov/Qualifications/
+> ```
+
+##### Example Response
+Same as the response on the Qualifications public with a few new fields: 
+
+```
+ {
+    "Count": 44787,
+    "CurrentPage": 6,
+    "Limit": 20,
+    "Results": [
+        {
+            "QualificationNumber": "500/1522/9",
+            "QualificationNumberNoObliques": "50015229",
+            "Title": "Pearson EDI Level 3 Award in Preparing to Teach in the Lifelong Learning Sector (QCF)",
+            "Status": "No longer awarded",
+            "OrganisationName": "Pearson EDI",
+            "OrganisationAcronym": "Pearson EDI",
+            "OrganisationRecognitionNumber": "RN5134",
+            "Type": "Vocational Certificate Of Education",
+            "SSACode": "Teaching",
+            "SSA": "Teaching and lecturing",
+            "Level": "Level 2",
+            "SubLevel": "None",
+            "EQFLevel": "Level 3",
+            "GradingType": "Pass/Fail",
+            "GradingScale": null,
+            "TotalCredits": 6,
+            "TQT": null,
+            "GLH": null,
+            "MinimumGLH": 30,
+            "MaximumGLH": 30,
+            "RegulationStartDate": "2006-09-01T00:00:00",
+            "OperationalStartDate": "2006-09-01T00:00:00",
+            "OperationalEndDate": "2012-07-31T00:00:00",
+            "CertificationEndDate": "2015-07-31T00:00:00",
+            "ReviewDate": "2012-07-31T00:00:00",
+            "EmbargoDate": null,
+            "OfferedInEngland": true,
+            "OfferedInNorthernIreland": true,
+            "OfferedInternationally": null,
+            "Specialism": null,
+            "Pathways": null,
+            "AssessmentMethods": [
+                "Practical Demonstration/Assignment"
+            ],
+            "ApprovedForDELFundedProgramme": null,
+            "LinkToSpecification": null,
+            "ApprenticeshipStandardReferenceNumber": null,
+            "ApprenticeshipStandardTitle": null,
+            "RegulatedByNorthernIreland": false,
+            "NIDiscountCode": null,
+            "GCESizeEquivalence": null,
+            "GCSESizeEquivalence": null,
+            "EntitlementFrameworkDesignation": null,
+            "LastUpdatedDate": "2021-09-20T15:17:09.427",
+            "UILastUpdatedDate": "2012-07-27T15:59:13",
+            "InsertedDate": "2016-06-21T07:12:17.42",
+            "Version": 9,
+            "AppearsOnPublicRegister": true,
+            "OrganisationId": 1004,
+            "LevelId": 10,
+            "TypeId": 21,
+            "SSAId": 42,
+            "GradingTypeId": 1,
+            "GradingScaleId": null,
+            "PreSixteen": false,
+            "SixteenToEighteen": true,
+            "EighteenPlus": false,
+            "NineteenPlus": true
+        },
+        ....
+    ]
+ }
+ ```
+
+</details>
