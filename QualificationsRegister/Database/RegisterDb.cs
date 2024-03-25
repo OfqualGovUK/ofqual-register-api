@@ -108,9 +108,39 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
             var count = 0;
 
+            var filteredList = quals.Where(e => e.Id != null);
+
+            if (query != null)
+            {
+                if (query.AssessmentMethods != null)
+                {
+                    foreach (var aM in query.AssessmentMethods)
+                    {
+                        filteredList = filteredList.Where(q => q.AssessmentMethods!.Contains(aM));
+                    }
+                }
+
+                if (query.AwardingOrganisations != null)
+                {
+                    foreach (var aO in query.AwardingOrganisations)
+                    {
+                        filteredList = filteredList.Where(q => q.OrganisationName == aO);
+                    }
+                }
+
+                if (query.Availability != null)
+                {
+                    foreach (var av in query.Availability)
+                    {
+
+                    }
+                }
+            }
+
+
             if (!string.IsNullOrEmpty(title))
             {
-                var filteredList = quals.Where(q => q.Title.Contains(title));
+                filteredList = quals.Where(q => q.Title.Contains(title));
 
                 count = filteredList.Count();
 
