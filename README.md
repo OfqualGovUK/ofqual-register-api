@@ -7,7 +7,7 @@ An API for accessing the Register of qualifications, built using Azure Functions
 ### Organisations
 
 <details>
- <summary><code>GET</code> <code><b>/Organisations/{recognitionNumber}</b></code> </summary>
+ <summary><code>GET</code> <code><b>api/Organisations/{recognitionNumber}</b></code> </summary>
 
 ####
 Retrieves an individual Organisation by the Recognition Number
@@ -72,7 +72,7 @@ Retrieves an individual Organisation by the Recognition Number
 
  
 <details>
- <summary><code>GET</code> <code><b>/Organisations?search={search}&page={page}&limit={limit}</b></code> </summary>
+ <summary><code>GET</code> <code><b>api/Organisations?search={search}&page={page}&limit={limit}</b></code> </summary>
 
 
 ####
@@ -119,7 +119,6 @@ Retrieves a list of organisations along with with the paging metadata ordered by
     "limit": 15,
     "results": [
         {
-            "id": 123, // Integer
             "name": "Example Organization", // String
             "recognitionNumber": "ABC123", // String
             "legalName": "Legal Organization Name", // String
@@ -156,7 +155,7 @@ Retrieves a list of organisations along with with the paging metadata ordered by
 ### Qualifications Public
 
 <details>
- <summary><code>GET</code> <code><b>/Qualifications/{qualificationNumber}</b></code> </summary>
+ <summary><code>GET</code> <code><b>api/Qualifications/{qualificationNumber}</b></code> </summary>
 
 ####
 Retrieves an individual Qualification by the Qualification Number
@@ -242,7 +241,7 @@ Retrieves an individual Qualification by the Qualification Number
 
  
 <details>
- <summary><code>GET</code> <code><b>/Qualifications?search={search}&page={page}&limit={limit}</b></code> </summary>
+ <summary><code>GET</code> <code><b>api/Qualifications?search={search}&page={page}&limit={limit}</b></code> </summary>
 
 
 ####
@@ -348,8 +347,261 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
  </details>
 
 
+### Organisations Private
+
+<details>
+ <summary><code>GET</code> <code><b>gov/Organisations/{recognitionNumber}</b></code> </summary>
+
+####
+Retrieves an individual Organisation by the Recognition Number
+
+##### Parameters
+
+> | name      |  type     | data type               | description | variations                                                           |
+> |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
+> | recognitionNumber      |  required | string   | Recognition number for the Organisation record in the RN format eg. RN5353 |  Allowed without the RN prefix eg. 5353|
+
+
+##### Headers
+Requires the <code>Ocp-Apim-Subscription-Key</code> key for subscription access
+
+
+##### Responses
+
+> | http code     | content-type                      | response                                  |Description                          |
+> |---------------|-----------------------------------|-------------------------------------------|-------------------------------------|
+> | `200`         | `application/json`              | Organisation JSON                     | JSON object for the Organisation                                    |
+> | `404`         | `application/json`                | `{"message":"Not found"}`  | The organisation could not be found for the recognition number provided                            |
+
+
+##### Example Requests
+
+> ```javascript
+>  gov/Organisations/RN5353
+> ```
+
+> ```javascript
+>  gov/Organisations/5353
+> ```
+
+
+##### Example response
+
+```
+ {
+    "name": "Example Organization", // String
+    "recognitionNumber": "RN5353", // String
+    "legalName": "Legal Organization Name", // String
+    "acronym": "EO", // String
+    "ofqualOrganisationStatus": null, // Nullable String
+    "cceaOrganisationStatus": null, // Nullable String
+    "ofqualRecognisedOn": null, // Nullable DateTime
+    "ofqualRecognisedTo": null, // Nullable Date
+    "ofqualSurrenderedOn": null, // Nullable DateTime
+    "ofqualWithdrawnOn": null, // Nullable DateTime
+    "cceaRecognisedOn": null, // Nullable DateTime
+    "cceaRecognisedTo": null, // Nullable Date
+    "cceaSurrenderedOn": null, // Nullable DateTime
+    "cceaWithdrawnOn": null, // Nullable DateTime
+    "contactEmail": "contact@example.org", // String
+    "website": "https://example.org", // String
+    "phoneNumber": "+1 123-456-7890", // String
+    "feesUrl": "https://example.org/fees", // String
+    "addressLine1": "123 Main Street", // String
+    "addressLine2": "Suite 456", // String
+    "addressCity": "Cityville", // String
+    "addressCounty": "Countyshire", // String
+    "addressCountry": "United Kingdom", // String
+    "addressPostCode": "AB12 3CD", // String
+    "lastUpdatedDate": "2024-02-20T09:07:22Z" // DateTime
+}
+```
+
+ </details>
+
+ 
+<details>
+ <summary><code>GET</code> <code><b>gov/Organisations?search={search}&page={page}&limit={limit}</b></code> </summary>
+
+
+####
+Retrieves a list of organisations along with with the paging metadata ordered by Organisation name, Legal Name, then Acronym.
+
+##### Parameters
+
+> | name      |  type     | data type               | description | variations                                                           |
+> |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
+> | search      |  optional | string   | Search term that matches within the organisation name or ‘known as’/acronym field of one or more records| if not povided, all organisations are returned
+> | page      |  required | int   | Page number for the current set of search results|if not provided, defaults to page # 1
+> | limit      |  required | int   | Number of organisation records to return for the search | if not provided defaults to 15
+
+
+##### Headers
+Requires the <code>Ocp-Apim-Subscription-Key</code> key for subscription access
+
+##### Responses
+
+> | http code     | content-type                      | response                                  |Description                          |
+> |---------------|-----------------------------------|-------------------------------------------|-------------------------------------|
+> | `200`         | `application/json`              | Organisation List response JSON                     | Paging metadata with list of Organisation records                                    |
+> | `400`         | `application/json`                | `{"message": {error description}}`  | Parameters provided are not correct / data not supported                            |
+
+
+ 
+##### Example Requests
+
+> ```javascript
+>  gov/Organisations?search=Chartered&page=1&limit=10
+> ```
+
+> ```javascript
+>  gov/Organisations?page=5&limit=15
+> ```
+
+> ```javascript
+>  gov/Organisations/
+> ```
+
+##### Example Response
+
+```
+ {
+    "count": 27,
+    "currentPage": 1,
+    "limit": 15,
+    "results": [
+        {
+            "name": "Example Organization", // String
+            "recognitionNumber": "ABC123", // String
+            "legalName": "Legal Organization Name", // String
+            "acronym": "EO", // String
+            "ofqualOrganisationStatus": null, // Nullable String
+            "cceaOrganisationStatus": null, // Nullable String
+            "ofqualRecognisedOn": null, // Nullable DateTime
+            "ofqualRecognisedTo": null, // Nullable Date
+            "ofqualSurrenderedOn": null, // Nullable DateTime
+            "ofqualWithdrawnOn": null, // Nullable DateTime
+            "cceaRecognisedOn": null, // Nullable DateTime
+            "cceaRecognisedTo": null, // Nullable Date
+            "cceaSurrenderedOn": null, // Nullable DateTime
+            "cceaWithdrawnOn": null, // Nullable DateTime
+            "contactEmail": "contact@example.org", // String
+            "website": "https://example.org", // String
+            "phoneNumber": "+1 123-456-7890", // String
+            "feesUrl": "https://example.org/fees", // String
+            "addressLine1": "123 Main Street", // String
+            "addressLine2": "Suite 456", // String
+            "addressCity": "Cityville", // String
+            "addressCounty": "Countyshire", // String
+            "addressCountry": "United Kingdom", // String
+            "addressPostCode": "AB12 3CD", // String
+            "lastUpdatedDate": "2024-02-20T09:07:22Z" // DateTime
+        },
+        ....
+    ]
+ }
+ ```
+ </details>
+
 
 ### Qualifications Private
+
+<details>
+ <summary><code>GET</code> <code><b>gov/Qualifications/{qualificationNumber}</b></code> </summary>
+
+####
+Retrieves an individual Qualification by the Qualification Number
+
+##### Parameters
+
+> | name      |  type     | data type               | description | variations                                                           |
+> |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
+> | qualificationNumber      |  required | string   | Qulification number for the qualification record eg. 100/0512/2 |  Allowed without obliques eg. 10005122|
+
+##### Responses
+
+> | http code     | content-type                      | response                                  |Description                          |
+> |---------------|-----------------------------------|-------------------------------------------|-------------------------------------|
+> | `200`         | `application/json`              | Qualification JSON                     | JSON object for the Qualification                                    |
+> | `404`         | `application/json`                | `{"message":"Not found"}`  | The qualification could not be found for the qualification number provided                            |
+
+##### Example Requests
+
+> ```javascript
+>  gov/Qualifications/100/0512/2
+> ```
+
+> ```javascript
+>  gov/Qualifications/10005122
+> ```
+
+
+##### Example response
+
+```
+{
+    "QualificationNumber": "500/1522/9",
+    "QualificationNumberNoObliques": "50015229",
+    "Title": "Pearson EDI Level 3 Award in Preparing to Teach in the Lifelong Learning Sector (QCF)",
+    "Status": "No longer awarded",
+    "OrganisationName": "Pearson EDI",
+    "OrganisationAcronym": "Pearson EDI",
+    "OrganisationRecognitionNumber": "RN5134",
+    "Type": "Vocational Certificate Of Education",
+    "SSACode": "Teaching",
+    "SSA": "Teaching and lecturing",
+    "Level": "Level 2",
+    "SubLevel": "None",
+    "EQFLevel": "Level 3",
+    "GradingType": "Pass/Fail",
+    "GradingScale": null,
+    "TotalCredits": 6,
+    "TQT": null,
+    "GLH": null,
+    "MinimumGLH": 30,
+    "MaximumGLH": 30,
+    "RegulationStartDate": "2006-09-01T00:00:00",
+    "OperationalStartDate": "2006-09-01T00:00:00",
+    "OperationalEndDate": "2012-07-31T00:00:00",
+    "CertificationEndDate": "2015-07-31T00:00:00",
+    "ReviewDate": "2012-07-31T00:00:00",
+    "EmbargoDate": null,
+    "OfferedInEngland": true,
+    "OfferedInNorthernIreland": true,
+    "OfferedInternationally": null,
+    "Specialism": null,
+    "Pathways": null,
+    "AssessmentMethods": [
+        "Practical Demonstration/Assignment"
+    ],
+    "ApprovedForDELFundedProgramme": null,
+    "LinkToSpecification": null,
+    "ApprenticeshipStandardReferenceNumber": null,
+    "ApprenticeshipStandardTitle": null,
+    "RegulatedByNorthernIreland": false,
+    "NIDiscountCode": null,
+    "GCESizeEquivalence": null,
+    "GCSESizeEquivalence": null,
+    "EntitlementFrameworkDesignation": null,
+    "LastUpdatedDate": "2021-09-20T15:17:09.427",
+    "UILastUpdatedDate": "2012-07-27T15:59:13",
+    "InsertedDate": "2016-06-21T07:12:17.42",
+    "Version": 9,
+    "AppearsOnPublicRegister": true,
+    "OrganisationId": 1004,
+    "LevelId": 10,
+    "TypeId": 21,
+    "SSAId": 42,
+    "GradingTypeId": 1,
+    "GradingScaleId": null,
+    "PreSixteen": false,
+    "SixteenToEighteen": true,
+    "EighteenPlus": false,
+    "NineteenPlus": true
+}
+```
+
+ </details>
  
 <details>
  <summary><code>GET</code> <code><b>gov/Qualifications?search={search}&page={page}&limit={limit}</b></code> </summary>
@@ -363,7 +615,6 @@ Same as the parameters on Qualifications Public
 
 ##### Headers
 Requires the <code>Ocp-Apim-Subscription-Key</code> key for subscription access
-
 
 ##### Responses
 Same as the responses on Qualifications Public
