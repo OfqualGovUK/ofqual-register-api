@@ -15,7 +15,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/api/organisations?page=1&limit=15",
+							"raw": "{{APIMgmgt_URL}}/api/organisations?search=Chartered Management Institute&page=1&limit=15",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
@@ -26,8 +26,7 @@
 							"query": [
 								{
 									"key": "search",
-									"value": "Chartered Management Institute",
-									"disabled": true
+									"value": "Chartered Management Institute"
 								},
 								{
 									"key": "page",
@@ -56,13 +55,6 @@
 								"api",
 								"organisations",
 								"RN5353"
-							],
-							"query": [
-								{
-									"key": "number",
-									"value": "rn5353",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -98,29 +90,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/api/qualification?number=500/1522/9",
+							"raw": "{{APIMgmgt_URL}}/api/qualifications/50015229",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"api",
-								"qualification"
-							],
-							"query": [
-								{
-									"key": "number",
-									"value": "500/1522/9"
-								},
-								{
-									"key": "number",
-									"value": "50024024",
-									"disabled": true
-								},
-								{
-									"key": "number",
-									"value": "500/37122",
-									"disabled": true
-								}
+								"qualifications",
+								"50015229"
 							]
 						}
 					},
@@ -213,29 +190,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{APIMgmgt_URL}}/gov/qualification?number=50037122",
+							"raw": "{{APIMgmgt_URL}}/gov/qualifications/50037122",
 							"host": [
 								"{{APIMgmgt_URL}}"
 							],
 							"path": [
 								"gov",
-								"qualification"
-							],
-							"query": [
-								{
-									"key": "number",
-									"value": "500/1522/9",
-									"disabled": true
-								},
-								{
-									"key": "number",
-									"value": "50015229",
-									"disabled": true
-								},
-								{
-									"key": "number",
-									"value": "50037122"
-								}
+								"qualifications",
+								"50037122"
 							]
 						}
 					},
