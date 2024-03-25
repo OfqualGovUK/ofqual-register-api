@@ -4,7 +4,7 @@ An API for accessing the Register of qualifications, built using Azure Functions
 
 ## API Documentation
 
-### Organisations
+### Organisations Public
 
 <details>
  <summary><code>GET</code> <code><b>api/Organisations/{recognitionNumber}</b></code> </summary>
