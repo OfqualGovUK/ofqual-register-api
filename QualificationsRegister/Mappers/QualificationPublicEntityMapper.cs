@@ -9,7 +9,6 @@ namespace Ofqual.Common.RegisterAPI.Mappers
         {
             return new QualificationPublic
             {
-                Id = dbQualificationPublic.Id,
                 QualificationNumber = dbQualificationPublic.QualificationNumber,
                 QualificationNumberNoObliques = dbQualificationPublic.QualificationNumberNoObliques,
                 Title = dbQualificationPublic.Title,
