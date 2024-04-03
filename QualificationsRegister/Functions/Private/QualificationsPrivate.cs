@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.Functions.Private
@@ -48,7 +49,9 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
 
             try
             {
-                var qualifications = _getQualifications.ListQualificationsPrivate(page, limit, title);
+                var query = req.Query == null ? null : req.Query.GetQualificationFilterQuery();
+
+                var qualifications = _getQualifications.ListQualificationsPrivate(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));

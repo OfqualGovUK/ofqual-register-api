@@ -60,7 +60,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         {
             var stubbedList = _fixture.Create<ListResponse<Qualification>>();
 
-            _listUseCaseMock.Setup(m => m.ListQualificationsPrivate(It.IsAny<int>(), It.IsAny<int>(),It.IsAny<string>())).Returns(stubbedList);
+            _listUseCaseMock.Setup(m => m.ListQualificationsPrivate(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<QualificationFilter>(), It.IsAny<string>())).Returns(stubbedList);
             var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _listUseCaseMock.Object,
                 _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);

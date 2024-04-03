@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
@@ -51,30 +52,121 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         #region Qualifications Private
 
-        public ListResponse<Qualification> GetQualificationsByName(int page, int limit, string title = "")
+        public ListResponse<Qualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title = "")
         {
             var quals = _context.Qualifications.OrderBy(e => e.QualificationNumber);
             var count = 0;
 
+            //to initialise the IQueryable
+            var filteredList = quals.Where(e => e.Id != null);
+
             if (!string.IsNullOrEmpty(title))
             {
-                var filteredList = quals.Where(q => q.Title.Contains(title));
-
-                count = filteredList.Count();
-
-                filteredList = filteredList.Skip((page - 1) * limit).Take(limit);
-
-                return new ListResponse<Qualification>
-                {
-                    Count = count,
-                    CurrentPage = page,
-                    Limit = limit,
-                    Results = filteredList.ToDomain()
-                };
+                filteredList = filteredList.Where(q => q.Title.Contains(title));
             }
 
-            count = quals.Count();
-            var list = quals.Skip((page - 1) * limit).Take(limit);
+            if (query != null)
+            {
+                if (query.AssessmentMethods != null)
+                {
+                    foreach (var aM in query.AssessmentMethods)
+                    {
+                        filteredList = filteredList.Where(q => q.AssessmentMethods!.Contains(aM));
+                    }
+                }
+
+                if (query.AwardingOrganisations != null)
+                {
+                    foreach (var aO in query.AwardingOrganisations)
+                    {
+                        filteredList = filteredList.Where(q => q.OrganisationName == aO);
+                    }
+                }
+
+                if (query.Availability != null)
+                {
+                    foreach (var av in query.Availability)
+                    {
+                        filteredList = filteredList.Where(q => q.Status == av);
+                    }
+                }
+
+                if (query.QualificationTypes != null)
+                {
+                    foreach (var qT in query.QualificationTypes)
+                    {
+                        filteredList = filteredList.Where(q => q.Type == qT);
+                    }
+                }
+
+                if (query.QualificationLevels != null)
+                {
+                    foreach (var qL in query.QualificationLevels)
+                    {
+                        filteredList = filteredList.Where(q => q.Level == qL);
+                    }
+                }
+
+                if (query.QualificationSubLevels != null)
+                {
+                    foreach (var qSL in query.QualificationSubLevels)
+                    {
+                        filteredList = filteredList.Where(q => q.SubLevel == qSL);
+                    }
+                }
+
+                if (query.NationalAvailability != null)
+                {
+                    foreach (var nA in query.NationalAvailability)
+                    {
+                        switch (nA.ToLower().Trim())
+                        {
+                            case "england":
+                                filteredList = filteredList.Where(q => q.OfferedInEngland == true);
+                                break;
+                            case "northern ireland":
+                                filteredList = filteredList.Where(q => q.OfferedInNorthernIreland == true);
+                                break;
+                            case "international":
+                                filteredList = filteredList.Where(q => q.OfferedInternationally == true);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                if (query.MinGuidedLearninghours != null)
+                {
+                    filteredList = filteredList.Where(q => q.GLH >= query.MinGuidedLearninghours);
+                }
+
+                if (query.MaxGuidedLearninghours != null)
+                {
+                    filteredList = filteredList.Where(q => q.GLH <= query.MaxGuidedLearninghours);
+                }
+
+                if (query.MinTotalQualificationTime != null)
+                {
+                    filteredList = filteredList.Where(q => q.TQT >= query.MinTotalQualificationTime);
+                }
+
+                if (query.MaxTotalQualificationTime != null)
+                {
+                    filteredList = filteredList.Where(q => q.TQT >= query.MaxTotalQualificationTime);
+                }
+
+                if (query.SectorSubjectAreas != null)
+                {
+                    foreach (var sSA in query.SectorSubjectAreas)
+                    {
+                        filteredList = filteredList.Where(q => q.SSA == sSA);
+                    }
+                }
+            }
+
+            count = filteredList.Count();
+            var list = filteredList.Skip((page - 1) * limit).Take(limit);
 
             return new ListResponse<Qualification>
             {
@@ -108,7 +200,13 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
             var count = 0;
 
+            //to initialise the IQueryable
             var filteredList = quals.Where(e => e.Id != null);
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                filteredList = filteredList.Where(q => q.Title.Contains(title));
+            }
 
             if (query != null)
             {
@@ -132,31 +230,86 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
                 {
                     foreach (var av in query.Availability)
                     {
+                        filteredList = filteredList.Where(q => q.Status == av);
+                    }
+                }
 
+                if (query.QualificationTypes != null)
+                {
+                    foreach (var qT in query.QualificationTypes)
+                    {
+                        filteredList = filteredList.Where(q => q.Type == qT);
+                    }
+                }
+
+                if (query.QualificationLevels != null)
+                {
+                    foreach (var qL in query.QualificationLevels)
+                    {
+                        filteredList = filteredList.Where(q => q.Level == qL);
+                    }
+                }
+
+                if (query.QualificationSubLevels != null)
+                {
+                    foreach (var qSL in query.QualificationSubLevels)
+                    {
+                        filteredList = filteredList.Where(q => q.SubLevel == qSL);
+                    }
+                }
+
+                if (query.NationalAvailability != null)
+                {
+                    foreach (var nA in query.NationalAvailability)
+                    {
+                        switch (nA.ToLower().Trim())
+                        {
+                            case "england":
+                                filteredList = filteredList.Where(q => q.OfferedInEngland == true);
+                                break;
+                            case "northern ireland":
+                                filteredList = filteredList.Where(q => q.OfferedInNorthernIreland == true);
+                                break;
+                            case "international":
+                                filteredList = filteredList.Where(q => q.OfferedInternationally == true);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                if (query.MinGuidedLearninghours != null)
+                {
+                    filteredList = filteredList.Where(q => q.GLH >= query.MinGuidedLearninghours);
+                }
+
+                if (query.MaxGuidedLearninghours != null)
+                {
+                    filteredList = filteredList.Where(q => q.GLH <= query.MaxGuidedLearninghours);
+                }
+
+                if (query.MinTotalQualificationTime != null)
+                {
+                    filteredList = filteredList.Where(q => q.TQT >= query.MinTotalQualificationTime);
+                }
+
+                if (query.MaxTotalQualificationTime != null)
+                {
+                    filteredList = filteredList.Where(q => q.TQT >= query.MaxTotalQualificationTime);
+                }
+
+                if (query.SectorSubjectAreas != null)
+                {
+                    foreach (var sSA in query.SectorSubjectAreas)
+                    {
+                        filteredList = filteredList.Where(q => q.SSA == sSA);
                     }
                 }
             }
 
-
-            if (!string.IsNullOrEmpty(title))
-            {
-                filteredList = quals.Where(q => q.Title.Contains(title));
-
-                count = filteredList.Count();
-
-                filteredList = filteredList.Skip((page - 1) * limit).Take(limit);
-
-                return new ListResponse<QualificationPublic>
-                {
-                    Count = count,
-                    CurrentPage = page,
-                    Limit = limit,
-                    Results = filteredList.ToDomain()
-                };
-            }
-
-            count = quals.Count();
-            var list = quals.Skip((page - 1) * limit).Take(limit);
+            count = filteredList.Count();
+            var list = filteredList.Skip((page - 1) * limit).Take(limit);
 
             return new ListResponse<QualificationPublic>
             {
