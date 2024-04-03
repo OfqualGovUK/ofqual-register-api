@@ -93,9 +93,9 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
                 body = JsonSerializer.Deserialize<ListResponse<Organisation>>(reader.ReadToEnd());
             }
 
-            body.Results.Count.Should().Be(response.Results.Count);
             res.StatusCode.Equals(HttpStatusCode.OK);
             res.Should().NotBeNull();
+            body.Results.Should().HaveCount(response.Results.Count);
         }
 
         [Test]
