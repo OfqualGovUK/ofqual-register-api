@@ -1,13 +1,11 @@
 using AutoFixture;
 using FluentAssertions;
-using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
-using System.Diagnostics;
 
 namespace Ofqual.Common.RegisterAPI.Tests.UseCase
 {
@@ -17,17 +15,19 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         private Mock<IRegisterDb> _mockDB;
         private GetOrganisationsListUseCase _classUnderTest;
         private Fixture _fixture;
+        private readonly string _apiUrl = "http://apiUrl";
 
         [SetUp]
         public void Setup()
         {
             _mockDB = new Mock<IRegisterDb>();
-            _classUnderTest = new GetOrganisationsListUseCase(new NullLoggerFactory(), _mockDB.Object);
+            _classUnderTest = new GetOrganisationsListUseCase(new NullLoggerFactory(), _mockDB.Object,
+                new ApiOptions { ApiUrl = _apiUrl });
             _fixture = new Fixture();
         }
 
         [Test]
-        public async Task ReturnsListOfOrganisationsWithValidPagingParameters()
+        public void ReturnsListOfOrganisationsWithValidPagingParameters()
         {
             var stubbedList = _fixture.CreateMany<Organisation>().ToList();
             _mockDB.Setup(x => x.GetOrganisationsList(15, 0, It.IsAny<string>())).Returns((stubbedList, stubbedList.Count));
@@ -36,10 +36,11 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
             result.Should().NotBeNull();
             result.Results.Should().HaveCount(stubbedList.Count);
             result.Results.Should().BeEquivalentTo(stubbedList);
+            result.Results[0].CanonicalUrl.Should().Be($"{_apiUrl}/api/organisations/{result.Results[0].RecognitionNumber}");
         }
 
         [Test]
-        public async Task ListOfOrganisationsWithInvalidPagingParametersReturnsBadRequest()
+        public void ListOfOrganisationsWithInvalidPagingParametersReturnsBadRequest()
         {
             var stubbedList = _fixture.CreateMany<Organisation>().ToList();
             _mockDB.Setup(x => x.GetOrganisationsList(17, 0, It.IsAny<string>())).Returns((stubbedList, stubbedList.Count));

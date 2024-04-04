@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
@@ -12,11 +13,13 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
     {
         private readonly IRegisterDb _registerDb;
         private readonly ILogger _logger;
+        private readonly string _apiUrl;
 
-        public GetOrganisationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb)
+        public GetOrganisationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb, ApiOptions options)
         {
             _logger = loggerFactory.CreateLogger<GetOrganisationByNumberUseCase>();
             _registerDb = registerDb;
+            _apiUrl = options.ApiUrl;
         }
 
         public Organisation? GetOrganisationByNumber(string? number)
@@ -41,8 +44,9 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             else
                 throw new BadRequestException("Please provide a valid organisation number");
 
-
-            return _registerDb.GetOrganisationByNumber(numberNoRN, numberRN);
+            _logger.LogInformation($"Getting organisation: {numberRN}, {numberNoRN}");
+            var organisation = _registerDb.GetOrganisationByNumber(numberNoRN, numberRN);
+            return organisation?.ToResponse(_apiUrl);
         }
 
     }

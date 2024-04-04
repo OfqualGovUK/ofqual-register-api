@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
@@ -10,11 +11,13 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
     {
         private readonly ILogger _logger;
         private readonly IRegisterDb _registerDb;
+        private readonly string _apiUrl;
 
-        public GetOrganisationsListUseCase(ILoggerFactory loggerFactory, IRegisterDb register)
+        public GetOrganisationsListUseCase(ILoggerFactory loggerFactory, IRegisterDb register, ApiOptions options)
         {
             _logger = loggerFactory.CreateLogger<GetOrganisationsListUseCase>();
             _registerDb = register;
+            _apiUrl = options.ApiUrl;
         }
 
         public ListResponse<Organisation>? ListOrganisations(string? search, int offSet, int limit)
@@ -29,12 +32,15 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             }
                
             var (organisations, count) = _registerDb.GetOrganisationsList(limit, _offSet, search!);
+
+            var organisationsUrl = organisations?.Select(o => o.ToResponse(_apiUrl)).ToList();
+
             return new ListResponse<Organisation>
             {
                 Count = count,
                 CurrentPage = offSet,
                 Limit = limit,
-                Results = organisations ?? ([])
+                Results = organisationsUrl ?? ([])
             };
         }
 

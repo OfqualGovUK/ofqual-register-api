@@ -58,5 +58,7 @@ namespace Ofqual.Common.RegisterAPI.Models
         public string? AddressPostCode { get; set; }
 
         public DateTime LastUpdatedDate { get; set; }
+
+        public string? CanonicalUrl { get; set;}
     }
 }

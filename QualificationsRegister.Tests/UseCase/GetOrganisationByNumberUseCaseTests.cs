@@ -1,13 +1,11 @@
 using AutoFixture;
 using FluentAssertions;
-using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
-using System.Diagnostics;
 
 namespace Ofqual.Common.RegisterAPI.Tests.UseCase
 {
@@ -17,12 +15,14 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         private Mock<IRegisterDb> _mockDB;
         private GetOrganisationByNumberUseCase _classUnderTest;
         private Fixture _fixture;
+        private readonly string _apiUrl = "http://apiUrl";
 
         [SetUp]
         public void Setup()
         {
             _mockDB = new Mock<IRegisterDb>();
-            _classUnderTest = new GetOrganisationByNumberUseCase(new NullLoggerFactory(), _mockDB.Object);
+            _classUnderTest = new GetOrganisationByNumberUseCase(new NullLoggerFactory(), _mockDB.Object,
+                new ApiOptions { ApiUrl= _apiUrl });
             _fixture = new Fixture();
         }
 
@@ -36,6 +36,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
 
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(stub);
+            result.CanonicalUrl.Should().Be($"{_apiUrl}/api/organisations/{result.RecognitionNumber}");
         }
 
         [Test]
