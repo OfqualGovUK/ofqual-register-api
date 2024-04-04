@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.Functions.Private
@@ -48,7 +49,9 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
 
             try
             {
-                var qualifications = _getQualifications.ListQualificationsPrivate(page, limit, title);
+                var query = req.Query == null ? null : req.Query.GetQualificationFilterQuery();
+
+                var qualifications = _getQualifications.ListQualificationsPrivate(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));
@@ -73,7 +76,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
         /// <param name="number"></param>
         /// <returns></returns>
         [Function("QualificationPrivate")]
-        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string number = "")
+        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Qualificationsprivate/{number}/{number2?}/{number3?}")] HttpRequestData req, string number, string? number2, string? number3)
         {
             _logger.LogInformation("Get Qualification Private - number = {}", number);
 
@@ -83,6 +86,18 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
             if (string.IsNullOrEmpty(number))
             {
                 response.StatusCode = HttpStatusCode.BadRequest;
+                return response;
+            }
+
+
+            if (string.IsNullOrEmpty(number) || (number2 != null && number3 == null) || (number2 == null && number3 != null))
+            {
+                response.StatusCode = HttpStatusCode.BadRequest;
+                await response.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = "Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229"
+                }));
+
                 return response;
             }
 

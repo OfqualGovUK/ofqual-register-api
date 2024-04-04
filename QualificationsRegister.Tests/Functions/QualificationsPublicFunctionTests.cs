@@ -35,7 +35,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             _byNumberUseCaseMock.Setup(m => m.GetQualificationPublicByNumber(It.IsAny<string>())).Returns(stub);
 
-            var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>());
+            var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>(), null, null);
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
             res.Should().NotBeNull();
@@ -49,7 +49,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             _byNumberUseCaseMock.Setup(m => m.GetQualificationPublicByNumber(It.IsAny<string>())).Returns(stub);
 
-            var res = await httpFunc.GetQualification(requestData, "");
+            var res = await httpFunc.GetQualification(requestData, "", null, null);
             Console.WriteLine(res.StatusCode);
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.BadRequest));
             res.Should().NotBeNull();
@@ -60,10 +60,11 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         {
             var stubbedList = _fixture.Create<ListResponse<QualificationPublic>>();
 
-            _listUseCaseMock.Setup(m => m.ListQualificationsPublic(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(stubbedList);
+            _listUseCaseMock.Setup(m => m.ListQualificationsPublic(It.IsAny<int>(), It.IsAny<int>(), null, It.IsAny<string>())).Returns(stubbedList);
             var httpFunc = new QualificationsPublic(new NullLoggerFactory(), _listUseCaseMock.Object,
                 _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
+
             var res = await httpFunc.ListQualifications(requestData, 1, 15, "edexcel");
 
             Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));

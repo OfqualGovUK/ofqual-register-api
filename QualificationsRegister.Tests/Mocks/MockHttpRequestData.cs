@@ -1,5 +1,6 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using System.Collections.Specialized;
 using System.Security.Claims;
 
 namespace Ofqual.Common.RegisterAPI.Tests.Mocks
@@ -23,5 +24,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Mocks
         public override Uri Url { get; }
         public override IEnumerable<ClaimsIdentity> Identities { get; }
         public override string Method { get; }
+
+        public override NameValueCollection Query { get; }
     }
 }
