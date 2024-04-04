@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Mappers;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.Functions.Private
@@ -42,19 +43,19 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
                 await response.WriteStringAsync(JsonSerializer.Serialize(new
                 {
                     error = "Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= 100"
-                }));
+                }, Utilities.JsonSerializerOptions));
 
                 return response;
             }
 
             try
             {
-                var query = req.Query == null ? null : req.Query.GetQualificationFilterQuery();
+                var query = req.Query?.GetQualificationFilterQuery();
 
                 var qualifications = _getQualifications.ListQualificationsPrivate(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
-                await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));
+                await response.WriteStringAsync(JsonSerializer.Serialize(qualifications, Utilities.JsonSerializerOptions));
             }
             catch (Exception ex)
             {
@@ -63,7 +64,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
                 {
                     error = ex.Message,
                     innerException = ex.InnerException
-                }));
+                }, Utilities.JsonSerializerOptions));
             }
 
             return response;
@@ -96,7 +97,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
                 await response.WriteStringAsync(JsonSerializer.Serialize(new
                 {
                     error = "Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229"
-                }));
+                }, Utilities.JsonSerializerOptions));
 
                 return response;
             }
@@ -111,7 +112,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
                     return response;
                 }
 
-                await response.WriteStringAsync(JsonSerializer.Serialize(qualification));
+                await response.WriteStringAsync(JsonSerializer.Serialize(qualification, Utilities.JsonSerializerOptions));
             }
             catch (Exception ex)
             {
@@ -120,7 +121,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
                 {
                     error = ex.Message,
                     innerException = ex.InnerException
-                }));
+                }, Utilities.JsonSerializerOptions));
             }
             return response;
         }

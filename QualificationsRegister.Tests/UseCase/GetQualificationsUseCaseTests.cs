@@ -34,12 +34,12 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Has.Count.EqualTo(stubbedList.Count));
-            Assert.That(result.Results[0].OrganisationName, Is.EqualTo(stubbedList[0].OrganisationName));
+            Assert.That(result.Results?[0].OrganisationName, Is.EqualTo(stubbedList[0].OrganisationName));
         }
 
         [Test]
         [Ignore("WIP")]
-        public async Task ReturnsListOfQualificationsFromTheRepositoryWhenThereIsACacheMiss()
+        public void ReturnsListOfQualificationsFromTheRepositoryWhenThereIsACacheMiss()
         {
             Assert.That(1, Is.EqualTo(1));
 

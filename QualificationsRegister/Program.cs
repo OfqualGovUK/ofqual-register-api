@@ -18,11 +18,6 @@ var host = new HostBuilder()
 
         RegisterUseCases(services);
 
-        services.Configure<JsonSerializerOptions>(options =>
-        {
-            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-            options.WriteIndented = true;
-        });
 
         services.AddDbContext<RegisterDbContext>(
             options =>
@@ -39,10 +34,6 @@ var host = new HostBuilder()
         });
 
     })
-    //.ConfigureLogging((HostBuilderContext hostingContext, ILoggingBuilder logging)=>{
-    //    logging.AddConsole();
-    //    logging.AddDebug().SetMinimumLevel(LogLevel.Debug);
-    //})
 
     .Build();
 
