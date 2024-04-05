@@ -5,9 +5,10 @@ namespace Ofqual.Common.RegisterAPI.Mappers
 {
     public static class DbOrganisationEntityMapper
     {
-
         public static Organisation ToDomain(this DbOrganisation mDDBOrganisationEntity)
         {
+            string apiUrl = Environment.GetEnvironmentVariable("APIMgmtURL")!;
+
             return new Organisation
             {
                 Name = mDDBOrganisationEntity.Name,
@@ -34,7 +35,8 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 AddressCounty = mDDBOrganisationEntity.AddressCounty,
                 AddressCountry = mDDBOrganisationEntity.AddressCountry,
                 AddressPostCode = mDDBOrganisationEntity.AddressPostCode,
-                LastUpdatedDate = mDDBOrganisationEntity.LastUpdatedDate
+                LastUpdatedDate = mDDBOrganisationEntity.LastUpdatedDate,
+                CanonicalUrl = $"{apiUrl}/api/organisations/{mDDBOrganisationEntity.RecognitionNumber}"
             };
         }
 
