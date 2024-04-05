@@ -90,7 +90,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             using (var reader = new StreamReader(res.Body))
             {
                 res.Body.Seek(0, SeekOrigin.Begin);
-                body = JsonSerializer.Deserialize<ListResponse<Organisation>>(reader.ReadToEnd() ?? "")!;
+                body = JsonSerializer.Deserialize<ListResponse<Organisation>>(reader.ReadToEnd() ?? "", Utilities.JsonSerializerOptions)!;
             }
 
             res.StatusCode.Equals(HttpStatusCode.OK);
