@@ -34,6 +34,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
             var result = _classUnderTest.ListOrganisations(It.IsAny<string>(), 1, 15);
 
             result.Should().NotBeNull();
+
             result.Results.Should().HaveCount(stubbedList.Count);
             result.Results.Should().BeEquivalentTo(stubbedList);
             result.Results[0].CanonicalUrl.Should().Be($"{_apiUrl}/api/organisations/{result.Results[0].RecognitionNumber}");
@@ -45,7 +46,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
             var stubbedList = _fixture.CreateMany<Organisation>().ToList();
             _mockDB.Setup(x => x.GetOrganisationsList(17, 0, It.IsAny<string>())).Returns((stubbedList, stubbedList.Count));
 
-            Func<ListResponse<Organisation>> testDelegate = () => _classUnderTest.ListOrganisations(It.IsAny<string>(), 0, 17);
+            Func<ListResponse<Organisation>> testDelegate = () => _classUnderTest.ListOrganisations(It.IsAny<string>(), 0, 17)!;
             testDelegate.Should().Throw<BadRequestException>().WithMessage("Please use a limit size between 1 to 15 inclusive " +
                     "and page size greater than 0");
         }

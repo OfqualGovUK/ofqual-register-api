@@ -8,22 +8,17 @@ using System.Text.RegularExpressions;
 
 namespace Ofqual.Common.RegisterAPI.UseCase
 {
-    public class GetQualificationByNumberUseCase : IGetQualificationByNumberUseCase
+    public partial class GetQualificationByNumberUseCase : IGetQualificationByNumberUseCase
     {
         private readonly IRegisterDb _registerDb;
         private readonly ILogger _logger;
 
-        private const string QualificationNumRegex = @"\b\d{3}\/\d{4}\/\w\b";
-        private const string QualificationNumNoObliquesRegex = @"\b\d{7}\w\b";
+        [GeneratedRegex("\\b\\d{3}\\/\\d{4}\\/\\w\\b")]
+        private static partial Regex QualificationNumRegex();
 
-        //[GeneratedRegex("\\b\\d{3}\\/\\d{4}\\/\\w\\b")]
-        //private static partial Regex QualificationNumRegex();
+        [GeneratedRegex("\\b\\d{7}\\w\\b")]
+        private static partial Regex QualificationNumNoObliquesRegex();
 
-        //[GeneratedRegex("\\b\\d{7}\\w\\b")]
-        //private static partial Regex QualificationNumNoObliquesRegex();
-
-        //[GeneratedRegex("\\b\\d{3}\\/\\d{4}\\/\\w\\b|\\b\\d{7}\\w\\b")]
-        //private static partial Regex QualificationNum();
 
         public GetQualificationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb)
         {
@@ -32,13 +27,14 @@ namespace Ofqual.Common.RegisterAPI.UseCase
         }
 
         public QualificationPublic? GetQualificationPublicByNumber(string number)
-        {           
-            if (Regex.IsMatch(number, QualificationNumRegex))
+        {
+            _logger.LogInformation("Getting public qualification by number");
+            if (QualificationNumRegex().IsMatch(number))
             {
                 return _registerDb.GetQualificationPublicByNumber(number, "");
             }
 
-            if (Regex.IsMatch(number, QualificationNumNoObliquesRegex))
+            if (QualificationNumNoObliquesRegex().IsMatch(number))
             {
                 return _registerDb.GetQualificationPublicByNumber("", number);
 
@@ -49,12 +45,14 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
         public Qualification? GetQualificationByNumber(string number)
         {
-            if (Regex.IsMatch(number, QualificationNumRegex))
+            _logger.LogInformation("Getting private qualification by number");
+
+            if (QualificationNumRegex().IsMatch(number))
             {
                 return _registerDb.GetQualificationByNumber(number, "");
             }
 
-            if (Regex.IsMatch(number, QualificationNumNoObliquesRegex))
+            if (QualificationNumNoObliquesRegex().IsMatch(number))
             {
                 return _registerDb.GetQualificationByNumber("", number);
 

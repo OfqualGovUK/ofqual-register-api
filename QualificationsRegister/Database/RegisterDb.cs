@@ -5,13 +5,14 @@ using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
     public partial class RegisterDb : IRegisterDb
     {
-        private RegisterDbContext _context;
-        private ILogger _logger;
+        private readonly RegisterDbContext _context;
+        private readonly ILogger _logger;
 
         public RegisterDb(RegisterDbContext registerDbContext, ILoggerFactory loggerFactory)
         {
@@ -52,13 +53,15 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         #region Qualifications Private
 
-        public ListResponse<Qualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title = "")
+        public ListResponse<Qualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title)
         {
+            _logger.LogInformation($"Getting a qualification by title: {title}");
+
             var quals = _context.Qualifications.OrderBy(e => e.QualificationNumber);
             var count = 0;
 
             //to initialise the IQueryable
-            var filteredList = quals.Where(e => e.Id != null);
+            var filteredList = quals.Where(e => true);
 
             if (!string.IsNullOrEmpty(title))
             {
@@ -177,8 +180,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             };
         }
 
-        public Qualification? GetQualificationByNumber(string numberObliques = "", string numberNoObliques = "")
+        public Qualification? GetQualificationByNumber(string numberObliques, string numberNoObliques)
         {
+            _logger.LogInformation($"Getting a qualification by number: {numberObliques} or {numberNoObliques}");
             var quals = _context.Qualifications.OrderBy(e => e.QualificationNumber);
 
             if (!string.IsNullOrEmpty(numberObliques))
@@ -195,8 +199,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
         #endregion
 
         #region Qualifications Public
-        public ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title = "")
+        public ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title)
         {
+            _logger.LogInformation($"Getting a qualification by title: {title}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
             var count = 0;
 
@@ -320,8 +325,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             };
         }
 
-        public QualificationPublic? GetQualificationPublicByNumber(string numberObliques = "", string numberNoObliques = "")
+        public QualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques)
         {
+            _logger.LogInformation($"Getting a qualification by number: {numberObliques} or {numberNoObliques}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
 
             //if a search was done for qualification number with obliques, search by qualification number

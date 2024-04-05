@@ -9,8 +9,12 @@ using System.Text.RegularExpressions;
 namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
 {
-    public class GetOrganisationByNumberUseCase : IGetOrganisationByNumberUseCase
+    public partial class GetOrganisationByNumberUseCase : IGetOrganisationByNumberUseCase
     {
+
+        [GeneratedRegex(@"^\d+$")]
+        private static partial Regex OrgNumberRegex();
+
         private readonly IRegisterDb _registerDb;
         private readonly ILogger _logger;
         private readonly string _apiUrl;
@@ -24,6 +28,8 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
         public Organisation? GetOrganisationByNumber(string? number)
         {
+            _logger.LogInformation("Getting Organisation by number");
+
             if (string.IsNullOrEmpty(number))
             {
                 throw new BadRequestException("Organisation number is null or empty");
@@ -31,7 +37,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
             string numberNoRN, numberRN;
 
-            if (Regex.IsMatch(number!, @"^\d+$"))
+            if (OrgNumberRegex().IsMatch(number))
             {
                 numberNoRN = number!;
                 numberRN = $"RN{number}";
@@ -48,6 +54,5 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             var organisation = _registerDb.GetOrganisationByNumber(numberNoRN, numberRN);
             return organisation?.ToResponse(_apiUrl);
         }
-
     }
 }

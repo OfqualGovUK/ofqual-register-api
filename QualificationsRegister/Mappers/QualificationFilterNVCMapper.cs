@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ofqual.Common.RegisterAPI.Mappers
 {
-    public static class QualificationFilterNVCMapper
+    public static class QualificationFilterNvcMapper
     {
         public static QualificationFilter? GetQualificationFilterQuery(this NameValueCollection nvc)
         {
@@ -45,7 +45,7 @@ namespace Ofqual.Common.RegisterAPI.Mappers
             {
                 return value != null ? int.Parse(value!) : null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new BadRequestException($"Error parsing value '{value}' for {field}.");
             }

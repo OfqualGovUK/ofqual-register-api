@@ -11,7 +11,7 @@ namespace Ofqual.Common.RegisterAPI.Database
         ListResponse<Qualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title);
         ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title);
 
-        Qualification? GetQualificationByNumber(string numberObliques, string numberNoOblique);
+        Qualification? GetQualificationByNumber(string numberObliques, string numberNoObliques);
         QualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques);
 
     }

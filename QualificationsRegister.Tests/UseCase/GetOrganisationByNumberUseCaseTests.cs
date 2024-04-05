@@ -42,7 +42,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         [Test]
         public void GetOrganisationsByNumberWithEmptyParameterReturnsBadRequest()
         {
-            Func<Organisation> testDelegate = () => _classUnderTest.GetOrganisationByNumber("");
+            Func<Organisation> testDelegate = () => _classUnderTest.GetOrganisationByNumber("")!;
             testDelegate.Should().Throw<BadRequestException>().WithMessage("Organisation number is null or empty");
         }
 
@@ -53,7 +53,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         [TestCase("23number")]
         public void GetOrganisationsByNumberWithInvalidParameterReturnsBadRequest(string number)
         {
-            Func<Organisation> testDelegate = () => _classUnderTest.GetOrganisationByNumber(number);
+            Func<Organisation> testDelegate = () => _classUnderTest.GetOrganisationByNumber(number)!;
             testDelegate.Should().Throw<BadRequestException>().WithMessage("Please provide a valid organisation number");
         }
 

@@ -42,10 +42,10 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             if (page < 1 || limit > 100 || limit < 1)
             {
                 response.StatusCode = HttpStatusCode.BadRequest;
-                await response.WriteStringAsync(System.Text.Json.JsonSerializer.Serialize(new
+                await response.WriteStringAsync(JsonSerializer.Serialize(new
                 {
                     error = "Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= 100"
-                }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                }, Utilities.JsonSerializerOptions));
 
                 return response;
             }
@@ -57,7 +57,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                 var qualifications = _getQualifications.ListQualificationsPublic(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
-                await response.WriteStringAsync(JsonSerializer.Serialize(qualifications));
+                await response.WriteStringAsync(JsonSerializer.Serialize(qualifications, Utilities.JsonSerializerOptions));
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                 {
                     error = ex.Message,
                     innerException = ex.InnerException
-                }));
+                }, Utilities.JsonSerializerOptions));
             }
 
             return response;
@@ -93,7 +93,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                 await response.WriteStringAsync(JsonSerializer.Serialize(new
                 {
                     error = "Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229"
-                }));
+                }, Utilities.JsonSerializerOptions));
 
                 return response;
             }
@@ -113,7 +113,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                     return response;
                 }
 
-                await response.WriteStringAsync(JsonSerializer.Serialize(qualification));
+                await response.WriteStringAsync(JsonSerializer.Serialize(qualification, Utilities.JsonSerializerOptions));
             }
             catch (Exception ex)
             {
@@ -122,7 +122,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                 {
                     error = ex.Message,
                     innerException = ex.InnerException
-                }));
+                }, Utilities.JsonSerializerOptions));
             }
 
             return response;
