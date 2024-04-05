@@ -6,6 +6,7 @@ using System.Net;
 using System.Text.Json;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Mappers;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
 
 
 namespace Ofqual.Common.RegisterAPI.Functions.Public
@@ -87,29 +88,13 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
-            if (string.IsNullOrEmpty(number) || (number2 != null && number3 == null) || (number2 == null && number3 != null))
-            {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = "Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229"
-                }, Utilities.JsonSerializerOptions));
-
-                return response;
-            }
-
             try
             {
-                if (number2 != null)
-                {
-                    number = number + "/" + number2 + "/" + number3;
-                }
-
-                var qualification = _getQualificationByNumber.GetQualificationPublicByNumber(number);
+                var qualification = _getQualificationByNumber.GetQualificationPublicByNumber(number, number2, number3);
 
                 if (qualification == null)
                 {
-                    response.StatusCode = HttpStatusCode.NotFound;
+                    throw new NotFoundException(null);
                     return response;
                 }
 
@@ -117,12 +102,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             }
             catch (Exception ex)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message,
-                    innerException = ex.InnerException
-                }, Utilities.JsonSerializerOptions));
+                Utilities.CreateExceptionJson(ex, ref response);                
             }
 
             return response;
