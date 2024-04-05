@@ -1,6 +1,7 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using System.Net;
@@ -17,7 +18,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         public OrganisationsPublic(ILoggerFactory loggerFactory, IGetOrganisationsListUseCase getOrganisations,
             IGetOrganisationByNumberUseCase getOrganisationByNumberUseCase)
         {
-            _logger = loggerFactory.CreateLogger<QualificationsPublic>();
+            _logger = loggerFactory.CreateLogger<OrganisationsPublic>();
             _getOrganisations = getOrganisations;
             _getOrganisationByNumberUseCase = getOrganisationByNumberUseCase;
         }
@@ -40,7 +41,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             try
             {
                 var organisations = _getOrganisations.ListOrganisations(search, page, limit);
-                await response.WriteStringAsync(JsonSerializer.Serialize(organisations));
+                await response.WriteStringAsync(JsonSerializer.Serialize(organisations, Utilities.JsonSerializerOptions));
             }
             catch (BadRequestException ex)
             {
@@ -48,7 +49,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                 error.WriteString(JsonSerializer.Serialize(new
                 {
                     error = ex.Message
-                }));
+                }, Utilities.JsonSerializerOptions));
                 return error;
             }
             catch (Exception ex)
@@ -82,7 +83,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             try
             {
-                var organisation =  _getOrganisationByNumberUseCase.GetOrganisationByNumber(number);
+                var organisation = _getOrganisationByNumberUseCase.GetOrganisationByNumber(number);
 
                 if (organisation == null)
                 {
@@ -90,7 +91,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                     return response;
                 }
 
-                await response.WriteStringAsync(JsonSerializer.Serialize(organisation));
+                await response.WriteStringAsync(JsonSerializer.Serialize(organisation, Utilities.JsonSerializerOptions));
             }
             catch (BadRequestException ex)
             {
@@ -98,7 +99,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                 error.WriteString(JsonSerializer.Serialize(new
                 {
                     error = ex.Message
-                }));
+                }, Utilities.JsonSerializerOptions));
                 return error;
             }
             catch (Exception ex)
@@ -108,7 +109,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
                 {
                     error = ex.Message,
                     innerException = ex.InnerException
-                }));
+                }, Utilities.JsonSerializerOptions));
             }
 
             return response;
