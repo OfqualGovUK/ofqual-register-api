@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
+using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -20,7 +21,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        public (List<Organisation>?, int count) GetOrganisationsList(int limit, int offSet, string name)
+        public ListResponse<Organisation> GetOrganisationsList(int limit, int page, string name)
         {
             var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
 
@@ -34,11 +35,17 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             var organisations = result.OrderBy(o => o.Name)
                .ThenBy(o => o.LegalName)
                .ThenBy(o => o.Acronym)
-               .Skip(offSet)
+               .Skip((page - 1) * limit)
                .Take(limit)
                .ToList();
 
-            return (organisations?.ToDomain(), count);
+            return new ListResponse<Organisation>
+            {
+                Count = count,
+                CurrentPage = page,
+                Limit = limit,
+                Results = organisations?.ToDomain()
+            };
         }
 
         public Organisation? GetOrganisationByNumber(string number, string numberRN)

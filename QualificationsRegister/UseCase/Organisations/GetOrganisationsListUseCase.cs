@@ -28,14 +28,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
                     "and page size greater than 0");
             }
                
-            var (organisations, count) = _registerDb.GetOrganisationsList(limit, _offSet, search!);
-            return new ListResponse<Organisation>
-            {
-                Count = count,
-                CurrentPage = offSet,
-                Limit = limit,
-                Results = organisations ?? ([])
-            };
+            return _registerDb.GetOrganisationsList(limit, offSet, search!);
         }
 
     }
