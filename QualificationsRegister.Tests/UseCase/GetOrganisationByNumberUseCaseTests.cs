@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
 using System.Diagnostics;
@@ -30,12 +31,12 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         [Test]
         public void GetsAnOrganisationsUsingRecognitionNumber()
         {
-            var stub = _fixture.Create<Organisation>();
-            _mockDB.Setup(x => x.GetOrganisationByNumber("2323","RN2323")).Returns(stub);
+            var stub = _fixture.Create<DbOrganisation>();
+            _mockDB.Setup(x => x.GetOrganisationByNumber("2323", "RN2323")).Returns(stub);
             var result = _classUnderTest.GetOrganisationByNumber("2323");
 
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(stub);
+            result.Should().BeEquivalentTo(stub, options => options.Excluding(c => c.Id));
         }
 
         [Test]

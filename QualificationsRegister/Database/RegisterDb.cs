@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.DB;
 using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -21,7 +22,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        public ListResponse<Organisation> GetOrganisationsList(int limit, int page, string name)
+        public DbListResponse<DbOrganisation> GetOrganisationsList(int page, int limit, string name)
         {
             var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
 
@@ -35,32 +36,31 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             var organisations = result.OrderBy(o => o.Name)
                .ThenBy(o => o.LegalName)
                .ThenBy(o => o.Acronym)
-               .Skip((page - 1) * limit)
+               .Skip(page * limit)
                .Take(limit)
                .ToList();
 
-            return new ListResponse<Organisation>
+            return new DbListResponse<DbOrganisation>
             {
-                Count = count,
-                CurrentPage = page,
-                Limit = limit,
-                Results = organisations?.ToDomain()
+                Count = count,                
+                Results = organisations
             };
         }
 
-        public Organisation? GetOrganisationByNumber(string number, string numberRN)
+        public DbOrganisation? GetOrganisationByNumber(string number, string numberRN)
         {
             _logger.LogInformation($"Getting an organisation by number: {numberRN} or {number}");
             var organisation = _context.Organisations.FirstOrDefault(o => o.RecognitionNumber.Equals(number) ||
             o.RecognitionNumber.Equals(numberRN));
 
-            return organisation?.ToDomain();
+            //return organisation?.ToDomain();
+            return organisation;
         }
 
 
         #region Qualifications Private
 
-        public ListResponse<Qualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title)
+        public DbListResponse<DbQualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title)
         {
             _logger.LogInformation($"Getting a qualification by title: {title}");
 
@@ -176,37 +176,35 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             count = filteredList.Count();
-            var list = filteredList.Skip((page - 1) * limit).Take(limit);
+            var list = filteredList.Skip(page * limit).Take(limit);
 
-            return new ListResponse<Qualification>
+            return new DbListResponse<DbQualification>
             {
                 Count = count,
-                CurrentPage = page,
-                Limit = limit,
-                Results = list.ToDomain()
+                Results = list.ToList()
             };
         }
 
-        public Qualification? GetQualificationByNumber(string numberObliques, string numberNoObliques)
+        public DbQualification? GetQualificationByNumber(string numberObliques, string numberNoObliques)
         {
             _logger.LogInformation($"Getting a qualification by number: {numberObliques} or {numberNoObliques}");
             var quals = _context.Qualifications.OrderBy(e => e.QualificationNumber);
 
             if (!string.IsNullOrEmpty(numberObliques))
             {
-                return quals.FirstOrDefault(e => e.QualificationNumber.Equals(numberObliques))?.ToDomain();
+                return quals.FirstOrDefault(e => e.QualificationNumber.Equals(numberObliques));
             }
 
             //add implied obliques in case no obliques value in the db is null
             var qualNumObliques = numberNoObliques.Insert(3, "/").Insert(8, "/");
             return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNumObliques)
                                     || (e.QualificationNumberNoObliques != null &&
-                                        e.QualificationNumberNoObliques.Equals(numberNoObliques)))?.ToDomain();
+                                        e.QualificationNumberNoObliques.Equals(numberNoObliques)));
         }
         #endregion
 
         #region Qualifications Public
-        public ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title)
+        public DbListResponse<DbQualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title)
         {
             _logger.LogInformation($"Getting a qualification by title: {title}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
@@ -321,18 +319,16 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             count = filteredList.Count();
-            var list = filteredList.Skip((page - 1) * limit).Take(limit);
+            var list = filteredList.Skip(page * limit).Take(limit);
 
-            return new ListResponse<QualificationPublic>
+            return new DbListResponse<DbQualificationPublic>
             {
                 Count = count,
-                CurrentPage = page,
-                Limit = limit,
-                Results = list.ToDomain()
+                Results = list.ToList()
             };
         }
 
-        public QualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques)
+        public DbQualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques)
         {
             _logger.LogInformation($"Getting a qualification by number: {numberObliques} or {numberNoObliques}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
@@ -340,14 +336,14 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             //if a search was done for qualification number with obliques, search by qualification number
             if (!string.IsNullOrEmpty(numberObliques))
             {
-                return quals.FirstOrDefault(e => e.QualificationNumber.Equals(numberObliques))?.ToDomain();
+                return quals.FirstOrDefault(e => e.QualificationNumber.Equals(numberObliques));
             }
 
             //add implied obliques in case no obliques value in the db is null
             var qualNumObliques = numberNoObliques.Insert(3, "/").Insert(8, "/");
             return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNumObliques)
                                     || (e.QualificationNumberNoObliques != null &&
-                                        e.QualificationNumberNoObliques.Equals(numberNoObliques)))?.ToDomain();
+                                        e.QualificationNumberNoObliques.Equals(numberNoObliques)));
 
         }
 

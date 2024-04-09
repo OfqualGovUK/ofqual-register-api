@@ -31,10 +31,9 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="title"></param>
         /// <returns></returns>
         [Function("Qualifications")]
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 15, string title = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 50, string title = "")
         {
             _logger.LogInformation("List Qualifications Public - title = {}", title);
-
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
@@ -79,8 +78,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="number"></param>
         /// <returns></returns>
         [Function("Qualification")]
-        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get",
-            Route = "Qualifications/{number}/{number2?}/{number3?}")] HttpRequestData req, string number, string? number2, string? number3)
+        public async Task<HttpResponseData> GetQualification([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Qualifications/{number}/{number2?}/{number3?}")] HttpRequestData req, string number, string? number2, string? number3)
         {
             _logger.LogInformation("Get Qualification Public - number = {}", number);
 

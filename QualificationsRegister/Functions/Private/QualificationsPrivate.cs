@@ -30,7 +30,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
         /// <param name="search"></param>
         /// <returns></returns>
         [Function("QualificationsPrivate")]
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 15, string title = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 50, string title = "")
         {
             _logger.LogInformation("Get Qualifications Private - search = {}", title);
 

@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using System.Text.RegularExpressions;
 
-namespace Ofqual.Common.RegisterAPI.UseCase
+namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
 {
     public partial class GetQualificationByNumberUseCase : IGetQualificationByNumberUseCase
     {
@@ -31,13 +32,12 @@ namespace Ofqual.Common.RegisterAPI.UseCase
             _logger.LogInformation("Getting public qualification by number");
             if (QualificationNumRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationPublicByNumber(number, "");
+                return _registerDb.GetQualificationPublicByNumber(number, "")?.ToDomain();
             }
 
             if (QualificationNumNoObliquesRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationPublicByNumber("", number);
-
+                return _registerDb.GetQualificationPublicByNumber("", number)?.ToDomain();
             }
 
             return null;
@@ -49,12 +49,12 @@ namespace Ofqual.Common.RegisterAPI.UseCase
 
             if (QualificationNumRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationByNumber(number, "");
+                return _registerDb.GetQualificationByNumber(number, "")?.ToDomain();
             }
 
             if (QualificationNumNoObliquesRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationByNumber("", number);
+                return _registerDb.GetQualificationByNumber("", number)?.ToDomain();
 
             }
 
