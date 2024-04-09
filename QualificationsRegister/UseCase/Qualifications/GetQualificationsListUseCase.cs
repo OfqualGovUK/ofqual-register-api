@@ -1,8 +1,14 @@
+using Azure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.DB;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
+using Ofqual.Common.RegisterAPI.Services.Database;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using System.Net;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
 {
@@ -21,18 +27,51 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
         {
             _logger.LogInformation("Getting list of public qualifications");
 
+
+            if (!int.TryParse(Environment.GetEnvironmentVariable("QualificationsPagingLimit"), out var pagingLimit))
+            {
+                pagingLimit = 100;
+            }
+
+            if (page < 1 || limit > pagingLimit || limit < 1)
+            {
+                throw new BadRequestException($"Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= {pagingLimit}");
+            }
+
             var dbResponse = _registerDb.GetQualificationsPublicByName(page - 1, limit, query, title!);
 
-            return new ListResponse<QualificationPublic> { Count = dbResponse.Count, CurrentPage = page, Limit = limit, Results = dbResponse.Results?.ToDomain() };
+            return new ListResponse<QualificationPublic>
+            {
+                Count = dbResponse.Count,
+                Results = dbResponse.Results?.ToDomain(),
+                CurrentPage = page,
+                Limit = limit
+            };
         }
 
         public ListResponse<Qualification> ListQualificationsPrivate(int page, int limit, QualificationFilter? query, string? title)
         {
             _logger.LogInformation("Getting list of qualifications");
 
-            var dbResponse = _registerDb.GetQualificationsByName(page - 1, limit, query, title!);
+            if (!int.TryParse(Environment.GetEnvironmentVariable("QualificationsPagingLimit"), out var pagingLimit))
+            {
+                pagingLimit = 100;
+            }
 
-            return new ListResponse<Qualification> { Count = dbResponse.Count, CurrentPage = page, Limit = limit, Results = dbResponse.Results?.ToDomain() };
+            if (page < 1 || limit > pagingLimit || limit < 1)
+            {
+                throw new BadRequestException($"Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= {pagingLimit}");
+            }
+
+            var dbResponse = _registerDb.GetQualificationsByName(page-1, limit, query, title!);
+
+            return new ListResponse<Qualification>
+            {
+                Count = dbResponse.Count,
+                Results = dbResponse.Results?.ToDomain(),
+                CurrentPage = page,
+                Limit = limit
+            };
         }
 
     }

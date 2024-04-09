@@ -52,7 +52,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
             _mockDB.Setup(x => x.GetOrganisationsList(15, 0, It.IsAny<string>())).Returns(stubbedList);
 
             Func<ListResponse<Organisation>> testDelegate = () => _classUnderTest.ListOrganisations(It.IsAny<string>(), 0, 17)!;
-            testDelegate.Should().Throw<BadRequestException>().WithMessage("Invalid Paging params - Please use a limit greater than 0 and page size greater than 0");
+            testDelegate.Should().Throw<BadRequestException>().WithMessage("Invalid parameter values. Page should be > 0 and Limit should be > 0");
         }
     }
 }

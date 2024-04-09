@@ -24,7 +24,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
             if (limit < 1 || page < 1)
             {
-                throw new BadRequestException("Invalid Paging params - Please use a limit greater than 0 and page size greater than 0");
+                throw new BadRequestException($"Invalid parameter values. Page should be > 0 and Limit should be > 0");
             }
 
             var dbResponse = _registerDb.GetOrganisationsList(page - 1, limit, search!);

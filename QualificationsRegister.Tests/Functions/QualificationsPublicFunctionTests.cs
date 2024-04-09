@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Public;
 using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
@@ -33,7 +34,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             var stub = _fixture.Create<QualificationPublic>();
             var httpFunc = new QualificationsPublic(new NullLoggerFactory(), _listUseCaseMock.Object, _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            _byNumberUseCaseMock.Setup(m => m.GetQualificationPublicByNumber(It.IsAny<string>())).Returns(stub);
+            _byNumberUseCaseMock.Setup(m => m.GetQualificationPublicByNumber(It.IsAny<string>(), null, null)).Returns(stub);
 
             var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>(), null, null);
             Console.WriteLine(res.StatusCode);
@@ -46,8 +47,10 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         {
             var stub = _fixture.Create<QualificationPublic>();
             var httpFunc = new QualificationsPublic(new NullLoggerFactory(), _listUseCaseMock.Object, _byNumberUseCaseMock.Object);
+
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            _byNumberUseCaseMock.Setup(m => m.GetQualificationPublicByNumber(It.IsAny<string>())).Returns(stub);
+
+            _byNumberUseCaseMock.Setup(m => m.GetQualificationPublicByNumber(It.IsAny<string>(), null, null)).Throws(new BadRequestException("Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229"));
 
             var res = await httpFunc.GetQualification(requestData, "", null, null);
             Console.WriteLine(res.StatusCode);
