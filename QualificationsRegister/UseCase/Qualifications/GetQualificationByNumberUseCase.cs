@@ -1,12 +1,16 @@
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
+using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Ofqual.Common.RegisterAPI.UseCase
+namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
 {
     public partial class GetQualificationByNumberUseCase : IGetQualificationByNumberUseCase
     {
@@ -26,40 +30,59 @@ namespace Ofqual.Common.RegisterAPI.UseCase
             _registerDb = registerDb;
         }
 
-        public QualificationPublic? GetQualificationPublicByNumber(string number)
+        public QualificationPublic? GetQualificationPublicByNumber(string number, string? number2, string? number3)
         {
             _logger.LogInformation("Getting public qualification by number");
+
+            number = getQualNumber(number, number2, number3);
+
             if (QualificationNumRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationPublicByNumber(number, "");
+                return _registerDb.GetQualificationPublicByNumber(number, "")?.ToDomain();
             }
 
             if (QualificationNumNoObliquesRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationPublicByNumber("", number);
-
+                return _registerDb.GetQualificationPublicByNumber("", number)?.ToDomain();
             }
 
             return null;
         }
 
-        public Qualification? GetQualificationByNumber(string number)
+
+        public Qualification? GetQualificationByNumber(string number, string? number2, string? number3)
         {
             _logger.LogInformation("Getting private qualification by number");
 
+            number = getQualNumber(number, number2, number3);
+
             if (QualificationNumRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationByNumber(number, "");
+                return _registerDb.GetQualificationByNumber(number, "")?.ToDomain();
             }
 
             if (QualificationNumNoObliquesRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationByNumber("", number);
+                return _registerDb.GetQualificationByNumber("", number)?.ToDomain();
 
             }
 
             return null;
         }
 
+        private static string getQualNumber(string number, string? number2, string? number3)
+        {
+            if (string.IsNullOrEmpty(number) || (number2 != null && number3 == null) || (number2 == null && number3 != null))
+            {
+                throw new BadRequestException("Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229");
+            }
+
+            if (number2 != null)
+            {
+                number = number + "/" + number2 + "/" + number3;
+            }
+
+            return number;
+        }
     }
 }

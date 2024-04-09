@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
@@ -17,24 +18,23 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = register;
         }
 
-        public ListResponse<Organisation>? ListOrganisations(string? search, int offSet, int limit)
+        public ListResponse<Organisation>? ListOrganisations(string? search, int page, int limit)
         {
             _logger.LogInformation("Getting list of organisations");
 
-            var _offSet = (offSet - 1) * limit;    
-            if (Math.Clamp(limit, 1, 15) != limit || _offSet < 0)
+            if (limit < 1 || page < 1)
             {
-                throw new BadRequestException("Please use a limit size between 1 to 15 inclusive " +
-                    "and page size greater than 0");
+                throw new BadRequestException($"Invalid parameter values. Page should be > 0 and Limit should be > 0");
             }
-               
-            var (organisations, count) = _registerDb.GetOrganisationsList(limit, _offSet, search!);
-            return new ListResponse<Organisation>
+
+            var dbResponse = _registerDb.GetOrganisationsList(page - 1, limit, search!);
+
+            return new ListResponse<Organisation>()
             {
-                Count = count,
-                CurrentPage = offSet,
+                Count = dbResponse != null ? dbResponse.Count : 0,
+                Results = dbResponse != null ? dbResponse?.Results?.ToDomain() : null,
                 Limit = limit,
-                Results = organisations ?? ([])
+                CurrentPage = page
             };
         }
 

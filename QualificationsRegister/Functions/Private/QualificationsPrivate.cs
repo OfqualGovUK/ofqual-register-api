@@ -5,6 +5,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
+using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 
 namespace Ofqual.Common.RegisterAPI.Functions.Private
@@ -30,23 +31,11 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
         /// <param name="search"></param>
         /// <returns></returns>
         [Function("QualificationsPrivate")]
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 15, string title = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 50, string title = "")
         {
             _logger.LogInformation("Get Qualifications Private - search = {}", title);
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-
-            if (page < 1 || limit > 100 || limit < 1)
-            {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = "Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= 100"
-                }, Utilities.JsonSerializerOptions));
-
-                return response;
-            }
+            var response = Utilities.CreateResponse(req);
 
             try
             {
@@ -59,16 +48,12 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
             }
             catch (Exception ex)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message,
-                    innerException = ex.InnerException
-                }, Utilities.JsonSerializerOptions));
+                Utilities.CreateExceptionJson(ex, ref response);
             }
 
             return response;
         }
+
 
         /// <summary>
         /// Returns a single qualification based on the number param
@@ -81,30 +66,11 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
         {
             _logger.LogInformation("Get Qualification Private - number = {}", number);
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-
-            if (string.IsNullOrEmpty(number))
-            {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                return response;
-            }
-
-
-            if (string.IsNullOrEmpty(number) || (number2 != null && number3 == null) || (number2 == null && number3 != null))
-            {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = "Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229"
-                }, Utilities.JsonSerializerOptions));
-
-                return response;
-            }
+            var response = Utilities.CreateResponse(req);
 
             try
             {
-                var qualification = _getQualificationByNumber.GetQualificationByNumber(number);
+                var qualification = _getQualificationByNumber.GetQualificationByNumber(number, number2, number3);
 
                 if (qualification == null)
                 {
@@ -116,13 +82,9 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
             }
             catch (Exception ex)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message,
-                    innerException = ex.InnerException
-                }, Utilities.JsonSerializerOptions));
+                Utilities.CreateExceptionJson(ex, ref response);
             }
+
             return response;
         }
     }

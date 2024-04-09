@@ -31,12 +31,11 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <returns></returns>
         [Function("Organisations")]
         public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req,
-            string? search, int page = 1, int limit = 15)
+            string? search, int page = 1, int limit = int.MaxValue)
         {
             _logger.LogInformation("Get Organisations Public - search = {}", search);
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+            var response = Utilities.CreateResponse(req);
 
             try
             {
@@ -54,12 +53,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             }
             catch (Exception ex)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message,
-                    innerException = ex.InnerException
-                }));
+                Utilities.CreateExceptionJson(ex, ref response);
             }
 
             return response;
@@ -78,8 +72,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         {
             _logger.LogInformation("Get Organisation - Public = {}", number);
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+            var response = Utilities.CreateResponse(req);
 
             try
             {
@@ -104,12 +97,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             }
             catch (Exception ex)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message,
-                    innerException = ex.InnerException
-                }, Utilities.JsonSerializerOptions));
+                Utilities.CreateExceptionJson(ex, ref response);
             }
 
             return response;

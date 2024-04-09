@@ -80,7 +80,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
 
             };
 
-            _searchUseCaseMock.Setup(m => m.ListOrganisations(It.IsAny<string>(), 1, 15)).Returns(response);
+            _searchUseCaseMock.Setup(m => m.ListOrganisations(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(response);
             var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object,
                 _getOrganisationBybyNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);

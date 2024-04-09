@@ -5,14 +5,14 @@ namespace Ofqual.Common.RegisterAPI.Database
 {
     public interface IRegisterDb
     {
-        (List<Organisation>?, int count) GetOrganisationsList(int limit, int offSet, string name);
-        Organisation? GetOrganisationByNumber(string number, string numberRN);
+        DbListResponse<DbOrganisation>? GetOrganisationsList(int limit, int offSet, string name);
+        DbOrganisation? GetOrganisationByNumber(string number, string numberRN);
 
-        ListResponse<Qualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title);
-        ListResponse<QualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title);
+        DbListResponse<DbQualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title);
+        DbListResponse<DbQualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title);
 
-        Qualification? GetQualificationByNumber(string numberObliques, string numberNoObliques);
-        QualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques);
+        DbQualification? GetQualificationByNumber(string numberObliques, string numberNoObliques);
+        DbQualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques);
 
     }
 }
