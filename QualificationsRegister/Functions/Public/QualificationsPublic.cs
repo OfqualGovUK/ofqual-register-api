@@ -38,20 +38,9 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
             var response = Utilities.CreateResponse(req);
 
-            if (page < 1 || limit > 100 || limit < 1)
-            {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = "Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= 100"
-                }, Utilities.JsonSerializerOptions));
-
-                return response;
-            }
-
             try
             {
-                var query = req.Query == null ? null : req.Query.GetQualificationFilterQuery();
+                var query = req.Query?.GetQualificationFilterQuery();
 
                 var qualifications = _getQualifications.ListQualificationsPublic(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
@@ -60,12 +49,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             }
             catch (Exception ex)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                await response.WriteStringAsync(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message,
-                    innerException = ex.InnerException
-                }, Utilities.JsonSerializerOptions));
+                Utilities.CreateExceptionJson(ex, ref response);
             }
 
             return response;
@@ -90,8 +74,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
 
                 if (qualification == null)
                 {
-                    throw new NotFoundException(null);
-                    return response;
+                    throw new NotFoundException("Requested Qualification was not found");
                 }
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(qualification, Utilities.JsonSerializerOptions));

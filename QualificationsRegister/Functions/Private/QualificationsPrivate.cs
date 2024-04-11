@@ -74,8 +74,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
 
                 if (qualification == null)
                 {
-                    response.StatusCode = HttpStatusCode.NotFound;
-                    return response;
+                    throw new NotFoundException("Requested Qualification was not found");
                 }
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(qualification, Utilities.JsonSerializerOptions));

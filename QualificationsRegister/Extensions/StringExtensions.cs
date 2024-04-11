@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 
 namespace Ofqual.Common.RegisterAPI.Extensions
 {
-    public static class StringExtensions
+    public static partial class StringExtensions
     {
+        [GeneratedRegex(@"[\[\\""\]]+")]
+        private static partial Regex SubStringRegex();
+
         public static string[]? GetSubStrings(this string value)
         {
             if (value == null) return null;
 
             //remove [], quotes and spaces from the db value
-            var str = Regex.Replace(value, @"[\[\\""\]]+", "");
+            var str = SubStringRegex().Replace(value, "");
 
             var arr = str.Replace(", ", ",").Split(",");
             return arr;
         }
+
     }
 }

@@ -27,7 +27,6 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
         {
             _logger.LogInformation("Getting list of public qualifications");
 
-
             if (!int.TryParse(Environment.GetEnvironmentVariable("QualificationsPagingLimit"), out var pagingLimit))
             {
                 pagingLimit = 100;

@@ -18,16 +18,16 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = register;
         }
 
-        public ListResponse<Organisation>? ListOrganisations(string? search, int page, int limit)
+        public ListResponse<Organisation>? ListOrganisations(string? name, int? limit, int page)
         {
             _logger.LogInformation("Getting list of organisations");
 
-            if (limit < 1 || page < 1)
+            if (page < 1)
             {
-                throw new BadRequestException($"Invalid parameter values. Page should be > 0 and Limit should be > 0");
+                throw new BadRequestException($"Invalid parameter values. Page should be > 0");
             }
 
-            var dbResponse = _registerDb.GetOrganisationsList(page - 1, limit, search!);
+            var dbResponse = _registerDb.GetOrganisationsList(page - 1, limit, name!);
 
             return new ListResponse<Organisation>()
             {
@@ -37,6 +37,5 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
                 CurrentPage = page
             };
         }
-
     }
 }

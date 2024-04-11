@@ -13,6 +13,9 @@ namespace Ofqual.Common.RegisterAPI.Models
 {
     public static class Utilities
     {
+        public const int DefaultOrganisationPagingLimit = 200;
+        public const int DefaultQualificationPagingLimit = 100;
+
         public static HttpResponseData CreateResponse(HttpRequestData req)
         {
             var response = req.CreateResponse(HttpStatusCode.OK);

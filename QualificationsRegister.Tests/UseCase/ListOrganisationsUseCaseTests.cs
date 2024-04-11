@@ -39,7 +39,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
             };
 
             _mockDB.Setup(x => x.GetOrganisationsList(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(listResp);
-            var result = _classUnderTest.ListOrganisations(It.IsAny<string>(), 1, 1);
+            var result = _classUnderTest.ListOrganisations(It.IsAny<string>(), 10, 1);
 
             result.Should().NotBeNull();
             result?.Results.Should().HaveCount(stubbedList.Count);
@@ -49,10 +49,10 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public void ListOfOrganisationsWithInvalidPagingParametersReturnsBadRequest()
         {
             var stubbedList = _fixture.Create<DbListResponse<DbOrganisation>>();
-            _mockDB.Setup(x => x.GetOrganisationsList(15, 0, It.IsAny<string>())).Returns(stubbedList);
+            _mockDB.Setup(x => x.GetOrganisationsList(1, 0, It.IsAny<string>())).Returns(stubbedList);
 
-            Func<ListResponse<Organisation>> testDelegate = () => _classUnderTest.ListOrganisations(It.IsAny<string>(), 0, 17)!;
-            testDelegate.Should().Throw<BadRequestException>().WithMessage("Invalid parameter values. Page should be > 0 and Limit should be > 0");
+            Func<ListResponse<Organisation>> testDelegate = () => _classUnderTest.ListOrganisations(It.IsAny<string>(), 0, 0)!;
+            testDelegate.Should().Throw<BadRequestException>().WithMessage($"Invalid parameter values. Page should be > 0");
         }
     }
 }

@@ -11,7 +11,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ofqual.Common.RegisterAPI.Services.Database
 {
-    public partial class RegisterDb : IRegisterDb
+    public class RegisterDb : IRegisterDb
     {
         private readonly RegisterDbContext _context;
         private readonly ILogger _logger;
@@ -22,7 +22,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        public DbListResponse<DbOrganisation> GetOrganisationsList(int page, int limit, string name)
+        public DbListResponse<DbOrganisation> GetOrganisationsList(int page, int? limit, string name)
         {
             var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
 
@@ -36,14 +36,14 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             var organisations = result.OrderBy(o => o.Name)
                .ThenBy(o => o.LegalName)
                .ThenBy(o => o.Acronym)
-               .Skip(page * limit)
-               .Take(limit)
-               .ToList();
+               .Skip(page * (limit ?? 1));
+
+            organisations = limit != null ? organisations.Take(limit.Value) : organisations;
 
             return new DbListResponse<DbOrganisation>
             {
-                Count = count,                
-                Results = organisations
+                Count = count,
+                Results = organisations.ToList()
             };
         }
 
@@ -53,7 +53,6 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             var organisation = _context.Organisations.FirstOrDefault(o => o.RecognitionNumber.Equals(number) ||
             o.RecognitionNumber.Equals(numberRN));
 
-            //return organisation?.ToDomain();
             return organisation;
         }
 

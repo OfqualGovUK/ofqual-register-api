@@ -84,7 +84,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object,
                 _getOrganisationBybyNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            var res = await httpFunc.GetOrganisationsList(requestData, "edexcel");
+            var res = await httpFunc.GetOrganisationsList(requestData, "edexcel", 10);
 
             ListResponse<Organisation> body;
             using (var reader = new StreamReader(res.Body))
@@ -107,7 +107,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
             var httpFunc = new OrganisationsPublic(new NullLoggerFactory(), _searchUseCaseMock.Object,
                 _getOrganisationBybyNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
-            var res = await httpFunc.GetOrganisationsList(requestData, "error");
+            var res = await httpFunc.GetOrganisationsList(requestData, "error", 10);
 
             res.StatusCode.Equals(HttpStatusCode.BadRequest);
             res.Should().NotBeNull();

@@ -31,25 +31,16 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <returns></returns>
         [Function("Organisations")]
         public async Task<HttpResponseData> GetOrganisationsList([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req,
-            string? search, int page = 1, int limit = int.MaxValue)
+            string? name, int? limit, int page = 1)
         {
-            _logger.LogInformation("Get Organisations Public - search = {}", search);
+            _logger.LogInformation("Get Organisations Public - search = {}", name);
 
             var response = Utilities.CreateResponse(req);
 
             try
             {
-                var organisations = _getOrganisations.ListOrganisations(search, page, limit);
+                var organisations = _getOrganisations.ListOrganisations(name, limit, page);
                 await response.WriteStringAsync(JsonSerializer.Serialize(organisations, Utilities.JsonSerializerOptions));
-            }
-            catch (BadRequestException ex)
-            {
-                var error = req.CreateResponse(HttpStatusCode.Forbidden);
-                error.WriteString(JsonSerializer.Serialize(new
-                {
-                    error = ex.Message
-                }, Utilities.JsonSerializerOptions));
-                return error;
             }
             catch (Exception ex)
             {

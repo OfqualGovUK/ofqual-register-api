@@ -83,8 +83,8 @@ Retrieves a list of organisations along with with the paging metadata ordered by
 > | name      |  type     | data type               | description | variations                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
 > | search      |  optional | string   | Search term that matches within the organisation name or ‘known as’/acronym field of one or more records| if not povided, all organisations are returned
-> | page      |  required | int   | Page number for the current set of search results|if not provided, defaults to page # 1
-> | limit      |  required | int   | Number of organisation records to return for the search | if not provided defaults to 15
+> | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
+> | limit      |  optional | int   | Number of organisation records to return for the search | if not provided returns the whole list
 
 
 ##### Responses
@@ -265,9 +265,18 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 > | maxTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is lower than maxTotalQualificationTime | maxTotalQualificationTime=20
 > | minGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is higher than minGuidedLearninghours | minGuidedLearninghours=1
 > | maxGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is lower than maxGuidedLearninghours | maxGuidedLearninghours=20
-> | page      |  required | int   | Page number for the current set of search results|if not provided, defaults to page # 1
-> | limit      |  required | int   | Number of organisation records to return for the search | if not provided defaults to 15
+> | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
+> | limit      |  optional | int   | Number of organisation records to return for the search | if not provided defaults to 15. This is set via the `QualificationsPagingLimit` environment variable in Azure
 
+Parameters are all applied as AND when multiple filters are set. For example, if there are 3 Qualification records as such: 
+
+> | Qualification         | Qualification Level       | Sector Subject Areas|
+> |-----------------------|--------------------------------|-----------------------------------|
+> |Q1    | Level 1   | Direct Learning support   |
+> |Q2    | Level 2   | Retailing and wholesaling     |
+> | Q3    | Level 2   | Direct Learning support   |
+
+And the query parameters contain `qualificationLevels = Level 2` and `sectorSubjectAreas = Direct Learning support`, only Q3 will be returned. 
 
 ##### Responses
 
@@ -432,8 +441,8 @@ Retrieves a list of organisations along with with the paging metadata ordered by
 > | name      |  type     | data type               | description | variations                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
 > | search      |  optional | string   | Search term that matches within the organisation name or ‘known as’/acronym field of one or more records| if not povided, all organisations are returned
-> | page      |  required | int   | Page number for the current set of search results|if not provided, defaults to page # 1
-> | limit      |  required | int   | Number of organisation records to return for the search | if not provided defaults to 15
+> | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
+> | limit      |  optional | int   | Number of organisation records to return for the search | if not provided returns the whole list
 
 
 ##### Headers
