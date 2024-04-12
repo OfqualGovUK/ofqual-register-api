@@ -81,7 +81,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
             {
                 throw new BadRequestException("Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229");
             }
-            else if((QualificationNumRegex().IsMatch(number) || QualificationNumNoObliquesRegex().IsMatch(number)) == false)
+            else if(!(QualificationNumRegex().IsMatch(number) || QualificationNumNoObliquesRegex().IsMatch(number)))
             {
                 throw new BadRequestException("Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229");
             }

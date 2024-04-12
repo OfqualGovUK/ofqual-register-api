@@ -36,21 +36,7 @@ namespace Ofqual.Common.RegisterAPI.Models
         public string? Specialism { get; set; }
         public string? Pathways { get; set; }      
         public string[]? AssessmentMethods {  get; set; }
-        //{
-        //    get
-        //    {
-        //        if (AssessmentMethodsString == null) { return null; }
-        //        else
-        //        {
-        //            //remove [], quotes and spaces from the db value
-        //            var str = Regex.Replace(AssessmentMethodsString, @"[\[\\""\]]+", "");
 
-        //            var arr = str.Replace(", ", ",").Split(",");
-        //            return arr;
-        //        }
-        //    }
-        //    set { }
-        //}
         public bool? ApprovedForDELFundedProgramme { get; set; }
         public string? LinkToSpecification { get; set; }
         public string? ApprenticeshipStandardReferenceNumber { get; set; }
