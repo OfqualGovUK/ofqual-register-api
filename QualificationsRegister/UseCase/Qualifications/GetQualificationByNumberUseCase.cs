@@ -34,7 +34,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
         {
             _logger.LogInformation("Getting public qualification by number");
 
-            number = getQualNumber(number, number2, number3);
+            number = GetQualNumber(number, number2, number3);
 
             if (QualificationNumRegex().IsMatch(number))
             {
@@ -54,7 +54,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
         {
             _logger.LogInformation("Getting private qualification by number");
 
-            number = getQualNumber(number, number2, number3);
+            number = GetQualNumber(number, number2, number3);
 
             if (QualificationNumRegex().IsMatch(number))
             {
@@ -70,16 +70,20 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
             return null;
         }
 
-        private static string getQualNumber(string number, string? number2, string? number3)
+        private static string GetQualNumber(string number, string? number2, string? number3)
         {
+            if (number2 != null)
+            {
+                number = number + "/" + number2 + "/" + number3;
+            }
+
             if (string.IsNullOrEmpty(number) || (number2 != null && number3 == null) || (number2 == null && number3 != null))
             {
                 throw new BadRequestException("Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229");
             }
-
-            if (number2 != null)
+            else if((QualificationNumRegex().IsMatch(number) || QualificationNumNoObliquesRegex().IsMatch(number)) == false)
             {
-                number = number + "/" + number2 + "/" + number3;
+                throw new BadRequestException("Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229");
             }
 
             return number;

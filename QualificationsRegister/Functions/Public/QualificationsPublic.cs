@@ -32,7 +32,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="title"></param>
         /// <returns></returns>
         [Function("Qualifications")]
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 50, string title = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 100, string title = "")
         {
             _logger.LogInformation("List Qualifications Public - title = {}", title);
 

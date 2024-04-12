@@ -31,12 +31,34 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         [Test]
         public void GetsAnOrganisationsUsingRecognitionNumber()
         {
-            var stub = _fixture.Create<DbOrganisation>();
-            _mockDB.Setup(x => x.GetOrganisationByNumber("2323", "RN2323")).Returns(stub);
-            var result = _classUnderTest.GetOrganisationByNumber("2323");
+            var dbOrg = _fixture.Create<DbOrganisation>();
+            _mockDB.Setup(x => x.GetOrganisationByNumber("2323", "RN2323")).Returns(dbOrg);
+            var domainOrg = _classUnderTest.GetOrganisationByNumber("2323");
 
-            result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(stub, options => options.Excluding(c => c.Id));
+            domainOrg.Should().NotBeNull();
+            domainOrg.Should().BeEquivalentTo(dbOrg,
+                            options => options
+                                .Excluding(x => x.Id)
+                                .Excluding(x => x.OfqualRecognisedOn)
+                                .Excluding(x => x.OfqualRecognisedTo)
+                                .Excluding(x => x.OfqualSurrenderedOn)
+                                .Excluding(x => x.OfqualWithdrawnOn)
+                                .Excluding(x => x.CceaRecognisedOn)
+                                .Excluding(x => x.CceaRecognisedTo)
+                                .Excluding(x => x.CceaSurrenderedOn)
+                                .Excluding(x => x.CceaWithdrawnOn)
+                                .Excluding(x => x.LastUpdatedDate)
+                                );
+
+            domainOrg?.OfqualRecognisedOn.Should().Be(dbOrg.OfqualRecognisedOn?.ToUniversalTime());
+            domainOrg?.OfqualRecognisedTo.Should().Be(dbOrg.OfqualRecognisedTo?.ToUniversalTime());
+            domainOrg?.OfqualSurrenderedOn.Should().Be(dbOrg.OfqualSurrenderedOn?.ToUniversalTime());
+            domainOrg?.OfqualWithdrawnOn.Should().Be(dbOrg.OfqualWithdrawnOn?.ToUniversalTime());
+            domainOrg?.CceaRecognisedTo.Should().Be(dbOrg.CceaRecognisedTo?.ToUniversalTime());
+            domainOrg?.CceaRecognisedTo.Should().Be(dbOrg.CceaRecognisedTo?.ToUniversalTime());
+            domainOrg?.CceaSurrenderedOn.Should().Be(dbOrg.CceaSurrenderedOn?.ToUniversalTime());
+            domainOrg?.CceaWithdrawnOn.Should().Be(dbOrg.CceaWithdrawnOn?.ToUniversalTime());
+            domainOrg?.LastUpdatedDate.Should().Be(dbOrg.LastUpdatedDate.ToUniversalTime());
         }
 
         [Test]

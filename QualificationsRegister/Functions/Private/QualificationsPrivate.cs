@@ -31,7 +31,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
         /// <param name="search"></param>
         /// <returns></returns>
         [Function("QualificationsPrivate")]
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 50, string title = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 100, string title = "")
         {
             _logger.LogInformation("Get Qualifications Private - search = {}", title);
 
@@ -41,7 +41,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Private
             {
                 var query = req.Query?.GetQualificationFilterQuery();
 
-                var qualifications = _getQualifications.ListQualificationsPrivate(page, limit, query, title);
+                var qualifications = _getQualifications.ListQualifications(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(qualifications, Utilities.JsonSerializerOptions));

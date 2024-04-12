@@ -37,7 +37,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
                 throw new BadRequestException($"Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= {pagingLimit}");
             }
 
-            var dbResponse = _registerDb.GetQualificationsPublicByName(page - 1, limit, query, title!);
+            var dbResponse = _registerDb.GetQualificationsPublicList(page - 1, limit, query, title!);
 
             return new ListResponse<QualificationPublic>
             {
@@ -48,7 +48,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
             };
         }
 
-        public ListResponse<Qualification> ListQualificationsPrivate(int page, int limit, QualificationFilter? query, string? title)
+        public ListResponse<Qualification> ListQualifications(int page, int limit, QualificationFilter? query, string? title)
         {
             _logger.LogInformation("Getting list of qualifications");
 
@@ -62,7 +62,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
                 throw new BadRequestException($"Invalid parameter values. Page should be > 0 and Limit should be > 0 and <= {pagingLimit}");
             }
 
-            var dbResponse = _registerDb.GetQualificationsByName(page-1, limit, query, title!);
+            var dbResponse = _registerDb.GetQualificationsList(page-1, limit, query, title!);
 
             return new ListResponse<Qualification>
             {

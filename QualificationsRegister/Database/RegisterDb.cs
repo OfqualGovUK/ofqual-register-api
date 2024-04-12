@@ -59,7 +59,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         #region Qualifications Private
 
-        public DbListResponse<DbQualification> GetQualificationsByName(int page, int limit, QualificationFilter? query, string title)
+        public DbListResponse<DbQualification> GetQualificationsList(int page, int limit, QualificationFilter? query, string title)
         {
             _logger.LogInformation($"Getting a qualification by title: {title}");
 
@@ -203,7 +203,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
         #endregion
 
         #region Qualifications Public
-        public DbListResponse<DbQualificationPublic> GetQualificationsPublicByName(int page, int limit, QualificationFilter? query, string title)
+        public DbListResponse<DbQualificationPublic> GetQualificationsPublicList(int page, int limit, QualificationFilter? query, string title)
         {
             _logger.LogInformation($"Getting a qualification by title: {title}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);

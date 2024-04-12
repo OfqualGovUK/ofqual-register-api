@@ -29,11 +29,6 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 GLH = dbQualificationPublic.GLH,
                 MinimumGLH = dbQualificationPublic.MinimumGLH,
                 MaximumGLH = dbQualificationPublic.MaximumGLH,
-                RegulationStartDate = dbQualificationPublic.RegulationStartDate.ToUniversalTime(),
-                OperationalStartDate = dbQualificationPublic.OperationalStartDate.ToUniversalTime(),
-                OperationalEndDate = dbQualificationPublic.OperationalEndDate?.ToUniversalTime(),
-                CertificationEndDate = dbQualificationPublic.CertificationEndDate?.ToUniversalTime(),
-                ReviewDate = dbQualificationPublic.ReviewDate?.ToUniversalTime(),
                 OfferedInEngland = dbQualificationPublic.OfferedInEngland,
                 OfferedInNorthernIreland = dbQualificationPublic.OfferedInNorthernIreland,
                 OfferedInternationally = dbQualificationPublic.OfferedInternationally,
@@ -49,7 +44,12 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 GCESizeEquivalence = dbQualificationPublic.GCESizeEquivalence,
                 GCSESizeEquivalence = dbQualificationPublic.GCSESizeEquivalence,
                 EntitlementFrameworkDesignation = dbQualificationPublic.EntitlementFrameworkDesignation,
-                LastUpdatedDate = dbQualificationPublic.LastUpdatedDate?.ToUniversalTime()
+                RegulationStartDate = dbQualificationPublic.RegulationStartDate.ToFormattedUniversalTime(),
+                OperationalStartDate = dbQualificationPublic.OperationalStartDate.ToFormattedUniversalTime(),
+                OperationalEndDate = dbQualificationPublic.OperationalEndDate?.ToFormattedUniversalTime(),
+                CertificationEndDate = dbQualificationPublic.CertificationEndDate?.ToFormattedUniversalTime(),
+                ReviewDate = dbQualificationPublic.ReviewDate?.ToFormattedUniversalTime(),
+                LastUpdatedDate = dbQualificationPublic.LastUpdatedDate?.ToFormattedUniversalTime()
             };
         }
 

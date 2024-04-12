@@ -30,12 +30,6 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 GLH = dbQualification.GLH,
                 MinimumGLH = dbQualification.MinimumGLH,
                 MaximumGLH = dbQualification.MaximumGLH,
-                RegulationStartDate = dbQualification.RegulationStartDate.ToUniversalTime(),
-                OperationalStartDate = dbQualification.OperationalStartDate.ToUniversalTime(),
-                OperationalEndDate = dbQualification.OperationalEndDate?.ToUniversalTime(),
-                CertificationEndDate = dbQualification.CertificationEndDate?.ToUniversalTime(),
-                ReviewDate = dbQualification.ReviewDate?.ToUniversalTime(),
-                EmbargoDate = dbQualification.EmbargoDate?.ToUniversalTime(),
                 OfferedInEngland = dbQualification.OfferedInEngland,
                 OfferedInNorthernIreland = dbQualification.OfferedInNorthernIreland,
                 OfferedInternationally = dbQualification.OfferedInternationally,
@@ -51,8 +45,6 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 GCESizeEquivalence = dbQualification.GCESizeEquivalence,
                 GCSESizeEquivalence = dbQualification.GCSESizeEquivalence,
                 EntitlementFrameworkDesignation = dbQualification.EntitlementFrameworkDesignation,
-                LastUpdatedDate = dbQualification.LastUpdatedDate?.ToUniversalTime(),
-                UILastUpdatedDate = dbQualification.UILastUpdatedDate.ToUniversalTime(),
                 InsertedDate = dbQualification.InsertedDate,
                 Version = dbQualification.Version,
                 AppearsOnPublicRegister = dbQualification.AppearsOnPublicRegister,
@@ -66,6 +58,14 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 SixteenToEighteen = dbQualification.SixteenToEighteen,
                 EighteenPlus = dbQualification.EighteenPlus,
                 NineteenPlus = dbQualification.NineteenPlus,
+                RegulationStartDate = dbQualification.RegulationStartDate.ToFormattedUniversalTime(),
+                OperationalStartDate = dbQualification.OperationalStartDate.ToFormattedUniversalTime(),
+                OperationalEndDate = dbQualification.OperationalEndDate?.ToFormattedUniversalTime(),
+                CertificationEndDate = dbQualification.CertificationEndDate?.ToFormattedUniversalTime(),
+                ReviewDate = dbQualification.ReviewDate?.ToFormattedUniversalTime(),
+                EmbargoDate = dbQualification.EmbargoDate?.ToFormattedUniversalTime(),
+                LastUpdatedDate = dbQualification.LastUpdatedDate?.ToFormattedUniversalTime(),
+                UILastUpdatedDate = dbQualification.UILastUpdatedDate.ToFormattedUniversalTime()
             };
         }
 

@@ -40,7 +40,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
 
             var res = await httpFunc.GetQualification(requestData, _fixture.Create<string>(), null, null);
             Console.WriteLine(res.StatusCode);
-            Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
+            Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             res.Should().NotBeNull();
         }
 
@@ -56,7 +56,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
 
             var res = await httpFunc.GetQualification(requestData, "", null, null);
             Console.WriteLine(res.StatusCode);
-            Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.BadRequest));
+            Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
             res.Should().NotBeNull();
         }
 
@@ -65,13 +65,30 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
         {
             var stubbedList = _fixture.Create<ListResponse<Qualification>>();
 
-            _listUseCaseMock.Setup(m => m.ListQualificationsPrivate(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<QualificationFilter>(), It.IsAny<string>())).Returns(stubbedList);
+            _listUseCaseMock.Setup(m => m.ListQualifications(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<QualificationFilter>(), It.IsAny<string>())).Returns(stubbedList);
             var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _listUseCaseMock.Object,
                 _byNumberUseCaseMock.Object);
             MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
             var res = await httpFunc.ListQualifications(requestData, 1, 15, "edexcel");
 
-            Assert.That(res.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
+            Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            res.Should().NotBeNull();
+        }
+
+        [Test]
+        public async Task GetQualificationByTitleReturnsBadRequest()
+        {
+            var stubbedList = _fixture.Create<ListResponse<Qualification>>();
+
+            _listUseCaseMock.Setup(m => m.ListQualifications(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<QualificationFilter>(), It.IsAny<string>())).Throws(new BadRequestException(""));
+            var httpFunc = new QualificationsPrivate(new NullLoggerFactory(), _listUseCaseMock.Object,
+                _byNumberUseCaseMock.Object);
+
+            MockHttpRequestData requestData = new MockHttpRequestData(_functionContext.Object);
+
+            var res = await httpFunc.ListQualifications(requestData, 1, 15, "edexcel");
+
+            Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
             res.Should().NotBeNull();
         }
     }
