@@ -21,7 +21,7 @@ namespace OfqualCommon.RegisterAPI.Tests.Mappers
             var nvc = new NameValueCollection
             {
                 { "AssessmentMethods", "Exam, Assignment" },
-                { "GradingTypes", "Numeric, Pass/Fail" },
+                { "GradingTypes", "Graded, Pass/Fail" },
                 { "MinTotalQualificationTime", "120" },
                 { "MaxTotalQualificationTime", "300" }
             };
@@ -30,7 +30,7 @@ namespace OfqualCommon.RegisterAPI.Tests.Mappers
 
             result.Should().NotBeNull();
             result?.AssessmentMethods?.Length.Should().Be(2);
-            result?.AssessmentMethods?.Should().BeEquivalentTo(["Numeric", "Pass/Fail"]);
+            result?.GradingTypes?.Should().BeEquivalentTo(["Graded", "Pass/Fail"]);
             result?.MinTotalQualificationTime?.Should().Be(120);
             result?.MaxTotalQualificationTime?.Should().Be(300);
         }
@@ -40,8 +40,8 @@ namespace OfqualCommon.RegisterAPI.Tests.Mappers
         {
             var nvc = new NameValueCollection();
 
-            Func<QualificationFilter?> testDelegate = () => nvc.GetQualificationFilterQuery();
-            testDelegate.Should().BeNull();
+            var filter =  nvc.GetQualificationFilterQuery();
+            filter.Should().BeNull();
         }
 
         [Test]
@@ -51,6 +51,8 @@ namespace OfqualCommon.RegisterAPI.Tests.Mappers
             {
                 { "MinTotalQualificationTime", "abc" } // Invalid value for an integer parameter
             };
+
+            //Assert.That(nvc.GetQualificationFilterQuery().thr)
 
             Func<QualificationFilter?> testDelegate = () => nvc.GetQualificationFilterQuery();
             testDelegate.Should().Throw<BadRequestException>();
