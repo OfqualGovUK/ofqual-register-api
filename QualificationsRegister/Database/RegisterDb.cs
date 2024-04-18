@@ -22,11 +22,11 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             _logger = loggerFactory.CreateLogger<RegisterDb>();
         }
 
-        public DbListResponse<DbOrganisation> GetOrganisationsList(int page, int? limit, string name)
+        public DbListResponse<DbOrganisation> GetOrganisationsList(int page, int? limit, string search)
         {
-            var nameSearchPattern = $"%{name?.Replace(" ", "")}%";
+            var nameSearchPattern = $"%{search?.Replace(" ", "")}%";
 
-            _logger.LogInformation($"Getting list of organisations: {name}");
+            _logger.LogInformation($"Getting list of organisations: {search}");
 
             var result = _context.Organisations.Where(o =>
             EF.Functions.Like(o.Acronym.Replace(" ", ""), nameSearchPattern) ||

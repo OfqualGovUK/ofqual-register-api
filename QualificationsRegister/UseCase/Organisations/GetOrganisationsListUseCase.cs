@@ -18,7 +18,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             _registerDb = register;
         }
 
-        public ListResponse<Organisation>? ListOrganisations(string? name, int? limit, int page)
+        public ListResponse<Organisation>? ListOrganisations(string? search, int? limit, int page)
         {
             _logger.LogInformation("Getting list of organisations");
 
@@ -27,7 +27,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
                 throw new BadRequestException($"Invalid parameter values. Page should be > 0");
             }
 
-            var dbResponse = _registerDb.GetOrganisationsList(page - 1, limit, name!);
+            var dbResponse = _registerDb.GetOrganisationsList(page - 1, limit, search!);
 
             return new ListResponse<Organisation>()
             {
