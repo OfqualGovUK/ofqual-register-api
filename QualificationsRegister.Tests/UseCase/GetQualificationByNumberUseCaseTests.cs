@@ -89,12 +89,12 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
 
             domainQual?.AssessmentMethods?.Should().BeEquivalentTo(dbQual.AssessmentMethods?.GetSubStrings());
 
-            domainQual?.RegulationStartDate.Should().Be(dbQual.RegulationStartDate.ToFormattedUniversalTime());
-            domainQual?.OperationalStartDate.Should().Be(dbQual.OperationalStartDate.ToFormattedUniversalTime());
-            domainQual?.OperationalEndDate.Should().Be(dbQual.OperationalEndDate?.ToFormattedUniversalTime());
-            domainQual?.CertificationEndDate.Should().Be(dbQual.CertificationEndDate?.ToFormattedUniversalTime());
-            domainQual?.ReviewDate.Should().Be(dbQual.ReviewDate?.ToFormattedUniversalTime());
-            domainQual?.LastUpdatedDate.Should().Be(dbQual.LastUpdatedDate?.ToFormattedUniversalTime());
+            domainQual?.RegulationStartDate.Should().Be(dbQual.RegulationStartDate.ToUniversalTime());
+            domainQual?.OperationalStartDate.Should().Be(dbQual.OperationalStartDate.ToUniversalTime());
+            domainQual?.OperationalEndDate.Should().Be(dbQual.OperationalEndDate?.ToUniversalTime());
+            domainQual?.CertificationEndDate.Should().Be(dbQual.CertificationEndDate?.ToUniversalTime());
+            domainQual?.ReviewDate.Should().Be(dbQual.ReviewDate?.ToUniversalTime());
+            domainQual?.LastUpdatedDate.Should().Be(dbQual.LastUpdatedDate?.ToUniversalTime());
         }
 
         #endregion
@@ -139,14 +139,14 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
             domainQual?.AssessmentMethods?.Should().BeEquivalentTo(dbQual.AssessmentMethods?.GetSubStrings());
             domainQual?.SSACode?.Should().BeEquivalentTo(dbQual.SSA_Code);
 
-            domainQual?.RegulationStartDate.Should().Be(dbQual.RegulationStartDate.ToFormattedUniversalTime());
-            domainQual?.OperationalStartDate.Should().Be(dbQual.OperationalStartDate.ToFormattedUniversalTime());
-            domainQual?.OperationalEndDate.Should().Be(dbQual.OperationalEndDate?.ToFormattedUniversalTime());
-            domainQual?.CertificationEndDate.Should().Be(dbQual.CertificationEndDate?.ToFormattedUniversalTime());
-            domainQual?.ReviewDate.Should().Be(dbQual.ReviewDate?.ToFormattedUniversalTime());
-            domainQual?.EmbargoDate.Should().Be(dbQual.EmbargoDate?.ToFormattedUniversalTime());
-            domainQual?.UILastUpdatedDate.Should().Be(dbQual.UILastUpdatedDate.ToFormattedUniversalTime());
-            domainQual?.LastUpdatedDate.Should().Be(dbQual.LastUpdatedDate?.ToFormattedUniversalTime());
+            domainQual?.RegulationStartDate.Should().Be(dbQual.RegulationStartDate.ToUniversalTime());
+            domainQual?.OperationalStartDate.Should().Be(dbQual.OperationalStartDate.ToUniversalTime());
+            domainQual?.OperationalEndDate.Should().Be(dbQual.OperationalEndDate?.ToUniversalTime());
+            domainQual?.CertificationEndDate.Should().Be(dbQual.CertificationEndDate?.ToUniversalTime());
+            domainQual?.ReviewDate.Should().Be(dbQual.ReviewDate?.ToUniversalTime());
+            domainQual?.EmbargoDate.Should().Be(dbQual.EmbargoDate?.ToUniversalTime());
+            domainQual?.UILastUpdatedDate.Should().Be(dbQual.UILastUpdatedDate.ToUniversalTime());
+            domainQual?.LastUpdatedDate.Should().Be(dbQual.LastUpdatedDate?.ToUniversalTime());
         }
 
         #endregion

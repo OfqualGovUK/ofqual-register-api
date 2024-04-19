@@ -44,12 +44,12 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 GCESizeEquivalence = dbQualificationPublic.GCESizeEquivalence,
                 GCSESizeEquivalence = dbQualificationPublic.GCSESizeEquivalence,
                 EntitlementFrameworkDesignation = dbQualificationPublic.EntitlementFrameworkDesignation,
-                RegulationStartDate = dbQualificationPublic.RegulationStartDate.ToFormattedUniversalTime(),
-                OperationalStartDate = dbQualificationPublic.OperationalStartDate.ToFormattedUniversalTime(),
-                OperationalEndDate = dbQualificationPublic.OperationalEndDate?.ToFormattedUniversalTime(),
-                CertificationEndDate = dbQualificationPublic.CertificationEndDate?.ToFormattedUniversalTime(),
-                ReviewDate = dbQualificationPublic.ReviewDate?.ToFormattedUniversalTime(),
-                LastUpdatedDate = dbQualificationPublic.LastUpdatedDate?.ToFormattedUniversalTime()
+                RegulationStartDate = dbQualificationPublic.RegulationStartDate.ToUniversalTime(),
+                OperationalStartDate = dbQualificationPublic.OperationalStartDate.ToUniversalTime(),
+                OperationalEndDate = dbQualificationPublic.OperationalEndDate?.ToUniversalTime(),
+                CertificationEndDate = dbQualificationPublic.CertificationEndDate?.ToUniversalTime(),
+                ReviewDate = dbQualificationPublic.ReviewDate?.ToUniversalTime(),
+                LastUpdatedDate = dbQualificationPublic.LastUpdatedDate?.ToUniversalTime()
             };
         }
 
