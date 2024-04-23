@@ -43,6 +43,10 @@ namespace Ofqual.Common.RegisterAPI.Mappers
         {
             try
             {
+                if (value == null) return null;
+                if (value == "null") return null;
+                if (value.Length == 0) return null;
+
                 return value != null ? int.Parse(value!) : null;
             }
             catch (Exception)
