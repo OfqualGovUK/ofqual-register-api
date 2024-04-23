@@ -15,6 +15,12 @@ namespace Ofqual.Common.RegisterAPI.Extensions
         public static string[]? GetSubStrings(this string value)
         {
             if (value == null) return null;
+            if (value == "null") return null;
+            if (value.Length == 0) return null;
+            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
 
             //remove [], quotes and spaces from the db value
             var str = SubStringRegex().Replace(value, "");
