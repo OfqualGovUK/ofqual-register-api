@@ -298,22 +298,51 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
                 if (query.MinGuidedLearninghours != null)
                 {
-                    filteredList = filteredList.Where(q => q.GLH >= query.MinGuidedLearninghours);
+                    if (query.MinGuidedLearninghours == 0)
+                    {
+                        filteredList = filteredList.Where(q => q.GLH >= 0 || q.GLH == null);
+                    }
+                    else
+                    {
+                        filteredList = filteredList.Where(q => q.GLH >= query.MinGuidedLearninghours);
+                    }
+
                 }
 
                 if (query.MaxGuidedLearninghours != null)
                 {
-                    filteredList = filteredList.Where(q => q.GLH <= query.MaxGuidedLearninghours);
+                    if (query.MaxGuidedLearninghours == 0)
+                    {
+                        filteredList = filteredList.Where(q => q.GLH >= 0 || q.GLH == null);
+                    }
+                    else
+                    {
+                        filteredList = filteredList.Where(q => q.GLH <= query.MaxGuidedLearninghours);
+                    }
                 }
 
                 if (query.MinTotalQualificationTime != null)
                 {
-                    filteredList = filteredList.Where(q => q.TQT >= query.MinTotalQualificationTime);
+                    if (query.MinTotalQualificationTime == 0)
+                    {
+                        filteredList = filteredList.Where(q => q.TQT >= 0 || q.TQT == null);
+                    }
+                    else
+                    {
+                        filteredList = filteredList.Where(q => q.TQT >= query.MinTotalQualificationTime);
+                    }
                 }
 
                 if (query.MaxTotalQualificationTime != null)
                 {
-                    filteredList = filteredList.Where(q => q.TQT >= query.MaxTotalQualificationTime);
+                    if (query.MaxTotalQualificationTime == 0)
+                    {
+                        filteredList = filteredList.Where(q => q.TQT >= 0 || q.TQT == null);
+                    }
+                    else
+                    {
+                        filteredList = filteredList.Where(q => q.TQT >= query.MaxTotalQualificationTime);
+                    }
                 }
 
                 if (query.SectorSubjectAreas != null)
