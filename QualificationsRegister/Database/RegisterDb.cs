@@ -267,6 +267,14 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
                     }
                 }
 
+                if (query.GradingTypes != null)
+                {
+                    foreach (var gt in query.GradingTypes)
+                    {
+                        filteredList = filteredList.Where(q => q.GradingType == gt);
+                    }
+                }
+
                 if (query.NationalAvailability != null)
                 {
                     foreach (var nA in query.NationalAvailability)
