@@ -86,42 +86,33 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
                 if (query.AwardingOrganisations != null)
                 {
-                    foreach (var aO in query.AwardingOrganisations)
-                    {
-                        filteredList = filteredList.Where(q => q.OrganisationName == aO);
-                    }
+                    filteredList = filteredList.Where(q => query.AwardingOrganisations.Contains(q.OrganisationName));
                 }
 
                 if (query.Availability != null)
                 {
-                    foreach (var av in query.Availability)
-                    {
-                        filteredList = filteredList.Where(q => q.Status == av);
-                    }
+                    filteredList = filteredList.Where(q => query.Availability.Contains(q.Status));
                 }
 
                 if (query.QualificationTypes != null)
                 {
-                    foreach (var qT in query.QualificationTypes)
-                    {
-                        filteredList = filteredList.Where(q => q.Type == qT);
-                    }
+                    filteredList = filteredList.Where(q => query.QualificationTypes.Contains(q.Type));
+
                 }
 
                 if (query.QualificationLevels != null)
                 {
-                    foreach (var qL in query.QualificationLevels)
-                    {
-                        filteredList = filteredList.Where(q => q.Level == qL);
-                    }
+                    filteredList = filteredList.Where(q => query.QualificationLevels.Contains(q.Level));
                 }
 
                 if (query.QualificationSubLevels != null)
                 {
-                    foreach (var qSL in query.QualificationSubLevels)
-                    {
-                        filteredList = filteredList.Where(q => q.SubLevel == qSL);
-                    }
+                    filteredList = filteredList.Where(q => query.QualificationSubLevels.Contains(q.SubLevel));
+                }
+
+                if (query.GradingTypes != null)
+                {
+                    filteredList = filteredList.Where(q => query.GradingTypes.Contains(q.GradingType));
                 }
 
                 if (query.NationalAvailability != null)
@@ -162,15 +153,16 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
                 if (query.MaxTotalQualificationTime != null)
                 {
-                    filteredList = filteredList.Where(q => q.TQT >= query.MaxTotalQualificationTime);
+                    filteredList = filteredList.Where(q => q.TQT <= query.MaxTotalQualificationTime);
                 }
 
                 if (query.SectorSubjectAreas != null)
                 {
-                    foreach (var sSA in query.SectorSubjectAreas)
-                    {
-                        filteredList = filteredList.Where(q => q.SSA == sSA);
-                    }
+                    filteredList = filteredList.Where(q => query.SectorSubjectAreas.Contains(q.SSA));
+                }
+                if (query.SectorSubjectAreas != null)
+                {
+                    filteredList = filteredList.Where(q => query.SectorSubjectAreas.Contains(q.SSA));
                 }
             }
 
@@ -229,50 +221,32 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
                 if (query.AwardingOrganisations != null)
                 {
-                    foreach (var aO in query.AwardingOrganisations)
-                    {
-                        filteredList = filteredList.Where(q => q.OrganisationName == aO);
-                    }
+                    filteredList = filteredList.Where(q => query.AwardingOrganisations.Contains(q.OrganisationName));
                 }
 
                 if (query.Availability != null)
                 {
-                    foreach (var av in query.Availability)
-                    {
-                        filteredList = filteredList.Where(q => q.Status == av);
-                    }
+                    filteredList = filteredList.Where(q => query.Availability.Contains(q.Status));
                 }
 
                 if (query.QualificationTypes != null)
                 {
-                    foreach (var qT in query.QualificationTypes)
-                    {
-                        filteredList = filteredList.Where(q => q.Type == qT);
-                    }
+                    filteredList = filteredList.Where(q => query.QualificationTypes.Contains(q.Type));
                 }
 
                 if (query.QualificationLevels != null)
                 {
-                    foreach (var qL in query.QualificationLevels)
-                    {
-                        filteredList = filteredList.Where(q => q.Level == qL);
-                    }
+                    filteredList = filteredList.Where(q => query.QualificationLevels.Contains(q.Level));
                 }
 
                 if (query.QualificationSubLevels != null)
                 {
-                    foreach (var qSL in query.QualificationSubLevels)
-                    {
-                        filteredList = filteredList.Where(q => q.SubLevel == qSL);
-                    }
+                    filteredList = filteredList.Where(q => query.QualificationSubLevels.Contains(q.SubLevel));
                 }
 
                 if (query.GradingTypes != null)
                 {
-                    foreach (var gt in query.GradingTypes)
-                    {
-                        filteredList = filteredList.Where(q => q.GradingType == gt);
-                    }
+                    filteredList = filteredList.Where(q => query.GradingTypes.Contains(q.GradingType));
                 }
 
                 if (query.NationalAvailability != null)
@@ -298,59 +272,27 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
                 if (query.MinGuidedLearninghours != null)
                 {
-                    if (query.MinGuidedLearninghours == 0)
-                    {
-                        filteredList = filteredList.Where(q => q.GLH >= 0 || q.GLH == null);
-                    }
-                    else
-                    {
-                        filteredList = filteredList.Where(q => q.GLH >= query.MinGuidedLearninghours);
-                    }
-
+                    filteredList = filteredList.Where(q => q.GLH >= query.MinGuidedLearninghours);
                 }
 
                 if (query.MaxGuidedLearninghours != null)
                 {
-                    if (query.MaxGuidedLearninghours == 0)
-                    {
-                        filteredList = filteredList.Where(q => q.GLH >= 0 || q.GLH == null);
-                    }
-                    else
-                    {
-                        filteredList = filteredList.Where(q => q.GLH <= query.MaxGuidedLearninghours);
-                    }
+                    filteredList = filteredList.Where(q => q.GLH <= query.MaxGuidedLearninghours);
                 }
 
                 if (query.MinTotalQualificationTime != null)
                 {
-                    if (query.MinTotalQualificationTime == 0)
-                    {
-                        filteredList = filteredList.Where(q => q.TQT >= 0 || q.TQT == null);
-                    }
-                    else
-                    {
-                        filteredList = filteredList.Where(q => q.TQT >= query.MinTotalQualificationTime);
-                    }
+                    filteredList = filteredList.Where(q => q.TQT >= query.MinTotalQualificationTime);
                 }
 
                 if (query.MaxTotalQualificationTime != null)
                 {
-                    if (query.MaxTotalQualificationTime == 0)
-                    {
-                        filteredList = filteredList.Where(q => q.TQT >= 0 || q.TQT == null);
-                    }
-                    else
-                    {
-                        filteredList = filteredList.Where(q => q.TQT >= query.MaxTotalQualificationTime);
-                    }
+                    filteredList = filteredList.Where(q => q.TQT <= query.MaxTotalQualificationTime);
                 }
 
                 if (query.SectorSubjectAreas != null)
                 {
-                    foreach (var sSA in query.SectorSubjectAreas)
-                    {
-                        filteredList = filteredList.Where(q => q.SSA == sSA);
-                    }
+                    filteredList = filteredList.Where(q => query.SectorSubjectAreas.Contains(q.SSA));
                 }
             }
 
