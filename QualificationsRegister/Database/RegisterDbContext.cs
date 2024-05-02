@@ -11,6 +11,7 @@ namespace Ofqual.Common.RegisterAPI.Database
         public DbSet<DbQualification> Qualifications { get; set; }
         public DbSet<DbQualificationPublic> QualificationsPublic { get; set; }
         public DbSet<DbOrganisation> Organisations { get; set; }
+        public DbSet<DbRecognitionScope> RecognitionScopes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +26,10 @@ namespace Ofqual.Common.RegisterAPI.Database
 
             modelBuilder.Entity<DbOrganisation>()
                 .ToTable("Register_T_Organisation", "MD_Register")
+                .HasKey(k => k.Id);
+
+            modelBuilder.Entity<DbRecognitionScope>()
+                .ToTable("Register_T_RecognitionPermissions", "MD_Register")
                 .HasKey(k => k.Id);
         }
     }

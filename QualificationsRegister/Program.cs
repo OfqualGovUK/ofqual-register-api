@@ -9,6 +9,9 @@ using Ofqual.Common.RegisterAPI.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.UseCase.Qualifications;
+using Ofqual.Common.RegisterFrontend.RegisterAPI;
+using Refit;
+using Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -18,7 +21,6 @@ var host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
 
         RegisterUseCases(services);
-
 
         services.AddDbContext<RegisterDbContext>(
             options =>
@@ -34,6 +36,10 @@ var host = new HostBuilder()
             client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("APIMgmtURL")!);
         });
 
+        services.AddRefitClient<IRefDataAPIClient>().ConfigureHttpClient(httpClient =>
+        {
+            httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("RefDataAPIUrl")!);
+        });
     })
 
     .Build();
@@ -48,4 +54,6 @@ static void RegisterUseCases(IServiceCollection services)
 
     services.AddScoped<IGetQualificationByNumberUseCase, GetQualificationByNumberUseCase>();
     services.AddScoped<IGetQualificationsListUseCase, GetQualificationsListUseCase>();
+
+    services.AddScoped<IGetScopesByOrganisationNumberUseCase, GetScopesByOrganisationNumberUseCase>();
 }

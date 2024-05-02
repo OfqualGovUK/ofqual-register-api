@@ -14,5 +14,7 @@ namespace Ofqual.Common.RegisterAPI.Database
         DbQualification? GetQualificationByNumber(string numberObliques, string numberNoObliques);
         DbQualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques);
 
+        List<DbRecognitionScope> GetRecognitionScope(string organisationNumber);
+
     }
 }

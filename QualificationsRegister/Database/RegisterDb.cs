@@ -5,6 +5,7 @@ using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
+using Ofqual.Common.RegisterFrontend.RegisterAPI;
 using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -325,6 +326,18 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         }
 
+        #endregion
+
+        #region Scopes of Recognition
+
+        public List<DbRecognitionScope> GetRecognitionScope(string organisationNumber)
+        {
+            _logger.LogInformation($"Getting recognition scopes for: {organisationNumber}");
+
+            var scopes = _context.RecognitionScopes.Where(e => e.RecognitionNumber == organisationNumber);
+
+            return scopes.ToList();
+        }
         #endregion
     }
 }
