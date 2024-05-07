@@ -61,6 +61,25 @@
 					"response": []
 				},
 				{
+					"name": "Scopes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/scopes/5133",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"scopes",
+								"5133"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Qualifications",
 					"request": {
 						"method": "GET",
@@ -154,6 +173,25 @@
 							"path": [
 								"gov",
 								"organisations",
+								"RN5353"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Scopes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/Scopes/RN5353",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"Scopes",
 								"RN5353"
 							]
 						}
