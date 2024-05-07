@@ -82,7 +82,7 @@ Retrieves a list of organisations along with with the paging metadata ordered by
 
 > | name      |  type     | data type               | description | variations                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
-> | search      |  optional | string   | Search term that matches within the organisation name or ‘known as’/acronym field of one or more records| if not povided, all organisations are returned
+> | search      |  optional | string   | Search term that matches within the organisation name or ‘known as’/acronym field of one or more records| if not provided, all organisations are returned
 > | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
 > | limit      |  optional | int   | Number of organisation records to return for the search | if not provided returns the whole list
 
@@ -356,6 +356,83 @@ And the query parameters contain `qualificationLevels = Level 2` and `sectorSubj
  </details>
 
 
+
+### Scopes of Recognition
+
+<details>
+ <summary><code>GET</code> <code><b>api/Scopes/{organisationNumber}</b></code> </summary>
+
+####
+Retrieves the scopes of recognition for an organisation
+
+##### Parameters
+
+> | name      |  type     | data type               | description | variations                                                           |
+> |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
+> | organisationNumber      |  required | string    | Recognition number for the Organisation record in the RN format eg. RN5353 |  Allowed without the RN prefix eg. 5353|
+
+
+##### Responses
+
+> | http code     | content-type                      | response                                  |Description                          |
+> |---------------|-----------------------------------|-------------------------------------------|-------------------------------------|
+> | `200`         | `application/json`              | Scopes JSON                     | JSON object for the scopes                                    |
+> | `404`         | `application/json`                | `{"message":"Not found"}`  | The organisation could not be found for the organisation number provided     
+> | `400`         | `application/json`                | `{"error": "Please provide a valid organisation number"}`  | The organisation number provided is invalid                            |
+
+##### Example Requests
+
+> ```javascript
+>  api/Scopes/RN5133
+> ```
+
+> ```javascript
+>  api/Scopes/RN5133
+> ```
+
+
+##### Example response
+
+```
+{
+    "inclusions": [
+        {
+            "type": "Advanced Extension Award",
+            "levels": [
+                {
+                    "level": "Level 2",
+                    "recognitions": [
+                        "2.2 Mathematics and statistics",
+                        "2.2 Mathematics and statistics"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "English For Speakers of Other Languages",
+            "levels": [
+                {
+                    "level": "Entry Level - Entry 1,2,3",
+                    "recognitions": [
+                        "1.1 Medicine and Dentistry",
+                        "1.2 Nursing and subjects and vocations allied to medicine",
+                        "1.3 Health and social care",
+                        "1.4 Public services",
+                        "1.5 Child development and well-being",
+                        "2.1 Science",
+                        "2.2 Mathematics and statistics",
+                        "3.1 Agriculture",
+                        ...
+                }
+            ]
+        },
+        ...
+
+```
+
+ </details>
+ 
+
 ### Organisations Private
 
 <details>
@@ -440,7 +517,7 @@ Retrieves a list of organisations along with with the paging metadata ordered by
 
 > | name      |  type     | data type               | description | variations                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
-> | search      |  optional | string   | Search term that matches within the organisation name or ‘known as’/acronym field of one or more records| if not povided, all organisations are returned
+> | search      |  optional | string   | Search term that matches within the organisation name or ‘known as’/acronym field of one or more records| if not provided, all organisations are returned
 > | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
 > | limit      |  optional | int   | Number of organisation records to return for the search | if not provided returns the whole list
 
@@ -717,3 +794,87 @@ Same as the response on the Qualifications public with a few new fields:
  ```
 
 </details>
+
+
+
+### Scopes of Recognition Private
+
+<details>
+ <summary><code>GET</code> <code><b>api/Scopes/{organisationNumber}</b></code> </summary>
+
+####
+Retrieves the scopes of recognition for an organisation
+
+##### Parameters
+
+> | name      |  type     | data type               | description | variations                                                           |
+> |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
+> | organisationNumber      |  required | string    | Recognition number for the Organisation record in the RN format eg. RN5353 |  Allowed without the RN prefix eg. 5353|
+
+
+
+##### Headers
+Requires the <code>Ocp-Apim-Subscription-Key</code> key for subscription access
+
+
+
+##### Responses
+
+> | http code     | content-type                      | response                                  |Description                          |
+> |---------------|-----------------------------------|-------------------------------------------|-------------------------------------|
+> | `200`         | `application/json`              | Scopes JSON                     | JSON object for the scopes                                    |
+> | `404`         | `application/json`                | `{"message":"Not found"}`  | The organisation could not be found for the organisation number provided     
+> | `400`         | `application/json`                | `{"error": "Please provide a valid organisation number"}`  | The organisation number provided is invalid                            |
+
+##### Example Requests
+
+> ```javascript
+>  gov/Scopes/RN5133
+> ```
+
+> ```javascript
+>  gov/Scopes/RN5133
+> ```
+
+
+##### Example response
+
+```
+{
+    "inclusions": [
+        {
+            "type": "Advanced Extension Award",
+            "levels": [
+                {
+                    "level": "Level 2",
+                    "recognitions": [
+                        "2.2 Mathematics and statistics",
+                        "2.2 Mathematics and statistics"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "English For Speakers of Other Languages",
+            "levels": [
+                {
+                    "level": "Entry Level - Entry 1,2,3",
+                    "recognitions": [
+                        "1.1 Medicine and Dentistry",
+                        "1.2 Nursing and subjects and vocations allied to medicine",
+                        "1.3 Health and social care",
+                        "1.4 Public services",
+                        "1.5 Child development and well-being",
+                        "2.1 Science",
+                        "2.2 Mathematics and statistics",
+                        "3.1 Agriculture",
+                        ...
+                }
+            ]
+        },
+        ...
+
+```
+
+ </details>
+ 
