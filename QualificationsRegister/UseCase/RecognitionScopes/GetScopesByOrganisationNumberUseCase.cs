@@ -142,11 +142,9 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
                         responseScopes.Inclusions.Add(includedScopeType);
                     }
 
-                    if (excludedScopeType.Levels.Count != 0)
-                    {
-                        responseScopes.Exclusions.Add(excludedScopeType);
-                    }
                 }
+
+                responseScopes.Exclusions = allScopes.Where(e => e.QualificationDescription != "Not Applicable").Select(e => e.QualificationDescription).ToList();
             }
 
             return responseScopes;
