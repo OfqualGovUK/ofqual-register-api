@@ -92,42 +92,48 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
                     {
                         var includedScopeLevel = new ScopeLevel
                         {
-                            Level = level.LevelDescription,
+                            Level = level.LevelDescription == "Entry Level" ? $"{level.LevelDescription} - {level.SubLevelDescription}" : level.LevelDescription,
                             Recognitions = []
                         };
 
                         var excludedScopeLevel = new ScopeLevel
                         {
-                            Level = level.LevelDescription,
+                            Level = level.LevelDescription == "Entry Level" ? $"{level.LevelDescription} - {level.SubLevelDescription}" : level.LevelDescription,
                             Recognitions = []
                         };
 
-                        var scopes = allScopes.Where(e => e.Level == level.LevelDescription && e.Type == type.Description);
+                        var scopes = level.LevelDescription == "Entry Level" ? allScopes.Where(e => e.Level == level.LevelDescription && e.Type == type.Description && e.SubLevel == level.SubLevelDescription) : allScopes.Where(e => e.Level == level.LevelDescription && e.Type == type.Description);
 
-                        if (scopes.Any())
+                        foreach (var scope in scopes)
                         {
-                            foreach (var scope in scopes)
-                            {
-                                if (scope.InclusionExclusion && scope.SSA != null)//Included
-                                {
-                                    includedScopeLevel.Recognitions.Add(scope.SSA);
-                                }
-                                else if (!scope.InclusionExclusion && scope.SSA != null)//Included
-                                {
-                                    excludedScopeLevel.Recognitions.Add(scope.SSA);
-                                }
-                            }
+                            //@Phil McAllister dt. 03 May 2024 - remove starting 0's (if any) from the SSA
+                            var recog = scope.SSA!.StartsWith('0') ? scope.SSA[1..] : scope.SSA;
 
-                            if (includedScopeLevel.Recognitions.Count != 0)
-                            {
-                                includedScopeType.Levels.Add(includedScopeLevel);
-                            }
+                            //@Phil McAllister dt. 03 May 2024 - Where your qualification type == 'End-Point Assessment', pull your data from apprenticeship standard code and apprenticeship standard name 
+                            recog = type.Description == "End-Point Assessment" ? $"{scope.ApprenticeshipStandardReferenceNumber} - {scope.ApprenticeshipStandardTitle}" : recog;
 
-                            if (excludedScopeLevel.Recognitions.Count != 0)
+                            recog = type.Description == "Technical Qualification" ? $"{scope.TechnicalQualificationSubject}" : recog;
+
+                            if (scope.InclusionExclusion)//Included
                             {
-                                excludedScopeType.Levels.Add(excludedScopeLevel);
+                                includedScopeLevel.Recognitions.Add(recog);
+                            }
+                            else if (!scope.InclusionExclusion)//Excluded
+                            {
+                                excludedScopeLevel.Recognitions.Add(recog);
                             }
                         }
+
+                        if (includedScopeLevel.Recognitions.Count != 0)
+                        {
+                            includedScopeType.Levels.Add(includedScopeLevel);
+                        }
+
+                        if (excludedScopeLevel.Recognitions.Count != 0)
+                        {
+                            excludedScopeType.Levels.Add(excludedScopeLevel);
+                        }
+
                     }
 
 
