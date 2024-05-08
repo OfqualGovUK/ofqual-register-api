@@ -73,5 +73,5 @@ stages:
               connectedServiceNameARM: '$(ServiceName)'
               appType: 'functionApp'
               appName: '$(AppName)'
-              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
               deploymentMethod: 'auto'
