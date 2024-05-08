@@ -1,0 +1,317 @@
+{
+	"info": {
+		"_postman_id": "872633c2-0cea-49f1-8d2b-42bef43656d9",
+		"name": "Ofqual Register API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31683579"
+	},
+	"item": [
+		{
+			"name": "Public",
+			"item": [
+				{
+					"name": "Organisations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/organisations?search=Chartered Management Institute&page=1&limit=100",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"organisations"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Chartered Management Institute"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Organisation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/organisations/RN5353",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"organisations",
+								"RN5353"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Scopes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/scopes/5133",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"scopes",
+								"5133"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Qualifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/qualifications?title=GNVQ",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"qualifications"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "GNVQ"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Qualification",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/api/qualifications/50015229",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"api",
+								"qualifications",
+								"50015229"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gov",
+			"item": [
+				{
+					"name": "Organisations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/organisations?page=4&limit=100",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"organisations"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "cmi",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "4"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Organisation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/organisations/RN5353",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"organisations",
+								"RN5353"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Scopes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/Scopes/RN5353",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"Scopes",
+								"RN5353"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Qualifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/qualifications?title=vtct",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"qualifications"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "vtct"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Qualification",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APIMgmgt_URL}}/gov/qualifications/50037122",
+							"host": [
+								"{{APIMgmgt_URL}}"
+							],
+							"path": [
+								"gov",
+								"qualifications",
+								"50037122"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var subKey = pm.environment.get('APISubKey');",
+							"",
+							"pm.request.headers.add({",
+							"    key: 'Ocp-Apim-Subscription-Key',",
+							"    value: subKey",
+							"})"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "HealthCheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{APIMgmgt_URL}}/healthCheck",
+					"host": [
+						"{{APIMgmgt_URL}}"
+					],
+					"path": [
+						"healthCheck"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "APIMgmgt_URL",
+			"value": "https://ofq-dev-apim-register-api.azure-api.net",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
