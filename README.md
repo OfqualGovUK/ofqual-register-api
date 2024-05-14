@@ -254,11 +254,11 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 > | search      |  optional | string   | Search term that matches within the qualification title| search=title
 > | assessmentMethods       |  optional | string array (comma separated)  | assessment methods contain any of the param assessment methods| assessmentMethods=Coursework,E-assessment
 > | gradingTypes       |  optional | string array (comma separated)    | Grading type is one of the param grading type | gradingTypes=Graded,Pass/Fail
-> | organisations       |  optional | string array (comma separated)    | Organisation Name is one of the param Awarding Organisation | organisations=Trinity College London,ABE,AIM Qualifications
+> | awardingOrganisations       |  optional | string array (comma separated)    | Organisation Name is one of the param Awarding Organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
 > | availability       |  optional | string array (comma separated)    | Availability matching the status column | availability=Available to learners,No longer awarded
-> | types       |  optional | string array (comma separated)    | Types matching the type column | types=Project,Technical Qualification,QCF
-> | levels       |  optional | string array (comma separated)    | Levels matching the level column | levels=Level 7,Level 4,Level 1
-> | subLevels       |  optional | string array (comma separated)    | Sublevels matching the sub level column| sublevels=Entry 3,None
+> | qualificationTypes       |  optional | string array (comma separated)    | Types matching the type column | qualificationTypes=Project,Technical Qualification,QCF
+> | qualificationLevels       |  optional | string array (comma separated)    | Levels matching the level column | qualificationLevels=Level 7,Level 4,Level 1
+> | qualificationSubLevels       |  optional | string array (comma separated)    | Sublevels matching the sub level column| qualificationSubLevels=Entry 3,None
 > | nationalAvailability       |  optional | string array (comma separated)    | Qualifications where boolean value for OfferedInCountry[CountryName] is set to true | nationalAvailability=England,Northern Ireland,Internationally
 > | sectorSubjectAreas       |  optional | string array (comma separated)    | Sublevels matching the SSA column| sectorSubjectAreas=Politics,Science
 > | minTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is higher than minTotalQualificationTime | minTotalQualificationTime=1
@@ -288,7 +288,7 @@ And the query parameters contain `qualificationLevels = Level 2` and `sectorSubj
 ##### Example Requests
 
 > ```javascript
->  api/Qualifications?search=Chartered&assessmentMethods=Coursework,E-assessment&organisations=Trinity College London,ABE,AIM Qualifications&page=1&limit=10
+>  api/Qualifications?search=Chartered&assessmentMethods=Coursework,E-assessment&awardingOrganisations=Trinity College London,ABE,AIM Qualifications&page=1&limit=10
 > ```
 
 > ```javascript
