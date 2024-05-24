@@ -35,6 +35,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
             string numberNoRN, numberRN;
 
+            //match or add RN to the org number if required
             if (OrgNumberRegex().IsMatch(number))
             {
                 numberNoRN = number!;

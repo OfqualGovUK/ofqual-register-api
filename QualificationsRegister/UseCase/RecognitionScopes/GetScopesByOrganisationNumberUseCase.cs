@@ -10,6 +10,7 @@ using Ofqual.Common.RegisterFrontend.RegisterAPI;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
+using static Ofqual.Common.RegisterAPI.Constants.ScopesConstants;
 
 namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
 
@@ -41,6 +42,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
 
             string numberNoRN, numberRN;
 
+            //match and add RN to the org number if required
             if (OrgNumberRegex().IsMatch(recognitionNumber))
             {
                 numberNoRN = recognitionNumber!;
@@ -60,8 +62,8 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
             List<Level> levels = await _refDataAPIClient.GetLevelsAsync();
 
             //Other (Not Applicable) scopes should be at the last of the list
-            types.RemoveAt(types.FindIndex(e => e.Description == "Not Applicable"));
-            types.Insert(types.Count, new QualificationType { Description = "Not Applicable" });
+            types.RemoveAt(types.FindIndex(e => e.Description == NOT_APPLICABLE));
+            types.Insert(types.Count, new QualificationType { Description = NOT_APPLICABLE });
 
             var allScopes = _registerDb.GetRecognitionScope(number);
 
@@ -70,6 +72,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
             return responseScopes;
         }
 
+        //format and structure the scopes from types > levels > recog
         private static RecognitionScope ProcessRecognitionScopes(List<QualificationType> types, List<Level> levels, List<DbRecognitionScope>? allScopes)
         {
             var responseScopes = new RecognitionScope
@@ -92,11 +95,11 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
                     {
                         var includedScopeLevel = new ScopeLevel
                         {
-                            Level = level.LevelDescription == "Entry Level" ? $"{level.LevelDescription} - {level.SubLevelDescription}" : level.LevelDescription,
+                            Level = level.LevelDescription == ENTRY_LEVEL ? $"{level.LevelDescription} - {level.SubLevelDescription}" : level.LevelDescription,
                             Recognitions = []
                         };
 
-                        var scopes = level.LevelDescription == "Entry Level" ? allScopes.Where(e => e.Level == level.LevelDescription && e.Type == type.Description && e.SubLevel == level.SubLevelDescription) : allScopes.Where(e => e.Level == level.LevelDescription && e.Type == type.Description);
+                        var scopes = level.LevelDescription == ENTRY_LEVEL ? allScopes.Where(e => e.Level == level.LevelDescription && e.Type == type.Description && e.SubLevel == level.SubLevelDescription) : allScopes.Where(e => e.Level == level.LevelDescription && e.Type == type.Description);
 
                         foreach (var scope in scopes.Where(e => e.InclusionExclusion == true))
                         {
@@ -104,9 +107,9 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
                             var recog = scope.SSA!.StartsWith('0') ? scope.SSA[1..] : scope.SSA;
 
                             //@Phil McAllister dt. 03 May 2024 - Where your qualification type == 'End-Point Assessment', pull your data from apprenticeship standard code and apprenticeship standard name 
-                            recog = type.Description == "End-Point Assessment" ? $"{scope.ApprenticeshipStandardReferenceNumber} - {scope.ApprenticeshipStandardTitle}" : recog;
+                            recog = type.Description == END_POINT_ASSESSMENT ? $"{scope.ApprenticeshipStandardReferenceNumber} - {scope.ApprenticeshipStandardTitle}" : recog;
 
-                            recog = type.Description == "Technical Qualification" ? $"{scope.TechnicalQualificationSubject}" : recog;
+                            recog = type.Description == TECHNICAL_QUALIFICATION ? $"{scope.TechnicalQualificationSubject}" : recog;
 
                             includedScopeLevel.Recognitions.Add(recog);
                         }
@@ -123,15 +126,8 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
                     }
                 }
 
-                ////Other (Not Applicable) scopes should be at the last of the list
-                //var otherIndex = responseScopes.Inclusions.FindIndex(e => e.Type == "Other");
-                //if (otherIndex > 0)
-                //{
-                //    var other = responseScopes.Inclusions.Where(e => e.Type == "Other").FirstOrDefault();
-
-                //}
-
-                responseScopes.Exclusions = allScopes.Where(e => e.QualificationDescription != "Not Applicable").Select(e => e.QualificationDescription).ToList();
+                //no need to structure the Excluded scopes
+                responseScopes.Exclusions = allScopes.Where(e => e.QualificationDescription != NOT_APPLICABLE).Select(e => e.QualificationDescription).ToList();
             }
 
             return responseScopes;
@@ -141,12 +137,12 @@ namespace Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes
         {
             return description switch
             {
-                "English For Speakers of Other Languages" => "English For Speakers of Other Languages (ESOL)",
-                "GCE A Level" => "A level (GCE)",
-                "GCE AS Level" => "AS level (GCE)",
-                "End-Point Assessment" => "End-point Assessment (Apprenticeship EPA)",
-                "Technical Qualification" => "Technical Qualification (part of T Levels)",
-                "Not Applicable" => "Other",
+                ENGLISH_FOR_SPEAKERS_OF_OTHER_LANGUAGES => ENGLISH_FOR_SPEAKERS_OF_OTHER_LANGUAGES_RENAME,
+                GCE_A => GCE_A_RENAME,
+                GCE_AS => GCE_AS_RENAME,
+                END_POINT_ASSESSMENT => ENDPOINT_ASSESSMENT_RENAME,
+                TECHNICAL_QUALIFICATION => TECHNICAL_QUALIFICATION_RENAME,
+                NOT_APPLICABLE => NOT_APPLICABLE_RENAME,
                 _ => description,
             };
         }
