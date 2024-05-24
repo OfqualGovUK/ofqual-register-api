@@ -1,8 +1,77 @@
-# ofqual-register-api
+# Ofqual Register of Regulated Qualifications API 
 
-An API for accessing the Register of qualifications, built using Azure Functions.
+The Ofqual Register of Regulated Qualifications API allows users to programmatically access details of qualifications and awarding organisations regulated by Ofqual and CCEA Regulation.
+## Provider 
+[The Office of Qualifications and Examinations Regulation](https://www.gov.uk/government/organisations/ofqual)
+
+## About this project
+This project is an Azure Functions app built using .NET 8 and managed through Azure API Management
+
+#### Libraries
+- Microsoft.Data.SqlClient v5.1.5
+- Microsoft.EntityFrameworkCore v8.0.2
+- Refit 7.0
+
+## Architecture
+![desktop](https://github.com/OfqualGovUK/ofqual-register-api/blob/main/API_Arch.jpg?raw=true)
+
+## Environment Variables
+Variables set in the Function Apps config on Azure
+
+- **APIMgmtUrl** - URL for the API management (used for the HealthCheck function)
+- **MDDBConnString** - Connection string for the Database (MDDB)
+- **QualificationsPagingLimit** - Number of Qualifications to return from the API for the List Qualificaions function
+- **RefDataAPIUrl** = URL for the Ref Data API to fetch Scopes data (Qualification Types and Levels)
+
+## Functions
+- Health Check
+
+### Qualifications
+- List Qualifications
+- Get Qualification by Qualification Number
+
+### Organisations
+- List Organisations
+- Get Organisation by Reference Number
+- Get Scopes of Recognition for Organisation Reference Number
+
+### Qualifications Private (includes non public facing information)
+
+- List Qualifications 
+- Get Qualification by Qualification Number
 
 ## API Documentation
+
+### Postman
+
+Project files include a Postman collection by the name `Ofqual Register API.postman_collection.json`,
+
+Postman environment for the variables are in `Dev.postman_environment.json` for the following variables:
+- **APIMgmgt_URL**: URL for the API endpoint
+- **APISubKey**: API key for the non public functions which gets appeneded to the `Gov` postman folder REST calls headers
+
+
+
+### Health Check
+
+<details>
+ <summary><code>GET</code> <code><b>/HealthCheck</b></code></summary>
+
+####
+Checks the status of the API 
+
+##### Responses
+
+> Returns `Status: 200 OK` or any error code depending on the status of the API
+
+##### Example Requests
+
+> ```javascript
+>  /HealthCheck
+> ```
+
+
+ </details>
 
 ### Organisations Public
 
@@ -878,3 +947,5 @@ Requires the <code>Ocp-Apim-Subscription-Key</code> key for subscription access
 
  </details>
  
+## Deployment 
+When a pull request is merged into `dev` or `main`, the function app is deployed automatically onto azure using an Azure pipeline set via the `azure-pipelines.yml` file for dev and `azure-pipelines-prod.yml` for the main branch. Updates are reflected instantly after a successful deploy. 
