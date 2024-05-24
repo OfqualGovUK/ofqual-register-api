@@ -13,7 +13,7 @@ This project is an Azure Functions app built using .NET 8 and managed through Az
 - Refit 7.0
 
 ## Architecture
-![desktop](https://github.com/OfqualGovUK/ofqual-register-api/blob/main/API_Arch.jpg?raw=true)
+![api](https://github.com/OfqualGovUK/ofqual-register-api/blob/main/API_Arch.jpg?raw=true)
 
 ## Environment Variables
 Variables set in the Function Apps config on Azure
