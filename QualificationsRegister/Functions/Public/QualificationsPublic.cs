@@ -32,7 +32,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
         /// <param name="title"></param>
         /// <returns></returns>
         [Function("Qualifications")]
-        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int page = 1, int limit = 100, string title = "")
+        public async Task<HttpResponseData> ListQualifications([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, int? limit = null, int page = 1, string title = "")
         {
             _logger.LogInformation("List Qualifications Public - title = {}", title);
 
@@ -41,6 +41,9 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             try
             {
                 var query = req.Query?.GetQualificationFilterQuery();
+
+                //if limit is set to 0, default to getting all quals
+                limit = limit == 0 ? null : limit;
 
                 var qualifications = _getQualifications.ListQualificationsPublic(page, limit, query, title);
                 _logger.LogInformation("Serializing {} Quals", qualifications.Count);
@@ -81,7 +84,7 @@ namespace Ofqual.Common.RegisterAPI.Functions.Public
             }
             catch (Exception ex)
             {
-                Utilities.CreateExceptionJson(ex, ref response);                
+                Utilities.CreateExceptionJson(ex, ref response);
             }
 
             return response;

@@ -60,7 +60,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         #region Qualifications Private
 
-        public DbListResponse<DbQualification> GetQualificationsList(int page, int limit, QualificationFilter? query, string title)
+        public DbListResponse<DbQualification> GetQualificationsList(int? page, int? limit, QualificationFilter? query, string title)
         {
             _logger.LogInformation($"Getting a qualification by title: {title}");
 
@@ -168,7 +168,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             count = filteredList.Count();
-            var list = filteredList.Skip(page * limit).Take(limit);
+
+            //if limit is null, get the whole list otherwise apply paging
+            var list = limit is null ? filteredList : filteredList.Skip((page! * limit!).Value).Take(limit.Value);
 
             return new DbListResponse<DbQualification>
             {
@@ -196,7 +198,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
         #endregion
 
         #region Qualifications Public
-        public DbListResponse<DbQualificationPublic> GetQualificationsPublicList(int page, int limit, QualificationFilter? query, string title)
+        public DbListResponse<DbQualificationPublic> GetQualificationsPublicList(int page, int? limit, QualificationFilter? query, string title)
         {
             _logger.LogInformation($"Getting a qualification by title: {title}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
@@ -298,7 +300,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             count = filteredList.Count();
-            var list = filteredList.Skip(page * limit).Take(limit);
+
+            //if limit is null, get the whole list otherwise apply paging
+            var list = limit is null ? filteredList : filteredList.Skip((page! * limit!).Value).Take(limit.Value);
 
             return new DbListResponse<DbQualificationPublic>
             {
