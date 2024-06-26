@@ -179,7 +179,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             };
         }
 
-        public DbQualification? GetQualificationByNumber(string numberObliques, string numberNoObliques)
+        public DbQualification? GetQualificationByNumber(string numberObliques, string numberNoObliques, string? numberAlphanumeric)
         {
             _logger.LogInformation($"Getting a qualification by number: {numberObliques} or {numberNoObliques}");
             var quals = _context.Qualifications.OrderBy(e => e.QualificationNumber);
@@ -190,8 +190,14 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             //add implied obliques in case no obliques value in the db is null
-            var qualNumObliques = numberNoObliques.Insert(3, "/").Insert(8, "/");
-            return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNumObliques)
+            var qualNum = string.IsNullOrEmpty(numberNoObliques) ? "" : numberNoObliques.Insert(3, "/").Insert(8, "/");
+
+            if (numberAlphanumeric != null)
+            {
+                qualNum = numberAlphanumeric;
+            }
+
+            return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNum)
                                     || (e.QualificationNumberNoObliques != null &&
                                         e.QualificationNumberNoObliques.Equals(numberNoObliques)));
         }
@@ -311,7 +317,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             };
         }
 
-        public DbQualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques)
+        public DbQualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques, string? numberAlphanumeric)
         {
             _logger.LogInformation($"Getting a qualification by number: {numberObliques} or {numberNoObliques}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
@@ -321,10 +327,15 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             {
                 return quals.FirstOrDefault(e => e.QualificationNumber.Equals(numberObliques));
             }
-
             //add implied obliques in case no obliques value in the db is null
-            var qualNumObliques = numberNoObliques.Insert(3, "/").Insert(8, "/");
-            return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNumObliques)
+            var qualNum = string.IsNullOrEmpty(numberNoObliques) ? "" : numberNoObliques.Insert(3, "/").Insert(8, "/");
+
+            if (numberAlphanumeric != null)
+            {
+                qualNum = numberAlphanumeric;
+            }
+
+            return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNum)
                                     || (e.QualificationNumberNoObliques != null &&
                                         e.QualificationNumberNoObliques.Equals(numberNoObliques)));
 

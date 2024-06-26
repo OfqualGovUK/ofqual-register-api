@@ -23,6 +23,9 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
         [GeneratedRegex("\\b\\d{7}\\w\\b")]
         private static partial Regex QualificationNumNoObliquesRegex();
 
+        [GeneratedRegex("[a-zA-Z0-9]{8}")]
+        private static partial Regex QualificationNumAlphaNumeric();
+
 
         public GetQualificationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb)
         {
@@ -38,12 +41,17 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
 
             if (QualificationNumRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationPublicByNumber(number, "")?.ToDomain();
+                return _registerDb.GetQualificationPublicByNumber(number, "", null)?.ToDomain();
             }
 
             if (QualificationNumNoObliquesRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationPublicByNumber("", number)?.ToDomain();
+                return _registerDb.GetQualificationPublicByNumber("", number, null)?.ToDomain();
+            }
+
+            if (QualificationNumAlphaNumeric().IsMatch(number))
+            {
+                return _registerDb.GetQualificationPublicByNumber("", "", number)?.ToDomain();
             }
 
             return null;
@@ -58,12 +66,18 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
 
             if (QualificationNumRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationByNumber(number, "")?.ToDomain();
+                return _registerDb.GetQualificationByNumber(number, "", null)?.ToDomain();
             }
 
             if (QualificationNumNoObliquesRegex().IsMatch(number))
             {
-                return _registerDb.GetQualificationByNumber("", number)?.ToDomain();
+                return _registerDb.GetQualificationByNumber("", number, null)?.ToDomain();
+
+            }
+
+            if (QualificationNumAlphaNumeric().IsMatch(number))
+            {
+                return _registerDb.GetQualificationByNumber("", "", number)?.ToDomain();
 
             }
 
@@ -81,7 +95,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
             {
                 throw new BadRequestException("Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229");
             }
-            else if(!(QualificationNumRegex().IsMatch(number) || QualificationNumNoObliquesRegex().IsMatch(number)))
+            else if(!(QualificationNumRegex().IsMatch(number) || QualificationNumNoObliquesRegex().IsMatch(number) || QualificationNumAlphaNumeric().IsMatch(number)))
             {
                 throw new BadRequestException("Invalid Qualification number format. Permitted format: 500/1522/9 or 50015229");
             }
