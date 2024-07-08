@@ -1,13 +1,10 @@
 using Microsoft.Azure.Functions.Worker.Http;
+using Ofqual.Common.RegisterAPI.Constants;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+using static Ofqual.Common.RegisterAPI.Constants.SearchConstants;
 
 namespace Ofqual.Common.RegisterAPI.Models
 {
@@ -45,6 +42,45 @@ namespace Ofqual.Common.RegisterAPI.Models
                     error = ex.Message
                 }, JsonSerializerOptions));
             }
+        }
+
+        public static List<string> TokenizeSearchString(string search)
+        {
+            var tokens = new HashSet<string>();
+
+            search = search.ToLower();
+
+            foreach (var item in Tokens.Keys)
+            {
+                if (search.Contains(item))
+                {
+                    tokens.Add(Tokens[item]);
+
+                    search = search.Replace(item, string.Empty);
+                }
+            }
+
+            foreach (var item in SplitLimiters)
+            {
+                if (search.Contains(item))
+                {
+                    search = search.Replace(item, " ");
+                }
+            }
+
+            var searchTerms = search.Split(" ").ToList();
+
+            foreach (var item in StopWords)
+            {
+                if (searchTerms.Contains(item))
+                {
+                    searchTerms.Remove(item);
+                }
+            }
+
+            tokens.UnionWith(searchTerms);
+
+            return tokens.ToList();
         }
     }
 }
