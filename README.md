@@ -949,3 +949,6 @@ Requires the <code>Ocp-Apim-Subscription-Key</code> key for subscription access
  
 ## Deployment 
 When a pull request is merged into `dev` or `main`, the function app is deployed automatically onto azure using an Azure pipeline set via the `azure-pipelines.yml` file for dev and `azure-pipelines-prod.yml` for the main branch. Updates are reflected instantly after a successful deploy. 
+
+## Qualifications Search
+We split the search query (`title` parameter) into individual tokens and then search the qualification title field for those tokens using a boolean AND operation on the title field in the database. A pre-defined set of tokenisation rules, delimiters and stop words are defined (`Constants\SearchConstants.cs`) which are used to tokenise the search term. 

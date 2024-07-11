@@ -72,7 +72,12 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
             if (!string.IsNullOrEmpty(title))
             {
-                filteredList = filteredList.Where(q => q.Title.Contains(title));
+                var tokens = Utilities.TokenizeSearchString(title);
+
+                foreach (var item in tokens)
+                {
+                    filteredList = filteredList.Where(q => q.Title.Contains(item));
+                }
             }
 
             if (query != null)

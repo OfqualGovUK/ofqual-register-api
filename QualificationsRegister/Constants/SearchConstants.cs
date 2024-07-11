@@ -8,6 +8,7 @@ namespace Ofqual.Common.RegisterAPI.Constants
 {
     public class SearchConstants
     {
+        //based on the tokenisation spreadsheet - https://officequal-my.sharepoint.com/:x:/g/personal/philip_mcallister_ofqual_gov_uk/EckwcsbhQ4pAhrJMdKtVkkcBLT53hxQjAEjQ1beVpwGI8A?e=ttghG9
         public static readonly Dictionary<string, string> Tokens = new()
         {
             { "a level", "advanced gce" },
