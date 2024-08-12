@@ -22,6 +22,27 @@ Variables set in the Function Apps config on Azure
 - **MDDBConnString** - Connection string for the Database (MDDB)
 - **QualificationsPagingLimit** - Number of Qualifications to return from the API for the List Qualificaions function
 - **RefDataAPIUrl** = URL for the Ref Data API to fetch Scopes data (Qualification Types and Levels)
+- **AzureWebJobsStorage**: Connection string for where the web jobs should be stored; can be on dev storage when ran locally, but should have a proper string for when deployed to Azure
+- **FUNCTIONS_WORKER_RUNTIME** and **FUNCTIONS_EXTENSION_WORKER**: Values used as part of running Azure Functions properly
+
+Use the following in a local.settings.json. The values should not be used in deployed environments; use appropriate connection strings and URLs depending upon the deployed environment (dev/prod)
+
+```json
+
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=True",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "FUNCTIONS_EXTENSION_WORKER": "~4",
+    "RefDataAPIUrl": "<URL>",
+    "MDDBConnString": "Server=localhost,1433;Initial Catalog=ofqds-dev-md-sql01;Persist Security Info=False;User ID=<USERNAME>;Password=<PASSWORD>;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;",
+    "QualificationsPagingLimit": 10000,
+    "APIMgmtURL": "<URL>"
+  }
+}
+
+```
 
 ## Functions
 - Health Check
