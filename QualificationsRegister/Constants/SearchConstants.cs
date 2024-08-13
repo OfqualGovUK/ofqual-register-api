@@ -20,10 +20,10 @@ namespace Ofqual.Common.RegisterAPI.Constants
             { "as-level", "advanced subsidiary gce" },
             { "as-levels", "advanced subsidiary gce" },
             { "aea", "advanced extension award" },
-            { "t level", "t level" },
-            { "t levels", "t level" },
-            { "t-level", "t level" },
-            { "t-levels", "t level" },
+            { "t level", " t level " },
+            { "t levels", " t level " },
+            { "t-level", " t level " },
+            { "t-levels", " t level " },
         };
 
         public static readonly List<string> StopWords =

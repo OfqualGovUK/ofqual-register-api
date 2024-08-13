@@ -224,7 +224,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
                 foreach (var item in tokens)
                 {
-                    filteredList = filteredList.Where(q => q.Title.Contains(item));
+                    filteredList = filteredList.Where(q => (" " + q.Title + " ").Contains(item));
                 }
             }
 
