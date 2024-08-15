@@ -60,7 +60,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         #region Qualifications Private
 
-        public DbListResponse<DbQualification> GetQualificationsList(int page, int limit, QualificationFilter? query, string title)
+        public DbListResponse<DbQualification> GetQualificationsList(int? page, int? limit, QualificationFilter? query, string title)
         {
             _logger.LogInformation($"Getting a qualification by title: {title}");
 
@@ -72,7 +72,12 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
             if (!string.IsNullOrEmpty(title))
             {
-                filteredList = filteredList.Where(q => q.Title.Contains(title));
+                var tokens = Utilities.TokenizeSearchString(title);
+
+                foreach (var item in tokens)
+                {
+                    filteredList = filteredList.Where(q => q.Title.Contains(item));
+                }
             }
 
             if (query != null)
@@ -168,7 +173,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             count = filteredList.Count();
-            var list = filteredList.Skip(page * limit).Take(limit);
+
+            //if limit is null, get the whole list otherwise apply paging
+            var list = limit is null ? filteredList : filteredList.Skip((page! * limit!).Value).Take(limit.Value);
 
             return new DbListResponse<DbQualification>
             {
@@ -177,7 +184,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             };
         }
 
-        public DbQualification? GetQualificationByNumber(string numberObliques, string numberNoObliques)
+        public DbQualification? GetQualificationByNumber(string numberObliques, string numberNoObliques, string? numberAlphanumeric)
         {
             _logger.LogInformation($"Getting a qualification by number: {numberObliques} or {numberNoObliques}");
             var quals = _context.Qualifications.OrderBy(e => e.QualificationNumber);
@@ -188,15 +195,21 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             //add implied obliques in case no obliques value in the db is null
-            var qualNumObliques = numberNoObliques.Insert(3, "/").Insert(8, "/");
-            return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNumObliques)
+            var qualNum = string.IsNullOrEmpty(numberNoObliques) ? "" : numberNoObliques.Insert(3, "/").Insert(8, "/");
+
+            if (numberAlphanumeric != null)
+            {
+                qualNum = numberAlphanumeric;
+            }
+
+            return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNum)
                                     || (e.QualificationNumberNoObliques != null &&
                                         e.QualificationNumberNoObliques.Equals(numberNoObliques)));
         }
         #endregion
 
         #region Qualifications Public
-        public DbListResponse<DbQualificationPublic> GetQualificationsPublicList(int page, int limit, QualificationFilter? query, string title)
+        public DbListResponse<DbQualificationPublic> GetQualificationsPublicList(int page, int? limit, QualificationFilter? query, string title)
         {
             _logger.LogInformation($"Getting a qualification by title: {title}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
@@ -207,7 +220,12 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
             if (!string.IsNullOrEmpty(title))
             {
-                filteredList = filteredList.Where(q => q.Title.Contains(title));
+                var tokens = Utilities.TokenizeSearchString(title);
+
+                foreach (var item in tokens)
+                {
+                    filteredList = filteredList.Where(q => (" " + q.Title + " ").Contains(item));
+                }
             }
 
             if (query != null)
@@ -298,7 +316,9 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             }
 
             count = filteredList.Count();
-            var list = filteredList.Skip(page * limit).Take(limit);
+
+            //if limit is null, get the whole list otherwise apply paging
+            var list = limit is null ? filteredList : filteredList.Skip((page! * limit!).Value).Take(limit.Value);
 
             return new DbListResponse<DbQualificationPublic>
             {
@@ -307,7 +327,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             };
         }
 
-        public DbQualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques)
+        public DbQualificationPublic? GetQualificationPublicByNumber(string numberObliques, string numberNoObliques, string? numberAlphanumeric)
         {
             _logger.LogInformation($"Getting a qualification by number: {numberObliques} or {numberNoObliques}");
             var quals = _context.QualificationsPublic.OrderBy(e => e.QualificationNumber);
@@ -317,10 +337,15 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
             {
                 return quals.FirstOrDefault(e => e.QualificationNumber.Equals(numberObliques));
             }
-
             //add implied obliques in case no obliques value in the db is null
-            var qualNumObliques = numberNoObliques.Insert(3, "/").Insert(8, "/");
-            return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNumObliques)
+            var qualNum = string.IsNullOrEmpty(numberNoObliques) ? "" : numberNoObliques.Insert(3, "/").Insert(8, "/");
+
+            if (numberAlphanumeric != null)
+            {
+                qualNum = numberAlphanumeric;
+            }
+
+            return quals.FirstOrDefault(e => e.QualificationNumber.Equals(qualNum)
                                     || (e.QualificationNumberNoObliques != null &&
                                         e.QualificationNumberNoObliques.Equals(numberNoObliques)));
 

@@ -33,7 +33,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public void GetsAQualificationPublicUsingRecognitionNumberNoObliques()
         {
             var dbQual = _fixture.Create<DbQualificationPublic>();
-            _mockDB.Setup(x => x.GetQualificationPublicByNumber("", "10015784")).Returns(dbQual);
+            _mockDB.Setup(x => x.GetQualificationPublicByNumber("", "10015784", null)).Returns(dbQual);
             var domainQual = _classUnderTest.GetQualificationPublicByNumber("10015784", null, null);
 
             AssertQualificationPublicProperties(dbQual, domainQual);
@@ -43,7 +43,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public void GetsAQualificationPublicUsingRecognitionNumberObliques()
         {
             var dbQual = _fixture.Create<DbQualificationPublic>();
-            _mockDB.Setup(x => x.GetQualificationPublicByNumber("100/1578/4", "")).Returns(dbQual);
+            _mockDB.Setup(x => x.GetQualificationPublicByNumber("100/1578/4", "", null)).Returns(dbQual);
             var domainQual = _classUnderTest.GetQualificationPublicByNumber("100", "1578", "4");
 
             AssertQualificationPublicProperties(dbQual, domainQual);
@@ -104,7 +104,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public void GetsAQualificationUsingRecognitionNumber()
         {
             var dbQual = _fixture.Create<DbQualification>();
-            _mockDB.Setup(x => x.GetQualificationByNumber("100/1578/4", "")).Returns(dbQual);
+            _mockDB.Setup(x => x.GetQualificationByNumber("100/1578/4", "", null)).Returns(dbQual);
             var domainQual = _classUnderTest.GetQualificationByNumber("100", "1578", "4");
 
             AssertQualificationProperties(dbQual, domainQual);
