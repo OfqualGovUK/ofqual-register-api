@@ -7,6 +7,7 @@ using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterFrontend.RegisterAPI;
 using System.Collections.Generic;
+using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -25,7 +26,7 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
         public DbListResponse<DbOrganisation> GetOrganisationsList(int page, int? limit, string search)
         {
-            var nameSearchPattern = $"%{search?.Replace(" ", "")}%";
+            var nameSearchPattern = WebUtility.UrlDecode($"%{search?.Replace(" ", "")}%");
 
             _logger.LogInformation($"Getting list of organisations: {search}");
 
