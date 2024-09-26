@@ -486,3 +486,4 @@ $RECYCLE.BIN/
 *.settings.json
 
 */.vscode/*
+/QualificationsRegister/appsettings.json
