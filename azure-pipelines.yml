@@ -4,7 +4,8 @@
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- dev
+- main
+- releases/*
 
 variables:
   - group: Register-API-Dev-Variables
@@ -19,6 +20,83 @@ variables:
 
 
 stages:
+- stage: StaticAnalysis
+  displayName: "Run Static Analysis"
+  condition: always()
+  jobs:
+  - job: SonarQube
+    condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/heads/main'))
+    displayName: 'Build and SonarQube Analysis'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: UseDotNet@2
+        displayName: 'Install .NET Core SDK'
+        inputs:
+          version: 8.x
+          performMultiLevelLookup: true
+          includePreviewVersions: true
+
+      - task: DotNetCoreCLI@2
+        displayName: "Restore task"
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
+          feedsToUse: 'select'
+          vstsFeed: 'b8db0229-c220-4583-b1d9-1111e482a1ce'
+
+      - task: SonarQubePrepare@5
+        displayName: "Prepare SonarQube Analysis"
+        inputs:
+          SonarQube: 'ofqual-register-api-service-connection'
+          scannerMode: 'MSBuild'
+          projectKey: $(SonarqubeKey)
+          projectName: 'Register API'
+
+      - task: DotNetCoreCLI@2
+        displayName: "Build task"
+        inputs:
+          command: "build"
+          projects: "**/*.csproj"
+          arguments: "--configuration $(BuildConfiguration)"
+
+      # Run Code Analysis task
+      - task: SonarQubeAnalyze@5
+        displayName: "SonarQube Analysis"
+
+      # Publish Quality Gate Result task
+      - task: SonarQubePublish@5
+        displayName: "Publish Results"
+        inputs:
+          pollingTimeoutSec: '300'
+
+  - job: Audit
+    displayName: 'Audit Dependencies'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
+        displayName: 'Restore Nuget Packages'
+
+      - task: Bash@3
+        displayName: Check NuGet vulnerabilities
+        inputs:
+          targetType: 'inline'
+          script: |
+            dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
+            echo "Analyse dotnet list package command log output..."
+            if grep -q -i "critical\|high" build.log; then
+                echo "Must fix security vulnerabilities found on the log output"
+                exit 1
+            else
+                echo "No critical or high severity vulnerabilities found."
+                exit 0
+            fi
+ 
+
 - stage: Build
   displayName: Build stage
 
@@ -32,31 +110,12 @@ stages:
     - task: UseDotNet@2
       inputs:
         version: '8.x'
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'ofqual-register-api-service-connection'
-        scannerMode: 'MSBuild'
-        projectKey: $(SonarqubeKey)
-        projectName: 'Register API'
-    - powershell: |
-        if ($env:BUILD_REASON -eq "PullRequest") {
-            $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.pullrequest.*":"[\w,/,-]*"\,?'
-        } else {
-            $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
-        }
-        Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
         command: 'build'
         projects: '**/*.csproj'
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
-    - task: SonarQubeAnalyze@5
-      inputs:
-        jdkversion: 'JAVA_HOME_11_X64'
-    - task: SonarQubePublish@5
-      inputs:
-        pollingTimeoutSec: '300'
     - task: DotNetCoreCLI@2
       displayName: 'NUnit Tests'
       inputs:
