@@ -20,10 +20,12 @@ variables:
 
 
 stages:
+# Static Analysis stage: This stage runs static code analysis using SonarQube and audits dependencies for vulnerabilities.
 - stage: StaticAnalysis
   displayName: "Run Static Analysis"
   condition: always()
   jobs:
+# SonarQube job: This job performs static code analysis using SonarQube.
   - job: SonarQube
     condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/heads/main'))
     displayName: 'Build and SonarQube Analysis'
@@ -69,7 +71,8 @@ stages:
         displayName: "Publish Results"
         inputs:
           pollingTimeoutSec: '300'
-
+          
+# Audit job: This job audits dependencies for vulnerabilities.
   - job: Audit
     displayName: 'Audit Dependencies'
     pool:
