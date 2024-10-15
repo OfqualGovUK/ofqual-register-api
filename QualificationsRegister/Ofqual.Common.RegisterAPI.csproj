@@ -15,9 +15,6 @@
         <NoWarn>1701;1702</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-      <None Include="local.settings.json" />
-    </ItemGroup>
-    <ItemGroup>
         <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.21.0" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.1.0" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.17.0" />
@@ -34,10 +31,6 @@
     <ItemGroup>
         <None Update="host.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="local.settings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </None>
     </ItemGroup>
     <ItemGroup>
