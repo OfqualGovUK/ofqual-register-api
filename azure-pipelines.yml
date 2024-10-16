@@ -80,15 +80,15 @@ stages:
           inputs:          
             targetType: 'inline'          
             script: |            
-              dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log            
-              echo "Analyse dotnet list package command log output..."            
-              if grep -q -i "critical\|high" build.log; then                
-                echo "Must fix security vulnerabilities found on the log output"                
-                exit 1            
-              else                
-                echo "No critical or high severity vulnerabilities found."                
-                exit 0
-
+              dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
+              echo "Analyse dotnet list package command log output..."
+              if grep -q -i "critical\|high" build.log; then
+                  echo "Must fix security vulnerabilities found on the log output"
+                  exit 1
+              else
+                  echo "No critical or high severity vulnerabilities found."
+                  exit 0
+              fi
 # This stage runs the test suite using NUnit using the DotNetCoreCLI task. 
 - stage: RunTests
   displayName: "Run Tests"
