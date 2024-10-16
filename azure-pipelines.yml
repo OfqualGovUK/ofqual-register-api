@@ -90,20 +90,24 @@ stages:
                 exit 0
 
 # This stage runs the test suite using NUnit using the DotNetCoreCLI task. 
-- stage: Test  
-  displayName: Test stage  
-  jobs:    
-    - job: Test      
-      displayName: Run Tests      
-      pool:        
-        vmImage: $(vmImageName)      
-      steps:        
-        - task: UseDotNet@2          
-          inputs:            
-            version: '8.x'        
-        - task: DotNetCoreCLI@2          
-          displayName: 'NUnit Tests'          
-          inputs:            
+- stage: RunTests
+  displayName: "Run Tests"
+  jobs:
+    # Test job: This job runs the test suite using NUnit.
+    - job: UnitTests
+      condition: always()
+      displayName: Run Tests
+      pool:
+        vmImage: $(vmImageName)
+      steps:
+        # Install .NET Core SDK
+        - task: UseDotNet@2
+          inputs:
+            version: '8.x'
+        # Run NUnit tests
+        - task: DotNetCoreCLI@2
+          displayName: 'NUnit Tests'
+          inputs:
             command: test
 
 # Build stage: This stage compiles the .NET project, archives the build output, and publishes the artifact.
