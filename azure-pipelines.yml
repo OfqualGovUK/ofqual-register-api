@@ -111,52 +111,45 @@ stages:
             command: test
 
 # Build stage: This stage compiles the .NET project, archives the build output, and publishes the artifact.
-- stage: Build  
-  displayName: Build stage  
-  jobs:    
-    - job: Build      
-      displayName: Build      
-      pool:        
-        vmImage: $(vmImageName)      
-      steps:        
-        - task: UseDotNet@2          
-          inputs:            
-            version: '8.x'        
-        - task: DotNetCoreCLI@2          
-          displayName: Build          
-          inputs:            
-            command: 'build'            
-            projects: '**/*.csproj'            
-            arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release        
-        - task: ArchiveFiles@2          
-          displayName: 'Archive files'          
-          inputs:            
-            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'            
-            includeRootFolder: false            
-            archiveType: zip            
-            archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip            
-            replaceExistingArchive: true        
-        - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip          
-          artifact: drop
+- stage: BuildAndPackage
+  dependsOn: RunTests
+  displayName: "Build and package"
+  jobs:
+    - job: Build
+      displayName: Build
+      pool:
+        vmImage: $(vmImageName)
+      steps:
+        # Install .NET Core SDK
+        - task: UseDotNet@2
+          inputs:
+            version: '8.x'
 
-- stage: Deploy  
-  displayName: Deploy stage  
-  dependsOn: Build  
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))  
-  jobs:  
-    - deployment: Deploy    
-      displayName: Deploy    
-      environment: 'development'    
-      pool:      
-        vmImage: $(vmImageName)    
-      strategy:      
-        runOnce:        
-          deploy:          
-            steps:            
-              - task: AzureFunctionApp@2              
-                inputs:                
-                  connectedServiceNameARM: $(ConnectedServiceName)                
-                  appType: 'functionApp'                
-                  appName: $(FunctionAppName)                
-                  package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'                
-                  deploymentMethod: 'auto'
+        # Restore NuGet packages using a specific Azure Artifacts feed.
+        - task: DotNetCoreCLI@2
+          displayName: 'Restore task'
+          inputs:
+            command: 'restore'
+            projects: '**/*.csproj'
+            feedsToUse: 'select'
+            vstsFeed: 'b8db0229-c220-4583-b1d9-1111e482a1ce'
+
+        # Build the project and output to the publish directory
+        - task: DotNetCoreCLI@2
+          displayName: Build
+          inputs:
+            command: 'build'
+            projects: '**/*.csproj'
+            arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
+
+        # Archive the build output and publish the artifact
+        - task: ArchiveFiles@2
+          displayName: 'Archive files'
+          inputs:
+            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+            includeRootFolder: false
+            archiveType: zip
+            archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+            replaceExistingArchive: true
+        - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+          artifact: drop
