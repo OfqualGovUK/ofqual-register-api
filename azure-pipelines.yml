@@ -4,7 +4,6 @@
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- main
 - dev
 
 variables:
