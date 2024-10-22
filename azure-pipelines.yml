@@ -5,6 +5,7 @@
 
 trigger:
 - main
+- dev
 
 variables:
   - group: Register-API-Dev-Variables
