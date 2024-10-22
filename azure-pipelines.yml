@@ -5,81 +5,44 @@
 
 trigger:
 - main
-- releases/*
+- dev
 
-variables:  
-  - group: Register-API-Dev-Variables  
-  # Agent VM image name  
-  - name: vmImageName    
-    value: 'windows-2019'  
-  # Working Directory  
-  - name: workingDirectory    
+variables:
+  - group: Register-API-Dev-Variables
+
+  # Agent VM image name
+  - name: vmImageName
+    value: 'windows-2019'
+
+  # Working Directory
+  - name: workingDirectory
     value: 'directory'
+
 
 stages:
 # Static Analysis stage: This stage runs static code analysis using SonarQube and audits dependencies for vulnerabilities.
-- stage: StaticAnalysis  
-  displayName: "Run Static Analysis"  
-  condition: always()  
+- stage: StaticAnalysis
+  displayName: "Run Static Analysis"
+  condition: always()
   jobs:
-    # SonarQube job: This job performs static code analysis using SonarQube.
-    - job: SonarQube    
-      condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/heads/main'))    
-      displayName: 'Build and SonarQube Analysis'    
-      pool:      
-        vmImage: ubuntu-latest    
-      steps:      
-        - task: UseDotNet@2        
-          displayName: 'Install .NET Core SDK'        
-          inputs:          
-            version: 8.x          
-            performMultiLevelLookup: true          
-            includePreviewVersions: true      
-        - task: DotNetCoreCLI@2        
-          displayName: "Restore task"        
-          inputs:          
-            command: 'restore'          
-            projects: '**/*.csproj'          
-            feedsToUse: 'select'          
-            vstsFeed: 'b8db0229-c220-4583-b1d9-1111e482a1ce'      
-        - task: SonarQubePrepare@5        
-          displayName: "Prepare SonarQube Analysis"        
-          inputs:          
-            SonarQube: 'ofqual-register-api-service-connection'          
-            scannerMode: 'MSBuild'          
-            projectKey: $(SonarqubeKey)          
-            projectName: 'Register API'      
-        - task: DotNetCoreCLI@2        
-          displayName: "Build task"        
-          inputs:          
-            command: "build"          
-            projects: "**/*.csproj"          
-            arguments: "--configuration $(BuildConfiguration)"      
-        # Run Code Analysis task      
-        - task: SonarQubeAnalyze@5        
-          displayName: "SonarQube Analysis"      
-        # Publish Quality Gate Result task      
-        - task: SonarQubePublish@5        
-          displayName: "Publish Results"        
-          inputs:          
-            pollingTimeoutSec: '300'
-    
-    # Audit job: This job audits dependencies for vulnerabilities.  
-    - job: Audit    
-      displayName: 'Audit Dependencies'    
-      pool:      
-        vmImage: ubuntu-latest    
-      steps:      
-        - task: DotNetCoreCLI@2        
-          inputs:          
-            command: 'restore'          
-            projects: '**/*.csproj'        
-          displayName: 'Restore Nuget Packages'      
-        - task: Bash@3        
-          displayName: Check NuGet vulnerabilities        
-          inputs:          
-            targetType: 'inline'          
-            script: |            
+
+    # Audit job: This job audits dependencies for vulnerabilities.
+    - job: Audit
+      displayName: 'Audit Dependencies'
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'restore'
+            projects: '**/*.csproj'
+          displayName: 'Restore Nuget Packages'
+
+        - task: Bash@3
+          displayName: Check NuGet vulnerabilities
+          inputs:
+            targetType: 'inline'
+            script: |
               dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
               echo "Analyse dotnet list package command log output..."
               if grep -q -i "critical\|high" build.log; then
@@ -88,8 +51,9 @@ stages:
               else
                   echo "No critical or high severity vulnerabilities found."
                   exit 0
-              fi
-# This stage runs the test suite using NUnit using the DotNetCoreCLI task. 
+ 
+# This stage runs the test suite using NUnit.
+- # using the DotNetCoreCLI task.
 - stage: RunTests
   displayName: "Run Tests"
   jobs:
@@ -153,3 +117,57 @@ stages:
             replaceExistingArchive: true
         - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
           artifact: drop
+
+# Deploy stage: This stage deploys the build artifact to the Azure Function App.
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+
+  jobs:
+    # Deploy job: This job deploys the build artifact to the Azure Function App.
+    - deployment: Deploy
+      displayName: Deploy
+      environment: 'development'
+      pool:
+        vmImage: $(vmImageName)
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              # Deploy to Azure Function App
+              - task: AzureFunctionApp@2
+                inputs:
+                  connectedServiceNameARM: $(ConnectedServiceName)
+                  appType: 'functionApp'
+                  appName: $(FunctionAppName)
+                  package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+                  deploymentMethod: 'auto'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
