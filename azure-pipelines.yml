@@ -52,7 +52,7 @@ stages:
                   exit 0
  
 # This stage runs the test suite using NUnit.
-- # using the DotNetCoreCLI task.
+# using the DotNetCoreCLI task.
 - stage: RunTests
   displayName: "Run Tests"
   jobs:
