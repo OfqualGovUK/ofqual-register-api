@@ -331,7 +331,7 @@ Retrieves an individual Qualification by the Qualification Number
 
  
 <details>
- <summary><code>GET</code> <code><b>api/Qualifications?search={search}&page={page}&limit={limit}</b></code> </summary>
+ <summary><code>GET</code> <code><b>api/qualifications?title={title}&page={page}&limit={limit}&assessmentMethods={assessmentMethods}&gradingTypes={gradingTypes}&awardingOrganisations={awardingOrganisations}&availability={availability}&qualificationTypes={qualificationTypes}&qualificationLevels={qualificationLevels}&nationalAvailability={nationalAvailability}&sectorSubjectAreas={sectorSubjectAreas}&minTotalQualificationTime={minTotalQualificationTime}&maxTotalQualificationTime={maxTotalQualificationTime}&minGuidedLearninghours={minGuidedLearninghours}&maxGuidedLearninghours={maxGuidedLearninghours}</b></code> </summary>
 
 
 ####
@@ -341,20 +341,20 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 
 > | name      |  type     | data type               | description | example                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
-> | search      |  optional | string   | Search term that matches within the qualification title| search=title
-> | assessmentMethods       |  optional | string array (comma separated)  | assessment methods contain any of the param assessment methods| assessmentMethods=Coursework,E-assessment
-> | gradingTypes       |  optional | string array (comma separated)    | Grading type is one of the param grading type | gradingTypes=Graded,Pass/Fail
-> | awardingOrganisations       |  optional | string array (comma separated)    | Organisation Name is one of the param Awarding Organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
-> | availability       |  optional | string array (comma separated)    | Availability matching the status column | availability=Available to learners,No longer awarded
-> | qualificationTypes       |  optional | string array (comma separated)    | Types matching the type column | qualificationTypes=Project,Technical Qualification,QCF
-> | qualificationLevels       |  optional | string array (comma separated)    | Levels matching the level column | qualificationLevels=Level 7,Level 4,Level 1
-> | qualificationSubLevels       |  optional | string array (comma separated)    | Sublevels matching the sub level column| qualificationSubLevels=Entry 3,None
-> | nationalAvailability       |  optional | string array (comma separated)    | Qualifications where boolean value for OfferedInCountry[CountryName] is set to true | nationalAvailability=England,Northern Ireland,Internationally
-> | sectorSubjectAreas       |  optional | string array (comma separated)    | Sublevels matching the SSA column| sectorSubjectAreas=Politics,Science
-> | minTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is higher than minTotalQualificationTime | minTotalQualificationTime=1
-> | maxTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is lower than maxTotalQualificationTime | maxTotalQualificationTime=20
-> | minGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is higher than minGuidedLearninghours | minGuidedLearninghours=1
-> | maxGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is lower than maxGuidedLearninghours | maxGuidedLearninghours=20
+> | title      |  optional | string   | Search term that matches within the qualification title | title=biology
+> | assessmentMethods       |  optional | string array (comma separated)  | The type of assessment methods used within the qualification | assessmentMethods=Coursework,E-assessment
+> | gradingTypes       |  optional | string array (comma separated)    | The grading types used for the qualification | gradingTypes=Graded,Pass/Fail
+> | awardingOrganisations       |  optional | string  | The name of the awarding organisation(s) that offers the qualification. Note that for this parameter, comma separated values are not used to search on multiple organisations due to some organisations containing commas; instead, you can list this argument multiple times to search for multiple organisations inclusively. | awardingOrganisations=BCS, The Chartered Institute for IT&awardingOrganisations=1st4sport
+> | availability       |  optional | string array (comma separated)    | Availability of the qualification | availability=Available to learners,No longer awarded
+> | qualificationTypes       |  optional | string array (comma separated)    | The type of qualification offered | qualificationTypes=Project,Technical Qualification,QCF
+> | qualificationLevels       |  optional | string array (comma separated)    | The qualification level | qualificationLevels=Level 7,Level 4,Level 1
+> | qualificationSubLevels       |  optional | string array (comma separated)    | The qualification sublevel where relevant | qualificationSubLevels=Entry 3,None
+> | nationalAvailability       |  optional | string array (comma separated)    | What countries the qualification is offered in | nationalAvailability=England,Northern Ireland,Internationally
+> | sectorSubjectAreas       |  optional | string array (comma separated)    | The subject sector area this qualification belongs to | sectorSubjectAreas=Politics,Science
+> | minTotalQualificationTime       |  optional | int   | The minimum required time on the qualification in hours  | minTotalQualificationTime=1
+> | maxTotalQualificationTime       |  optional | int   | The maximum amount of time on the qualification in hours | maxTotalQualificationTime=20
+> | minGuidedLearninghours       |  optional | int   | The minimum amount of guided learning hours to complete the qualification | minGuidedLearninghours=1
+> | maxGuidedLearninghours       |  optional | int   | The maximum amount of guided learning hours to complete the qualification | maxGuidedLearninghours=20
 > | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
 > | limit      |  optional | int   | Number of organisation records to return for the search | if not provided defaults to 15. This is set via the `QualificationsPagingLimit` environment variable in Azure
 
@@ -362,8 +362,8 @@ Parameters are all applied as AND when multiple filters are set. For example, if
 
 > | Qualification         | Qualification Level       | Sector Subject Areas|
 > |-----------------------|--------------------------------|-----------------------------------|
-> |Q1    | Level 1   | Direct Learning support   |
-> |Q2    | Level 2   | Retailing and wholesaling     |
+> | Q1    | Level 1   | Direct Learning support   |
+> | Q2    | Level 2   | Retailing and wholesaling     |
 > | Q3    | Level 2   | Direct Learning support   |
 
 And the query parameters contain `qualificationLevels = Level 2` and `sectorSubjectAreas = Direct Learning support`, only Q3 will be returned. 
@@ -378,7 +378,7 @@ And the query parameters contain `qualificationLevels = Level 2` and `sectorSubj
 ##### Example Requests
 
 > ```javascript
->  api/Qualifications?search=Chartered&assessmentMethods=Coursework,E-assessment&awardingOrganisations=Trinity College London,ABE,AIM Qualifications&page=1&limit=10
+>  api/Qualifications?search=Chartered&assessmentMethods=Coursework,E-assessment&awardingOrganisations=Trinity College London&awardingOrganisations=ABE&page=1&limit=10
 > ```
 
 > ```javascript
@@ -780,7 +780,7 @@ Retrieves an individual Qualification by the Qualification Number
  </details>
  
 <details>
- <summary><code>GET</code> <code><b>gov/Qualifications?search={search}&page={page}&limit={limit}</b></code> </summary>
+ <summary><code>GET</code> <code><b>gov/qualifications?title={title}&page={page}&limit={limit}&assessmentMethods={assessmentMethods}&gradingTypes={gradingTypes}&awardingOrganisations={awardingOrganisations}&availability={availability}&qualificationTypes={qualificationTypes}&qualificationLevels={qualificationLevels}&nationalAvailability={nationalAvailability}&sectorSubjectAreas={sectorSubjectAreas}&minTotalQualificationTime={minTotalQualificationTime}&maxTotalQualificationTime={maxTotalQualificationTime}&minGuidedLearninghours={minGuidedLearninghours}&maxGuidedLearninghours={maxGuidedLearninghours}</b></code> </summary>
 
 
 ####
