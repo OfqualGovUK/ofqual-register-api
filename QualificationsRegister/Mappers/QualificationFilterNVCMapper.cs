@@ -20,13 +20,13 @@ namespace Ofqual.Common.RegisterAPI.Mappers
 
             filter.AssessmentMethods = nvc.Get(ASSESSMENT_METHODS_FILTER)?.GetSubStrings();
             filter.GradingTypes = nvc.Get(GRADING_TYPE_FILTER)?.GetSubStrings();
-            filter.AwardingOrganisations = nvc.Get(AWARDING_ORGANISATIONS_FILTER)?.GetSubStrings();
+            filter.AwardingOrganisations = nvc.GetValues(AWARDING_ORGANISATIONS_FILTER);
             filter.Availability = nvc.Get(AVAILABILITY_FILTER)?.GetSubStrings();
             filter.QualificationTypes = nvc.Get(QUALIFICATION_TYPES_FILTER)?.GetSubStrings();
             filter.QualificationLevels = nvc.Get(QUALIFICATION_LEVELS_FILTER)?.GetSubStrings();
             filter.QualificationSubLevels = nvc.Get(QUALIFICATION_SUB_LEVELS_FILTER)?.GetSubStrings();
             filter.NationalAvailability = nvc.Get(NATIONAL_AVAILABILITY_FILTER)?.GetSubStrings();
-            filter.SectorSubjectAreas = nvc.Get(SSA_FILTER)?.GetSubStrings();
+            filter.SectorSubjectAreas = nvc.GetValues(SSA_FILTER);
 
             filter.MinTotalQualificationTime = ParseInt(nvc.Get(MIN_TQT_FILTER), "minTotalQualificationTime");
             filter.MaxTotalQualificationTime = ParseInt(nvc.Get(MAX_TQT_FILTER), "maxTotalQualificationTime");
