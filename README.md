@@ -350,7 +350,7 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 > | qualificationLevels       |  optional | string array (comma separated)    | The qualification level | qualificationLevels=Level 7,Level 4,Level 1
 > | qualificationSubLevels       |  optional | string array (comma separated)    | The qualification sublevel where relevant | qualificationSubLevels=Entry 3,None
 > | nationalAvailability       |  optional | string array (comma separated)    | What countries the qualification is offered in | nationalAvailability=England,Northern Ireland,Internationally
-> | sectorSubjectAreas       |  optional | string array (comma separated)    | The subject sector area this qualification belongs to | sectorSubjectAreas=Politics,Science
+> | sectorSubjectAreas       |  optional | string    | The subject sector area this qualification belongs to. Note that for this parameter, comma separated values are not used as some subject areas use commas. | sectorSubjectAreas=Politics&sectorSubjectAreas=Science
 > | minTotalQualificationTime       |  optional | int   | The minimum required time on the qualification in hours  | minTotalQualificationTime=1
 > | maxTotalQualificationTime       |  optional | int   | The maximum amount of time on the qualification in hours | maxTotalQualificationTime=20
 > | minGuidedLearninghours       |  optional | int   | The minimum amount of guided learning hours to complete the qualification | minGuidedLearninghours=1
