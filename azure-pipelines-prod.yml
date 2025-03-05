@@ -100,12 +100,12 @@ stages:
           inputs:
             serviceConnectionEndpoint: 'Snyk-integration'
             testType: 'app'
+            targetFile: 'Ofqual.Common.RegisterAPI.sln'
             severityThreshold: 'high'
             monitorWhen: 'always'
             failOnIssues: true
             projectName: 'ofqual-register-api'
             organization: 'Ofqual-default'
-            additionalArguments: '--all-projects'
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
       displayName: 'Audit Dependencies'    
