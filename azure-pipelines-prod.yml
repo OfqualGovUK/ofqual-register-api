@@ -104,7 +104,6 @@ stages:
             severityThreshold: 'high'
             monitorWhen: 'always'
             failOnIssues: true
-            organization: 'ofqual-default'
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
       displayName: 'Audit Dependencies'    
