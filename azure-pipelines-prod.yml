@@ -104,7 +104,6 @@ stages:
             severityThreshold: 'high'
             monitorWhen: 'always'
             failOnIssues: true
-            projectName: 'ofqual-register-api'
             organization: 'Ofqual-default'
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
