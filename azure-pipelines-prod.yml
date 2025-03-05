@@ -100,7 +100,7 @@ stages:
           inputs:
             serviceConnectionEndpoint: 'Snyk-integration'
             testType: 'app'
-            targetFile: 'QualificationsRegister/QualificationsRegister.csproj'
+            targetFile: 'QualificationsRegister/Ofqual.Common.RegisterAPI.csproj'
             severityThreshold: 'high'
             monitorWhen: 'always'
             failOnIssues: true
