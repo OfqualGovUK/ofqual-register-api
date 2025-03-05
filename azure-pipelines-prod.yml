@@ -61,7 +61,6 @@ stages:
           inputs:          
             command: "build"          
             projects: "**/*.csproj"          
-            arguments: "--configuration $(BuildConfiguration)"      
         # Run Code Analysis task      
         - task: SonarQubeAnalyze@5        
           displayName: "SonarQube Analysis"      
@@ -70,7 +69,24 @@ stages:
           displayName: "Publish Results"        
           inputs:          
             pollingTimeoutSec: '300'
-    
+            arguments: "--configuration $(BuildConfiguration)"
+
+    # Snyk job: This job performs static code and app analysis using Snyk tasks.
+    - job: Snyk
+      displayName: 'Build and Snyk Analysis'
+      pool:      
+        vmImage: ubuntu-latest
+      steps: 
+        - task: SnykSecurityScan@1
+          inputs:
+            serviceConnectionEndpoint: 'Snyk-integration'
+            testType: 'app'
+            severityThreshold: 'high'
+            monitorWhen: 'always'
+            failOnIssues: true
+            projectName: 'ofqual-register-api'
+            organization: 'Ofqual-default'
+
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
       displayName: 'Audit Dependencies'    
