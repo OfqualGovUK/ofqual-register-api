@@ -98,7 +98,7 @@ stages:
             arguments: "--configuration $(BuildConfiguration)"
         - task: SnykSecurityScan@1
           inputs:
-            serviceConnectionEndpoint: 'Snyk-integration-test'
+            serviceConnectionEndpoint: 'Snyk-integration'
             testType: 'app'
             targetFile: 'Ofqual.Common.RegisterAPI.sln'
             severityThreshold: 'high'
