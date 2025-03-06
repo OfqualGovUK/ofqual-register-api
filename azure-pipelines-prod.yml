@@ -73,6 +73,7 @@ stages:
 
     # Snyk job: This job performs static code and app analysis using Snyk tasks.
     - job: Snyk
+      condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/heads/main'))
       displayName: 'Build and Snyk Analysis'
       pool:      
         vmImage: ubuntu-latest
