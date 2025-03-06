@@ -99,10 +99,8 @@ stages:
         - task: SnykSecurityScan@1
           inputs:
             serviceConnectionEndpoint: 'Snyk-integration'
-            testType: 'app'
-            targetFile: 'Ofqual.Common.RegisterAPI.sln'
-            severityThreshold: 'high'
-            monitorWhen: 'always'
+            testType: 'code'
+            codeSeverityThreshold: 'high'
             failOnIssues: true
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
