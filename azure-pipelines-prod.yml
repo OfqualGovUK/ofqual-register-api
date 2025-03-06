@@ -98,9 +98,8 @@ stages:
             arguments: "--configuration $(BuildConfiguration)"
         - task: SnykSecurityScan@1
           inputs:
-            serviceConnectionEndpoint: 'snyk-2'
+            serviceConnectionEndpoint: 'SNYK-general-connection'
             testType: 'code'
-            codeSeverityThreshold: 'high'
             failOnIssues: true
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
