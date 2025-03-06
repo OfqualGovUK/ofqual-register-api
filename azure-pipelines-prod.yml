@@ -98,7 +98,7 @@ stages:
             arguments: "--configuration $(BuildConfiguration)"
         - task: SnykSecurityScan@1
           inputs:
-            serviceConnectionEndpoint: 'Snyk-integration'
+            serviceConnectionEndpoint: 'snyk-2'
             testType: 'code'
             codeSeverityThreshold: 'high'
             failOnIssues: true
