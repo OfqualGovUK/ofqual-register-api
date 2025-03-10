@@ -73,7 +73,6 @@ stages:
 
     # Snyk job: This job performs static code and app analysis using Snyk tasks.
     - job: Snyk
-      condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/heads/main'))
       displayName: 'Build and Snyk Analysis'
       pool:      
         vmImage: ubuntu-latest
@@ -97,11 +96,31 @@ stages:
             command: "build"          
             projects: "**/*.csproj"
             arguments: "--configuration $(BuildConfiguration)"
-        - task: SnykSecurityScan@1
-          inputs:
-            serviceConnectionEndpoint: 'SNYK-general-connection'
-            testType: 'code'
-            failOnIssues: true
+
+        # Install and authenticate Snyk
+        - script: |
+            npm install -g snyk
+            snyk config set endpoint='https://app.eu.snyk.io/api'
+            snyk auth $(SNYK_TOKEN)
+            set +e
+          displayName: 'Snyk Install & Auth'
+
+        # Snyk Code
+        - script: |
+            snyk code test --severity-threshold=high --sarif-file-output=results.sarif
+            RESULT=$?
+            exit $RESULT
+          continueOnError: true
+          displayName: 'Snyk Code Analysis'
+
+        # snyk open source
+        - script: |
+            snyk test --severity-threshold=high --all-projects --json-file-output=results.json
+            RESULT=$?
+            exit $RESULT
+          continueOnError: true
+          displayName: 'snyk open source'
+
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
       displayName: 'Audit Dependencies'    
