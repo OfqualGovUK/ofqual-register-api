@@ -105,21 +105,13 @@ stages:
             set +e
           displayName: 'Snyk Install & Auth'
 
-        # Snyk Code
-        - script: |
-            snyk code test --severity-threshold=high --sarif-file-output=results.sarif
-            RESULT=$?
-            exit $RESULT
-          continueOnError: true
-          displayName: 'Snyk Code Analysis'
-
-        # snyk open source
-        - script: |
-            snyk test --severity-threshold=high --all-projects --json-file-output=results.json
-            RESULT=$?
-            exit $RESULT
-          continueOnError: true
-          displayName: 'snyk open source'
+        - task: SnykSecurityScan@1
+          inputs:
+            serviceConnectionEndpoint: 'snyk-integration-eu'
+            testType: 'app'
+            severityThreshold: 'high'
+            monitorWhen: 'always'
+            failOnIssues: true
 
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
