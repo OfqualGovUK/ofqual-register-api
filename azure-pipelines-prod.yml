@@ -113,6 +113,13 @@ stages:
             monitorWhen: 'always'
             failOnIssues: true
             additionalArguments: '--all-projects --file=**/*.csproj'
+            
+        - task: SnykSecurityScan@1
+          inputs:
+            serviceConnectionEndpoint: 'snyk-integration-eu'
+            testType: 'code'
+            codeSeverityThreshold: 'high'
+            failOnIssues: true
 
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
