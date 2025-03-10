@@ -112,7 +112,7 @@ stages:
             severityThreshold: 'high'
             monitorWhen: 'always'
             failOnIssues: true
-            additionalArguments: '--all-projects --file=**/*.csproj'
+            additionalArguments: '--all-projects'
             
         - task: SnykSecurityScan@1
           inputs:
