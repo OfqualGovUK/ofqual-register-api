@@ -105,14 +105,14 @@ stages:
             set +e
           displayName: 'Snyk Install & Auth'
 
-        - task: SnykSecurityScan@1
-          inputs:
-            serviceConnectionEndpoint: 'snyk-integration-eu'
-            testType: 'app'
-            severityThreshold: 'high'
-            monitorWhen: 'always'
-            failOnIssues: false
-            additionalArguments: '--all-projects'
+#        - task: SnykSecurityScan@1
+#          inputs:
+#            serviceConnectionEndpoint: 'snyk-integration-eu'
+#            testType: 'app'
+#            severityThreshold: 'high'
+#            monitorWhen: 'always'
+#            failOnIssues: false
+#            additionalArguments: '--all-projects'
             
         - task: SnykSecurityScan@1
           inputs:
