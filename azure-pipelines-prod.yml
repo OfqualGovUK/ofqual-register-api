@@ -112,6 +112,7 @@ stages:
             severityThreshold: 'high'
             monitorWhen: 'always'
             failOnIssues: true
+            additionalArguments: '--all-projects'
 
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
