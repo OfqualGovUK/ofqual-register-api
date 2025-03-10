@@ -112,7 +112,7 @@ stages:
             severityThreshold: 'high'
             monitorWhen: 'always'
             failOnIssues: true
-            additionalArguments: '--all-projects'
+            additionalArguments: '--all-projects --file=**/*.csproj'
 
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
