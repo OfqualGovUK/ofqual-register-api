@@ -60,8 +60,8 @@ stages:
           displayName: "Build task"        
           inputs:          
             command: "build"          
-            projects: "**/*.csproj"          
-            arguments: "--configuration $(BuildConfiguration)"      
+            projects: "**/*.csproj"
+            arguments: "--configuration $(BuildConfiguration)"          
         # Run Code Analysis task      
         - task: SonarQubeAnalyze@5        
           displayName: "SonarQube Analysis"      
@@ -70,7 +70,57 @@ stages:
           displayName: "Publish Results"        
           inputs:          
             pollingTimeoutSec: '300'
-    
+
+    # Snyk job: This job performs static code and app analysis using Snyk tasks.
+    - job: Snyk
+      displayName: 'Build and Snyk Analysis'
+      pool:      
+        vmImage: ubuntu-latest
+      steps: 
+        - task: UseDotNet@2        
+          displayName: 'Install .NET Core SDK'        
+          inputs:          
+            version: 8.x          
+            performMultiLevelLookup: true          
+            includePreviewVersions: true      
+        - task: DotNetCoreCLI@2        
+          displayName: "Restore task"        
+          inputs:          
+            command: 'restore'          
+            projects: '**/*.csproj'          
+            feedsToUse: 'select'          
+            vstsFeed: 'b8db0229-c220-4583-b1d9-1111e482a1ce'      
+        - task: DotNetCoreCLI@2        
+          displayName: "Build task"        
+          inputs:          
+            command: "build"          
+            projects: "**/*.csproj"
+            arguments: "--configuration $(BuildConfiguration)"
+
+        # Install and authenticate Snyk
+        - script: |
+            npm install -g snyk
+            snyk config set endpoint='https://app.eu.snyk.io/api'
+            snyk auth $(SNYK_TOKEN)
+            set +e
+          displayName: 'Snyk Install & Auth'
+
+        - task: SnykSecurityScan@1
+          inputs:
+            serviceConnectionEndpoint: 'snyk-integration-eu'
+            testType: 'code'
+            codeSeverityThreshold: 'high'
+            failOnIssues: true
+
+        - task: SnykSecurityScan@1
+          inputs:
+            serviceConnectionEndpoint: 'snyk-integration-eu'
+            testType: 'app'
+            severityThreshold: 'high'
+            monitorWhen: 'always'
+            failOnIssues: true
+            additionalArguments: '--all-projects'
+
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
       displayName: 'Audit Dependencies'    
