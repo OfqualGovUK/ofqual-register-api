@@ -108,18 +108,18 @@ stages:
         - task: SnykSecurityScan@1
           inputs:
             serviceConnectionEndpoint: 'snyk-integration-eu'
-            testType: 'app'
-            severityThreshold: 'high'
-            monitorWhen: 'always'
-            failOnIssues: false
-            additionalArguments: '--all-projects'
-            
+            testType: 'code'
+            codeSeverityThreshold: 'high'
+            failOnIssues: true
+
         - task: SnykSecurityScan@1
           inputs:
             serviceConnectionEndpoint: 'snyk-integration-eu'
-            testType: 'code'
-            codeSeverityThreshold: 'high'
-            failOnIssues: false
+            testType: 'app'
+            severityThreshold: 'high'
+            monitorWhen: 'always'
+            failOnIssues: true
+            additionalArguments: '--all-projects'
 
     # Audit job: This job audits dependencies for vulnerabilities.  
     - job: Audit    
