@@ -23,5 +23,6 @@ namespace Ofqual.Common.RegisterAPI.Constants
       public const string MAX_TQT_FILTER =  "MaxTotalQualificationTime";
       public const string MIN_GLH_FILTER =  "MinGuidedLearninghours";
       public const string MAX_GLH_FILTER =  "MaxGuidedLearninghours";
+        public const string FUNDING_INTENTION_ENGLAND = "IntentionToSeekFundingInEngland";
     }
 }
