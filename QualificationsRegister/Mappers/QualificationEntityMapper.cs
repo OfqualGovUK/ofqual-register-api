@@ -65,7 +65,8 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 ReviewDate = dbQualification.ReviewDate?.ToUniversalTime(),
                 EmbargoDate = dbQualification.EmbargoDate?.ToUniversalTime(),
                 LastUpdatedDate = dbQualification.LastUpdatedDate?.ToUniversalTime(),
-                UILastUpdatedDate = dbQualification.UILastUpdatedDate.ToUniversalTime()
+                UILastUpdatedDate = dbQualification.UILastUpdatedDate.ToUniversalTime(),
+                IntentionToSeekFundingInEngland = dbQualification.IntentionToSeekFundingInEngland
             };
         }
 

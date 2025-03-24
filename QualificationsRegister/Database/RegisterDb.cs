@@ -170,6 +170,10 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
                 {
                     filteredList = filteredList.Where(q => query.SectorSubjectAreas.Contains(q.SSA));
                 }
+                if (query.IntentionToSeekFundingInEngland != null)
+                {
+                    filteredList = filteredList.Where(q => q.IntentionToSeekFundingInEngland == query.IntentionToSeekFundingInEngland);
+                }
             }
 
             count = filteredList.Count();

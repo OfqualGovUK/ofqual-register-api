@@ -33,8 +33,22 @@ namespace Ofqual.Common.RegisterAPI.Mappers
             filter.MinGuidedLearninghours = ParseInt(nvc.Get(MIN_GLH_FILTER), "minGuidedLearninghours");
             filter.MaxGuidedLearninghours = ParseInt(nvc.Get(MAX_GLH_FILTER), "maxGuidedLearninghours");
 
+            filter.IntentionToSeekFundingInEngland = ParseBoolean(nvc.Get(FUNDING_INTENTION_ENGLAND));
             return filter;
         }
+
+
+        private static bool? ParseBoolean(string? value) =>
+            value?.Trim() switch
+            {
+                null => null,
+                "1" => true,
+                "0" => false,
+                _ => bool.TryParse(value, out bool result)
+                    ? result
+                    : null
+            };
+        
 
         private static int? ParseInt(string? value, string field)
         {
