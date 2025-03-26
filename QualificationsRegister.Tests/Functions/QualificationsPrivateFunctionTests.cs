@@ -93,7 +93,6 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
 
             Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
             res.Should().NotBeNull();
-        }       
-
+        }     
     }
 }
