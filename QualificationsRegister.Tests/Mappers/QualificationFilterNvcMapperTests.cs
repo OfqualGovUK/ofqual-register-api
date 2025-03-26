@@ -81,7 +81,6 @@ namespace OfqualCommon.RegisterAPI.Tests.Mappers
 
             result.Should().NotBeNull();
             result!.IntentionToSeekFundingInEngland.Should().Be(expected);
-
         }
     }
 }
