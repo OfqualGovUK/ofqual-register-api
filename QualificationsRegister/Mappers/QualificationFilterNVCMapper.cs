@@ -37,7 +37,6 @@ namespace Ofqual.Common.RegisterAPI.Mappers
             return filter;
         }
 
-
         private static bool? ParseBoolean(string? value) =>
             value?.Trim() switch
             {
@@ -49,7 +48,6 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                     : null
             };
         
-
         private static int? ParseInt(string? value, string field)
         {
             try

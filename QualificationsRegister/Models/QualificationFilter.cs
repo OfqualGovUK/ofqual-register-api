@@ -18,7 +18,6 @@ namespace Ofqual.Common.RegisterAPI.Models
         public int? MinGuidedLearninghours { get; set; }
         public int? MaxGuidedLearninghours { get; set; }
         public string[]? SectorSubjectAreas { get; set; }
-
         public bool? IntentionToSeekFundingInEngland { get; set; }
     }
 }
