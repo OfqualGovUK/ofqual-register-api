@@ -5,13 +5,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Functions.Private;
 using Ofqual.Common.RegisterAPI.Functions.Public;
-using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.Tests.Mocks;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
-using System.Collections.Specialized;
-using System.Diagnostics.Eventing.Reader;
 using System.Net;
 
 namespace Ofqual.Common.RegisterAPI.Tests.Functions
@@ -93,6 +90,6 @@ namespace Ofqual.Common.RegisterAPI.Tests.Functions
 
             Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
             res.Should().NotBeNull();
-        }     
+        }
     }
 }
