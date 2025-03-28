@@ -62,5 +62,6 @@ namespace Ofqual.Common.RegisterAPI.Models
         public bool? SixteenToEighteen { get; set; }
         public bool? EighteenPlus { get; set; }
         public bool? NineteenPlus { get; set; }
+        public bool? IntentionToSeekFundingInEngland { set; get; }
     }
 }
