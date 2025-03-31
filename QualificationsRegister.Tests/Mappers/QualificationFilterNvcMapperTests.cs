@@ -57,5 +57,30 @@ namespace OfqualCommon.RegisterAPI.Tests.Mappers
             Func<QualificationFilter?> testDelegate = () => nvc.GetQualificationFilterQuery();
             testDelegate.Should().Throw<BadRequestException>();
         }
+
+        [Test]
+        [TestCase("intentionToSeekFundingInEngland=true", true)]
+        [TestCase("intentionToSeekFundingInEngland=1", true)]
+        [TestCase("intentionToSeekFundingInEngland=false", false)]
+        [TestCase("intentionToSeekFundingInEngland=0", false)]
+        [TestCase("intentionToSeekFundingInEngland=asdf", null)]
+        [TestCase("intentionToSeekFundingInEngland=null", null)]
+        [TestCase("intentionToSeekFundingInEngland=2", null)]
+        [TestCase("differentParameterForOtherFlag=true", null)]
+        [TestCase("differentParameterForOtherFlag=false", null)]
+        public void GetQualificationFilterQuery_WithIntentionToSeekFundingInEngland_ReturnsExpected(string requestedQuery, bool? expected)
+        {
+            //Arrange
+            var rpq = requestedQuery.Split('=', 2, StringSplitOptions.TrimEntries);
+            var nvc = new NameValueCollection { { rpq.First(), rpq.Last() } };
+
+            //Act
+            var result = nvc.GetQualificationFilterQuery();
+
+            //Assert
+
+            result.Should().NotBeNull();
+            result!.IntentionToSeekFundingInEngland.Should().Be(expected);
+        }
     }
 }
