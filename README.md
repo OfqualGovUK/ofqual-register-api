@@ -698,7 +698,7 @@ Retrieves an individual Qualification by the Qualification Number
 
 > | http code     | content-type                      | response                                  |Description                          |
 > |---------------|-----------------------------------|-------------------------------------------|-------------------------------------|
-> | `200`         | `application/json`              | Qualification JSON                     | JSON object for the Qualification                                    |
+> | `200`         | `application/json`              | Private Qualification JSON                     | Extended JSON object for the Qualification                                    |
 > | `404`         | `application/json`                | `{"message":"Not found"}`  | The qualification could not be found for the qualification number provided                            |
 
 ##### Example Requests
@@ -773,7 +773,8 @@ Retrieves an individual Qualification by the Qualification Number
     "PreSixteen": false,
     "SixteenToEighteen": true,
     "EighteenPlus": false,
-    "NineteenPlus": true
+    "NineteenPlus": true,
+    "IntentionToSeekFundingInEngland": false
 }
 ```
 
@@ -787,13 +788,46 @@ Retrieves an individual Qualification by the Qualification Number
 Retrieves a list of qualifications along with with the paging metadata ordered by the qualification number.
 
 ##### Parameters
-Same as the parameters on Qualifications Public
+
+> | name      |  type     | data type               | description | example                                                           |
+> |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
+> | search      |  optional | string   | Search term that matches within the qualification title| search=title
+> | assessmentMethods       |  optional | string array (comma separated)  | assessment methods contain any of the param assessment methods| assessmentMethods=Coursework,E-assessment
+> | gradingTypes       |  optional | string array (comma separated)    | Grading type is one of the param grading type | gradingTypes=Graded,Pass/Fail
+> | awardingOrganisations       |  optional | string array (comma separated)    | Organisation Name is one of the param Awarding Organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
+> | availability       |  optional | string array (comma separated)    | Availability matching the status column | availability=Available to learners,No longer awarded
+> | qualificationTypes       |  optional | string array (comma separated)    | Types matching the type column | qualificationTypes=Project,Technical Qualification,QCF
+> | qualificationLevels       |  optional | string array (comma separated)    | Levels matching the level column | qualificationLevels=Level 7,Level 4,Level 1
+> | qualificationSubLevels       |  optional | string array (comma separated)    | Sublevels matching the sub level column| qualificationSubLevels=Entry 3,None
+> | nationalAvailability       |  optional | string array (comma separated)    | Qualifications where boolean value for OfferedInCountry[CountryName] is set to true | nationalAvailability=England,Northern Ireland,Internationally
+> | sectorSubjectAreas       |  optional | string array (comma separated)    | Sublevels matching the SSA column| sectorSubjectAreas=Politics,Science
+> | minTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is higher than minTotalQualificationTime | minTotalQualificationTime=1
+> | maxTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is lower than maxTotalQualificationTime | maxTotalQualificationTime=20
+> | minGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is higher than minGuidedLearninghours | minGuidedLearninghours=1
+> | maxGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is lower than maxGuidedLearninghours | maxGuidedLearninghours=20
+> | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
+> | intentionToSeekFundingInEngland       |  optional | boolean  | True or False, 1 or 0, Filter qualifications based on whether intention to seek additional funding in England has been raised | if not provided, qualifications are returned regardless of intention to seek additional funding in England 
+> | limit      |  optional | int   | Number of organisation records to return for the search | if not provided defaults to 15. This is set via the `QualificationsPagingLimit` environment variable in Azure
+
+Parameters are all applied as AND when multiple filters are set. For example, if there are 3 Qualification records as such: 
+
+> | Qualification         | Qualification Level       | Sector Subject Areas|
+> |-----------------------|--------------------------------|-----------------------------------|
+> |Q1    | Level 1   | Direct Learning support   |
+> |Q2    | Level 2   | Retailing and wholesaling     |
+> | Q3    | Level 2   | Direct Learning support   |
+
+And the query parameters contain `qualificationLevels = Level 2` and `sectorSubjectAreas = Direct Learning support`, only Q3 will be returned. 
 
 ##### Headers
 Requires the <code>Ocp-Apim-Subscription-Key</code> key for subscription access
 
 ##### Responses
-Same as the responses on Qualifications Public
+> | http code     | content-type                      | response                                  |Description                          |
+> |---------------|-----------------------------------|-------------------------------------------|-------------------------------------|
+> | `200`         | `application/json`              | Private Organisation List response JSON                     | Paging metadata with list of extended Organisation records                                    |
+> | `400`         | `application/json`                | `{"message": {error description}}`  | Parameters provided are not correct / data not supported                            |
+
 
 ##### Example Requests
 
@@ -802,7 +836,7 @@ Same as the responses on Qualifications Public
 > ```
 
 > ```javascript
->  gov/Qualifications?page=5&limit=15
+>  gov/Qualifications?page=5&limit=15&intentionToSeekFundingInEngland=false
 > ```
 
 > ```javascript
@@ -876,7 +910,8 @@ Same as the response on the Qualifications public with a few new fields:
             "PreSixteen": false,
             "SixteenToEighteen": true,
             "EighteenPlus": false,
-            "NineteenPlus": true
+            "NineteenPlus": true,
+            "IntentionToSeekFundingInEngland": false
         },
         ....
     ]
