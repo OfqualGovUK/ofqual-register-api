@@ -24,6 +24,52 @@ stages:
   displayName: "Run Static Analysis"
   condition: always()
   jobs:
+    - job: Snyk
+      displayName: "Snyk Analysis"
+      steps:
+      - task: UseDotNet@2
+        displayName: 'Use .NET 8.0'
+        inputs:
+          packageType: 'sdk'
+          version: '8.0.x'
+      - task: DotNetCoreCLI@2
+        displayName: 'Restore task'
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
+          feedsToUse: 'select'
+          vstsFeed: 'b8db0229-c220-4583-b1d9-1111e482a1ce'
+
+      - task: DotNetCoreCLI@2
+        displayName: "Build task"
+        inputs:
+          command: "build"
+          projects: "**/*.csproj"
+          arguments: "--no-restore"
+
+      # Install and authenticate Snyk
+      - script: |
+          npm install -g snyk
+          snyk config set endpoint=$(SNYK_ENDPOINT)
+          snyk auth $(SNYK_TOKEN)
+          set +e
+        displayName: 'Snyk Install & Auth'
+      - task: SnykSecurityScan@1
+        displayName: 'Snyk scanning code'
+        inputs:
+          serviceConnectionEndpoint: 'snyk-integration-eu'
+          testType: 'code'
+          codeSeverityThreshold: 'high'
+          failOnIssues: false
+      - task: SnykSecurityScan@1
+        displayName: 'Snyk scanning app'
+        inputs:
+          serviceConnectionEndpoint: 'snyk-integration-eu'
+          testType: 'app'
+          monitorWhen: 'always'
+          severityThreshold: 'high'
+          failOnIssues: false
+          additionalArguments: '--all-projects'
 
     # Audit job: This job audits dependencies for vulnerabilities.
     - job: Audit
