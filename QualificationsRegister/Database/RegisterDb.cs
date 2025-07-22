@@ -72,11 +72,12 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
             if (!string.IsNullOrEmpty(title))
             {
-                var tokens = Utilities.TokenizeSearchString(title);
+                var tokens = Utilities.TokenizeSearchString(" " + title + " "); // Split the search string into a list of tokens, adjusted as appropriate to Product.
+                                                                                // The title must have whitespace for situations where an adjusted token is exclusively used
 
                 foreach (var item in tokens)
                 {
-                    filteredList = filteredList.Where(q => q.Title.Contains(item));
+                    filteredList = filteredList.Where(q => (" " + q.Title + " ").Contains(item)); // All tokens must appear *somewhere* in the title
                 }
             }
 
@@ -224,11 +225,12 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
 
             if (!string.IsNullOrEmpty(title))
             {
-                var tokens = Utilities.TokenizeSearchString(title);
+                var tokens = Utilities.TokenizeSearchString(" " + title + " "); // Split the search string into a list of tokens, adjusted as appropriate to Product.
+                                                                                // The title must have whitespace for situations where an adjusted token is exclusively used
 
                 foreach (var item in tokens)
                 {
-                    filteredList = filteredList.Where(q => (" " + q.Title + " ").Contains(item));
+                    filteredList = filteredList.Where(q => (" " + q.Title + " ").Contains(item)); // All tokens must appear *somewhere* in the title
                 }
             }
 
