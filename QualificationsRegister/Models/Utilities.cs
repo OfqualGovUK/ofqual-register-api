@@ -52,7 +52,7 @@ namespace Ofqual.Common.RegisterAPI.Models
 
             foreach (var item in Tokens.Keys)
             {
-                if (search.Contains(item))
+                if (search.Contains(" " + item + " "))
                 {
                     tokens.Add(Tokens[item]);
 
@@ -72,7 +72,7 @@ namespace Ofqual.Common.RegisterAPI.Models
 
             foreach (var item in StopWords)
             {
-                if (searchTerms.Contains(item))
+                if (searchTerms.Contains(" " + item + " "))
                 {
                     searchTerms.Remove(item);
                 }

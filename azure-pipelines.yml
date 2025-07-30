@@ -4,25 +4,23 @@
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- dev
+- main
+- releases/*
 
-variables:
-  - group: Register-API-Dev-Variables
-
-  # Agent VM image name
-  - name: vmImageName
-    value: 'windows-2019'
-
-  # Working Directory
-  - name: workingDirectory
+variables:  
+  - group: Register-API-Dev-Variables  
+  # Agent VM image name  
+  - name: vmImageName    
+    value: 'windows-2019'  
+  # Working Directory  
+  - name: workingDirectory    
     value: 'directory'
-
 
 stages:
 # Static Analysis stage: This stage runs static code analysis using SonarQube and audits dependencies for vulnerabilities.
-- stage: StaticAnalysis
-  displayName: "Run Static Analysis"
-  condition: always()
+- stage: StaticAnalysis  
+  displayName: "Run Static Analysis"  
+  condition: always()  
   jobs:
     - job: Snyk
       displayName: "Snyk Analysis"
@@ -100,8 +98,7 @@ stages:
                   echo "No critical or high severity vulnerabilities found."
                   exit 0
               fi
-# This stage runs the test suite using NUnit.
-# using the DotNetCoreCLI task.
+# This stage runs the test suite using NUnit using the DotNetCoreCLI task. 
 - stage: RunTests
   displayName: "Run Tests"
   jobs:
@@ -165,57 +162,3 @@ stages:
             replaceExistingArchive: true
         - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
           artifact: drop
-
-# Deploy stage: This stage deploys the build artifact to the Azure Function App.
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: BuildAndPackage
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-
-  jobs:
-    # Deploy job: This job deploys the build artifact to the Azure Function App.
-    - deployment: Deploy
-      displayName: Deploy
-      environment: 'development'
-      pool:
-        vmImage: $(vmImageName)
-
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-              # Deploy to Azure Function App
-              - task: AzureFunctionApp@2
-                inputs:
-                  connectedServiceNameARM: $(ConnectedServiceName)
-                  appType: 'functionApp'
-                  appName: $(FunctionAppName)
-                  package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
-                  deploymentMethod: 'auto'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
