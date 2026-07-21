@@ -19,10 +19,10 @@ variables:
   
   # Agent VM image name  
   - name: vmImageName    
-    value: 'windows-latest'  
+    value: 'windows-2022'  
   #.NET Core SDK version  
   - name: dotnetVersion    
-    value: '8.x'
+    value: '8.0.x'
   # Working Directory  
   - name: workingDirectory    
     value: 'directory'
@@ -39,7 +39,7 @@ stages:
       # ❌ Skip during scheduled builds
       condition: ne(variables['Build.Reason'], 'Schedule')
       pool:
-        vmImage: ubuntu-latest
+        vmImage: $(vmImageName)
       steps:
         - task: DotNetCoreCLI@2
           inputs:
