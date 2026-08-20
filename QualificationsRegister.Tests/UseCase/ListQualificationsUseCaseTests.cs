@@ -25,9 +25,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         {
             _mockDB = new Mock<IRegisterDb>();
             _mockConfig = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
-            _mockConfig
-                .Setup(x => x.GetValue<string?>("QualificationsPagingLimit"))
-                .Returns("100");
+            _mockConfig.Setup(x => x.GetSection(It.IsAny<string>()).Value).Returns("100");
 
             _classUnderTest = new GetQualificationsListUseCase(new NullLoggerFactory(), _mockDB.Object, _mockConfig.Object);
             _fixture = new Fixture();
