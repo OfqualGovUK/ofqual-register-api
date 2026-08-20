@@ -1,5 +1,7 @@
 using AutoFixture;
+using Castle.Core.Configuration;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Database;
@@ -14,6 +16,7 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
     public class ListQualificationsUseCaseTests
     {
         private Mock<IRegisterDb> _mockDB;
+        private Mock<Microsoft.Extensions.Configuration.IConfiguration> _mockConfig;
         private GetQualificationsListUseCase _classUnderTest;
         private Fixture _fixture;
 
@@ -21,7 +24,12 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         public void Setup()
         {
             _mockDB = new Mock<IRegisterDb>();
-            _classUnderTest = new GetQualificationsListUseCase(new NullLoggerFactory(), _mockDB.Object);
+            _mockConfig = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
+            _mockConfig
+                .Setup(x => x.GetValue<string?>("QualificationsPagingLimit"))
+                .Returns("100");
+
+            _classUnderTest = new GetQualificationsListUseCase(new NullLoggerFactory(), _mockDB.Object, _mockConfig.Object);
             _fixture = new Fixture();
         }
 

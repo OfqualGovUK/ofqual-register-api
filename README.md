@@ -36,7 +36,7 @@ Use the following in a local.settings.json. The values should not be used in dep
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "FUNCTIONS_EXTENSION_WORKER": "~4",
     "RefDataAPIUrl": "<URL>",
-    "MDDBConnString": "Server=localhost,1433;Initial Catalog=ofqds-dev-md-sql01;Persist Security Info=False;User ID=<USERNAME>;Password=<PASSWORD>;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;",
+    "MDDBConnString": "Server=localhost,1433;Initial Catalog=<SERVER_NAME>;Persist Security Info=False;User ID=<USERNAME>;Password=<PASSWORD>;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;",
     "QualificationsPagingLimit": 10000,
     "APIMgmtURL": "<URL>"
   }
@@ -345,6 +345,7 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 > | assessmentMethods       |  optional | string array (comma separated)  | assessment methods contain any of the param assessment methods| assessmentMethods=Coursework,E-assessment
 > | gradingTypes       |  optional | string array (comma separated)    | Grading type is one of the param grading type | gradingTypes=Graded,Pass/Fail
 > | awardingOrganisations       |  optional | string array (comma separated)    | Organisation Name is one of the param Awarding Organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
+> | aoRecognitionNumbers       |  optional | string array (comma separated)    | Qualifications by organisations referenced by ther recogniton number, with or without RN prefix | aoRecognitonNumbers=rn5193, RN5196, 5133 
 > | availability       |  optional | string array (comma separated)    | Availability matching the status column | availability=Available to learners,No longer awarded
 > | qualificationTypes       |  optional | string array (comma separated)    | Types matching the type column | qualificationTypes=Project,Technical Qualification,QCF
 > | qualificationLevels       |  optional | string array (comma separated)    | Levels matching the level column | qualificationLevels=Level 7,Level 4,Level 1
@@ -795,6 +796,7 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 > | assessmentMethods       |  optional | string array (comma separated)  | assessment methods contain any of the param assessment methods| assessmentMethods=Coursework,E-assessment
 > | gradingTypes       |  optional | string array (comma separated)    | Grading type is one of the param grading type | gradingTypes=Graded,Pass/Fail
 > | awardingOrganisations       |  optional | string array (comma separated)    | Organisation Name is one of the param Awarding Organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
+> | aoRecognitionNumbers       |  optional | string array (comma separated)    | Qualifications by organisations referenced by ther recogniton number, with or without RN prefix | aoRecognitonNumbers=rn5193, RN5196, 5133 
 > | availability       |  optional | string array (comma separated)    | Availability matching the status column | availability=Available to learners,No longer awarded
 > | qualificationTypes       |  optional | string array (comma separated)    | Types matching the type column | qualificationTypes=Project,Technical Qualification,QCF
 > | qualificationLevels       |  optional | string array (comma separated)    | Levels matching the level column | qualificationLevels=Level 7,Level 4,Level 1

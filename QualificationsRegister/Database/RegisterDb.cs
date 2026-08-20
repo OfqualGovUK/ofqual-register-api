@@ -7,6 +7,7 @@ using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterFrontend.RegisterAPI;
 using System.Collections.Generic;
+using System.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -104,6 +105,18 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
                 if (query.AwardingOrganisations != null)
                 {
                     filteredList = filteredList.Where(q => query.AwardingOrganisations.Contains(q.OrganisationName));
+                }
+
+                if(query.AORecognitionNumbers != null)
+                {
+                    var rnNumbers = query.AORecognitionNumbers
+                        .Select(rn => rn.TrimStart('r', 'R', 'n', 'N'))
+                        .AsQueryable();
+
+                    filteredList = filteredList.Where(q =>
+                        rnNumbers.Any(n => EF.Functions.Collate(
+                            q.OrganisationRecognitionNumber,
+                            "SQL_Latin1_General_CP1_CI_AS") == "rn" + n));
                 }
 
                 if (query.Availability != null)
@@ -263,7 +276,17 @@ namespace Ofqual.Common.RegisterAPI.Services.Database
                 {
                     filteredList = filteredList.Where(q => query.Availability.Contains(q.Status));
                 }
+                if (query.AORecognitionNumbers != null)
+                {
+                    var rnNumbers = query.AORecognitionNumbers
+                        .Select(rn => rn.TrimStart('r','R', 'n', 'N'))
+                        .AsQueryable();
 
+                    filteredList = filteredList.Where(q =>
+                        rnNumbers.Any(n => EF.Functions.Collate(
+                            q.OrganisationRecognitionNumber,
+                            "SQL_Latin1_General_CP1_CI_AS") == "rn"+n));
+                }
                 if (query.QualificationTypes != null)
                 {
                     filteredList = filteredList.Where(q => query.QualificationTypes.Contains(q.Type));

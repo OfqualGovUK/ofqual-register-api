@@ -12,6 +12,7 @@ namespace Ofqual.Common.RegisterAPI.Constants
         public const string ASSESSMENT_METHODS_FILTER = "AssessmentMethods";
         public const string GRADING_TYPE_FILTER =  "GradingTypes";
         public const string AWARDING_ORGANISATIONS_FILTER =   "AwardingOrganisations";
+        public const string AO_RECOGNITION_NUMBERS_FILTER =  "AORecognitionNumbers";
         public const string AVAILABILITY_FILTER =  "Availability";
         public const string QUALIFICATION_TYPES_FILTER =   "QualificationTypes";
         public const string QUALIFICATION_LEVELS_FILTER =   "QualificationLevels";

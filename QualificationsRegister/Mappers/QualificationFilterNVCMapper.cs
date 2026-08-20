@@ -16,24 +16,26 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 return null;
             }
 
-            var filter = new QualificationFilter();
+            var filter = new QualificationFilter
+            {
+                AssessmentMethods = nvc.Get(ASSESSMENT_METHODS_FILTER)?.GetSubStrings(),
+                GradingTypes = nvc.Get(GRADING_TYPE_FILTER)?.GetSubStrings(),
+                AwardingOrganisations = nvc.GetValues(AWARDING_ORGANISATIONS_FILTER),
+                AORecognitionNumbers = nvc.Get(AO_RECOGNITION_NUMBERS_FILTER)?.GetSubStrings(),
+                Availability = nvc.Get(AVAILABILITY_FILTER)?.GetSubStrings(),
+                QualificationTypes = nvc.Get(QUALIFICATION_TYPES_FILTER)?.GetSubStrings(),
+                QualificationLevels = nvc.Get(QUALIFICATION_LEVELS_FILTER)?.GetSubStrings(),
+                QualificationSubLevels = nvc.Get(QUALIFICATION_SUB_LEVELS_FILTER)?.GetSubStrings(),
+                NationalAvailability = nvc.Get(NATIONAL_AVAILABILITY_FILTER)?.GetSubStrings(),
+                SectorSubjectAreas = nvc.GetValues(SSA_FILTER),
 
-            filter.AssessmentMethods = nvc.Get(ASSESSMENT_METHODS_FILTER)?.GetSubStrings();
-            filter.GradingTypes = nvc.Get(GRADING_TYPE_FILTER)?.GetSubStrings();
-            filter.AwardingOrganisations = nvc.GetValues(AWARDING_ORGANISATIONS_FILTER);
-            filter.Availability = nvc.Get(AVAILABILITY_FILTER)?.GetSubStrings();
-            filter.QualificationTypes = nvc.Get(QUALIFICATION_TYPES_FILTER)?.GetSubStrings();
-            filter.QualificationLevels = nvc.Get(QUALIFICATION_LEVELS_FILTER)?.GetSubStrings();
-            filter.QualificationSubLevels = nvc.Get(QUALIFICATION_SUB_LEVELS_FILTER)?.GetSubStrings();
-            filter.NationalAvailability = nvc.Get(NATIONAL_AVAILABILITY_FILTER)?.GetSubStrings();
-            filter.SectorSubjectAreas = nvc.GetValues(SSA_FILTER);
+                MinTotalQualificationTime = ParseInt(nvc.Get(MIN_TQT_FILTER), "minTotalQualificationTime"),
+                MaxTotalQualificationTime = ParseInt(nvc.Get(MAX_TQT_FILTER), "maxTotalQualificationTime"),
+                MinGuidedLearninghours = ParseInt(nvc.Get(MIN_GLH_FILTER), "minGuidedLearninghours"),
+                MaxGuidedLearninghours = ParseInt(nvc.Get(MAX_GLH_FILTER), "maxGuidedLearninghours"),
 
-            filter.MinTotalQualificationTime = ParseInt(nvc.Get(MIN_TQT_FILTER), "minTotalQualificationTime");
-            filter.MaxTotalQualificationTime = ParseInt(nvc.Get(MAX_TQT_FILTER), "maxTotalQualificationTime");
-            filter.MinGuidedLearninghours = ParseInt(nvc.Get(MIN_GLH_FILTER), "minGuidedLearninghours");
-            filter.MaxGuidedLearninghours = ParseInt(nvc.Get(MAX_GLH_FILTER), "maxGuidedLearninghours");
-
-            filter.IntentionToSeekFundingInEngland = ParseBoolean(nvc.Get(FUNDING_INTENTION_ENGLAND));
+                IntentionToSeekFundingInEngland = ParseBoolean(nvc.Get(FUNDING_INTENTION_ENGLAND))
+            };
             return filter;
         }
 
