@@ -341,21 +341,21 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 
 > | name      |  type     | data type               | description | example                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
-> | search      |  optional | string   | Search term that matches within the qualification title| search=title
-> | assessmentMethods       |  optional | string array (comma separated)  | assessment methods contain any of the param assessment methods| assessmentMethods=Coursework,E-assessment
-> | gradingTypes       |  optional | string array (comma separated)    | Grading type is one of the param grading type | gradingTypes=Graded,Pass/Fail
-> | awardingOrganisations       |  optional | string array (comma separated)    | Organisation Name is one of the param Awarding Organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
-> | aoRecognitionNumbers       |  optional | string array (comma separated)    | Qualifications by organisations referenced by their recogniton number, with or without RN prefix | aoRecognitonNumbers=rn5193,RN5196,5133 
-> | availability       |  optional | string array (comma separated)    | Availability matching the status column | availability=Available to learners,No longer awarded
-> | qualificationTypes       |  optional | string array (comma separated)    | Types matching the type column | qualificationTypes=Project,Technical Qualification,QCF
-> | qualificationLevels       |  optional | string array (comma separated)    | Levels matching the level column | qualificationLevels=Level 7,Level 4,Level 1
-> | qualificationSubLevels       |  optional | string array (comma separated)    | Sublevels matching the sub level column| qualificationSubLevels=Entry 3,None
-> | nationalAvailability       |  optional | string array (comma separated)    | Qualifications where boolean value for OfferedInCountry[CountryName] is set to true | nationalAvailability=England,Northern Ireland,Internationally
-> | sectorSubjectAreas       |  optional | string array (comma separated)    | Sublevels matching the SSA column| sectorSubjectAreas=Politics,Science
-> | minTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is higher than minTotalQualificationTime | minTotalQualificationTime=1
-> | maxTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is lower than maxTotalQualificationTime | maxTotalQualificationTime=20
-> | minGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is higher than minGuidedLearninghours | minGuidedLearninghours=1
-> | maxGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is lower than maxGuidedLearninghours | maxGuidedLearninghours=20
+> | search      |  optional | string   | Filter for a qualification on its title | title=OCR
+> | assessmentMethods       |  optional | string array (comma separated)  | Filter for assessment methods containing any of the specified values | assessmentMethods=Coursework,E-assessment
+> | gradingTypes       |  optional | string array (comma separated)    | Filter for qualifications based on the specified grading type | gradingTypes=Graded,Pass/Fail
+> | awardingOrganisations       |  optional | string array (comma separated)    | Search qualifications on specified full name of awarding organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
+> | aoRecognitionNumbers       |  optional | string array (comma separated)    | Filter qualifications by organisations referenced by their recogniton number, with or without RN prefix | aoRecognitonNumbers=rn5193,RN5196,5133 
+> | availability       |  optional | string array (comma separated)    | Filter qualifications based on specified Availability | availability=Available to learners,No longer awarded
+> | qualificationTypes       |  optional | string array (comma separated)    | Filter qualifications based on specified Types | qualificationTypes=Project,Technical Qualification,QCF
+> | qualificationLevels       |  optional | string array (comma separated)    | Filter qualifications based on specified Levels | qualificationLevels=Level 7,Level 4,Level 1
+> | qualificationSubLevels       |  optional | string array (comma separated)    | Filter qualifications based on specified Sublevels | qualificationSubLevels=Entry 3,None
+> | nationalAvailability       |  optional | string array (comma separated)    | Filter Qualifications that are available in the specified country | nationalAvailability=England,Northern Ireland,Internationally
+> | sectorSubjectAreas       |  optional | string array (comma separated)    | Filter qualifications based on specified Sector Subject Areas (SSA's) | sectorSubjectAreas=Politics,Science
+> | minTotalQualificationTime       |  optional | int   | Filter qualifications based on specified Qualifications where the TQT column is higher than minTotalQualificationTime | minTotalQualificationTime=1
+> | maxTotalQualificationTime       |  optional | int   | Filter qualifications based on specified Qualifications where the TQT column is lower than maxTotalQualificationTime | maxTotalQualificationTime=20
+> | minGuidedLearninghours       |  optional | int   | Filter qualifications based on specified Qualifications where the GLH column is higher than minGuidedLearninghours | minGuidedLearninghours=1
+> | maxGuidedLearninghours       |  optional | int   | Filter qualifications based on specified Qualifications where the GLH column is lower than maxGuidedLearninghours | maxGuidedLearninghours=20
 > | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
 > | limit      |  optional | int   | Number of organisation records to return for the search | if not provided defaults to 15. This is set via the `QualificationsPagingLimit` environment variable in Azure
 
@@ -792,21 +792,22 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 
 > | name      |  type     | data type               | description | example                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
-> | search      |  optional | string   | Search term that matches within the qualification title| search=title
-> | assessmentMethods       |  optional | string array (comma separated)  | assessment methods contain any of the param assessment methods| assessmentMethods=Coursework,E-assessment
-> | gradingTypes       |  optional | string array (comma separated)    | Grading type is one of the param grading type | gradingTypes=Graded,Pass/Fail
-> | awardingOrganisations       |  optional | string array (comma separated)    | Organisation Name is one of the param Awarding Organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
-> | aoRecognitionNumbers       |  optional | string array (comma separated)    | Qualifications by organisations referenced by their recogniton number, with or without RN prefix | aoRecognitonNumbers=rn5193,RN5196,5133 
-> | availability       |  optional | string array (comma separated)    | Availability matching the status column | availability=Available to learners,No longer awarded
-> | qualificationTypes       |  optional | string array (comma separated)    | Types matching the type column | qualificationTypes=Project,Technical Qualification,QCF
-> | qualificationLevels       |  optional | string array (comma separated)    | Levels matching the level column | qualificationLevels=Level 7,Level 4,Level 1
-> | qualificationSubLevels       |  optional | string array (comma separated)    | Sublevels matching the sub level column| qualificationSubLevels=Entry 3,None
-> | nationalAvailability       |  optional | string array (comma separated)    | Qualifications where boolean value for OfferedInCountry[CountryName] is set to true | nationalAvailability=England,Northern Ireland,Internationally
-> | sectorSubjectAreas       |  optional | string array (comma separated)    | Sublevels matching the SSA column| sectorSubjectAreas=Politics,Science
-> | minTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is higher than minTotalQualificationTime | minTotalQualificationTime=1
-> | maxTotalQualificationTime       |  optional | int   | Qualifications where the TQT column is lower than maxTotalQualificationTime | maxTotalQualificationTime=20
-> | minGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is higher than minGuidedLearninghours | minGuidedLearninghours=1
-> | maxGuidedLearninghours       |  optional | int   | Qualifications where the GLH column is lower than maxGuidedLearninghours | maxGuidedLearninghours=20
+
+> | search      |  optional | string   | Filter for a qualification on its title | title=OCR
+> | assessmentMethods       |  optional | string array (comma separated)  | Filter for assessment methods containing any of the specified values | assessmentMethods=Coursework,E-assessment
+> | gradingTypes       |  optional | string array (comma separated)    | Filter for qualifications based on the specified grading type | gradingTypes=Graded,Pass/Fail
+> | awardingOrganisations       |  optional | string array (comma separated)    | Search qualifications on specified full name of awarding organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
+> | aoRecognitionNumbers       |  optional | string array (comma separated)    | Filter qualifications by organisations referenced by their recogniton number, with or without RN prefix | aoRecognitonNumbers=rn5193,RN5196,5133 
+> | availability       |  optional | string array (comma separated)    | Filter qualifications based on specified Availability | availability=Available to learners,No longer awarded
+> | qualificationTypes       |  optional | string array (comma separated)    | Filter qualifications based on specified Types | qualificationTypes=Project,Technical Qualification,QCF
+> | qualificationLevels       |  optional | string array (comma separated)    | Filter qualifications based on specified Levels | qualificationLevels=Level 7,Level 4,Level 1
+> | qualificationSubLevels       |  optional | string array (comma separated)    | Filter qualifications based on specified Sublevels | qualificationSubLevels=Entry 3,None
+> | nationalAvailability       |  optional | string array (comma separated)    | Filter Qualifications that are available in the specified country | nationalAvailability=England,Northern Ireland,Internationally
+> | sectorSubjectAreas       |  optional | string array (comma separated)    | Filter qualifications based on specified Sector Subject Areas (SSA's) | sectorSubjectAreas=Politics,Science
+> | minTotalQualificationTime       |  optional | int   | Filter qualifications based on specified Qualifications where the TQT column is higher than minTotalQualificationTime | minTotalQualificationTime=1
+> | maxTotalQualificationTime       |  optional | int   | Filter qualifications based on specified Qualifications where the TQT column is lower than maxTotalQualificationTime | maxTotalQualificationTime=20
+> | minGuidedLearninghours       |  optional | int   | Filter qualifications based on specified Qualifications where the GLH column is higher than minGuidedLearninghours | minGuidedLearninghours=1
+> | maxGuidedLearninghours       |  optional | int   | Filter qualifications based on specified Qualifications where the GLH column is lower than maxGuidedLearninghours | maxGuidedLearninghours=20
 > | intentionToSeekFundingInEngland       |  optional | boolean   | Filter qualifications based on whether intention to seek additional funding in England has been raised | Accepted values are True, False, 1 or 0. If not provided, qualifications are returned regardless of intention to seek additional funding in England 
 > | page      |  optional | int   | Page number for the current set of search results|if not provided, defaults to page # 1
 > | limit      |  optional | int   | Number of organisation records to return for the search | if not provided defaults to 15. This is set via the `QualificationsPagingLimit` environment variable in Azure
