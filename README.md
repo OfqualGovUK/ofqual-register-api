@@ -331,7 +331,7 @@ Retrieves an individual Qualification by the Qualification Number
 
  
 <details>
- <summary><code>GET</code> <code><b>api/Qualifications?search={search}&page={page}&limit={limit}</b></code> </summary>
+ <summary><code>GET</code> <code><b>api/Qualifications?title={title}&assessmentMethods={assessmentMethods}&gradingTypes={gradingTypes}&awardingOrganisations={awardingOrganisations}&aoRecognitionNumbers={aoRecognitionNumbers}&availability={availability}&qualificationTypes={qualificationTypes}&qualificationLevels={qualificationLevels}&nationalAvailability={nationalAvailability}&sectorSubjectAreas={sectorSubjectAreas}&minTotalQualificationTime={minTotalQualificationTime}&maxTotalQualificationTime={maxTotalQualificationTime}&minGuidedLearninghours={minGuidedLearninghours}&maxGuidedLearninghours={maxGuidedLearninghours}&page={page}&limit={limit}</b></code> </summary>
 
 
 ####
@@ -341,7 +341,7 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 
 > | name      |  type     | data type               | description | example                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
-> | search      |  optional | string   | Filter for a qualification on its title | title=OCR
+> | title      |  optional | string   | Filter for a qualification on its title | title=OCR
 > | assessmentMethods       |  optional | string array (comma separated)  | Filter for assessment methods containing any of the specified values | assessmentMethods=Coursework,E-assessment
 > | gradingTypes       |  optional | string array (comma separated)    | Filter for qualifications based on the specified grading type | gradingTypes=Graded,Pass/Fail
 > | awardingOrganisations       |  optional | string array (comma separated)    | Search qualifications on specified full name of awarding organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
@@ -792,7 +792,7 @@ Retrieves a list of qualifications along with with the paging metadata ordered b
 
 > | name      |  type     | data type               | description | example                                                           |
 > |-----------|-----------|-------------------------|-----------|-----------------------------------------------------------------------|
-> | search      |  optional | string   | Filter for a qualification on its title | title=OCR
+> | title      |  optional | string   | Filter for a qualification on its title | title=OCR
 > | assessmentMethods       |  optional | string array (comma separated)  | Filter for assessment methods containing any of the specified values | assessmentMethods=Coursework,E-assessment
 > | gradingTypes       |  optional | string array (comma separated)    | Filter for qualifications based on the specified grading type | gradingTypes=Graded,Pass/Fail
 > | awardingOrganisations       |  optional | string array (comma separated)    | Search qualifications on specified full name of awarding organisation | awardingOrganisations=Trinity College London,ABE,AIM Qualifications
