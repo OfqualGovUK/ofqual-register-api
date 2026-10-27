@@ -1,6 +1,7 @@
 
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
+using Ofqual.Common.RegisterAPI.Helpers;
 using Ofqual.Common.RegisterAPI.Mappers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
@@ -24,7 +25,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
         {
             _logger.LogInformation("Getting list of public qualifications");
 
-            if (!int.TryParse(Environment.GetEnvironmentVariable("QualificationsPagingLimit"), out var pagingLimit))
+            if (!int.TryParse(ConfigurationHelper.GetValue("QualificationsPagingLimit"), out var pagingLimit))
             {
                 pagingLimit = 8000;
             }
@@ -49,7 +50,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Qualifications
         {
             _logger.LogInformation("Getting list of qualifications");
 
-            if (!int.TryParse(Environment.GetEnvironmentVariable("QualificationsPagingLimit"), out var pagingLimit))
+            if (!int.TryParse(ConfigurationHelper.GetValue("QualificationsPagingLimit"), out var pagingLimit))
             {
                 pagingLimit = 8000;
             }

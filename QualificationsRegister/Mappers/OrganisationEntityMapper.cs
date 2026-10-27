@@ -1,3 +1,4 @@
+using Ofqual.Common.RegisterAPI.Helpers;
 using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 
@@ -7,7 +8,7 @@ namespace Ofqual.Common.RegisterAPI.Mappers
     {
         public static Organisation ToDomain(this DbOrganisation mDDBOrganisationEntity)
         {
-            string apiUrl = Environment.GetEnvironmentVariable("APIMgmtURL")!;
+            string apiUrl = ConfigurationHelper.GetValue("APIMgmtURL")!;
 
             return new Organisation
             {
