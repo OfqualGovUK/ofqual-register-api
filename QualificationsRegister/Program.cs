@@ -11,7 +11,6 @@ using Ofqual.Common.RegisterFrontend.RegisterAPI;
 using Refit;
 using Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes;
 using Microsoft.Extensions.Configuration;
-using Ofqual.Common.RegisterAPI.Helpers;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -25,33 +24,33 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        ConfigurationHelper.Initialise(context.Configuration);
-        
         RegisterUseCases(services);
 
-        var connString = ConfigurationHelper.GetValue("MDDBConnString");
+        var connString = context.Configuration.GetValue<string>("MDDBConnString");
 
-        services.AddDbContext<RegisterDbContext>(
-            options =>
-            {
-                options.UseSqlServer(connString);
-            });
+        services.AddDbContext<RegisterDbContext>(options =>
+        {
+            options.UseSqlServer(connString);
+        });
 
         services.AddScoped<IRegisterDb, RegisterDb>();
 
         services.AddHttpClient();
+
         services.AddHttpClient("APIMgmt", client =>
         {
-            client.BaseAddress = new Uri(ConfigurationHelper.GetValue("APIMgmtURL")!);
+            client.BaseAddress = new Uri(
+                context.Configuration.GetValue<string>("APIMgmtURL")!);
         });
 
-        services.AddRefitClient<IRefDataAPIClient>().ConfigureHttpClient(httpClient =>
-        {
-            httpClient.BaseAddress = new Uri(ConfigurationHelper.GetValue("RefDataAPIUrl")!);
-        });
+        services.AddRefitClient<IRefDataAPIClient>()
+            .ConfigureHttpClient(httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(
+                    context.Configuration.GetValue<string>("RefDataAPIUrl")!);
+            });
     })
     .Build();
-
 
 host.Run();
 
