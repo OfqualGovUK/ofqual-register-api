@@ -7,8 +7,6 @@ namespace Ofqual.Common.RegisterAPI.Mappers
     {
         public static Organisation ToDomain(this DbOrganisation mDDBOrganisationEntity)
         {
-            string apiUrl = Environment.GetEnvironmentVariable("APIMgmtURL")!;
-
             return new Organisation
             {
                 Name = mDDBOrganisationEntity.Name,
@@ -35,8 +33,7 @@ namespace Ofqual.Common.RegisterAPI.Mappers
                 CceaRecognisedTo = mDDBOrganisationEntity.CceaRecognisedTo?.ToUniversalTime(),
                 CceaSurrenderedOn = mDDBOrganisationEntity.CceaSurrenderedOn?.ToUniversalTime(),
                 CceaWithdrawnOn = mDDBOrganisationEntity.CceaWithdrawnOn?.ToUniversalTime(),
-                LastUpdatedDate = mDDBOrganisationEntity.LastUpdatedDate.ToUniversalTime(),
-                CanonicalUrl = $"{apiUrl}/api/organisations/{mDDBOrganisationEntity.RecognitionNumber}"
+                LastUpdatedDate = mDDBOrganisationEntity.LastUpdatedDate.ToUniversalTime()
             };
         }
 

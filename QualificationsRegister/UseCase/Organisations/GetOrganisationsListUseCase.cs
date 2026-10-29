@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
@@ -11,11 +12,13 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
     {
         private readonly ILogger _logger;
         private readonly IRegisterDb _registerDb;
+        private readonly IConfiguration _configuration;
 
-        public GetOrganisationsListUseCase(ILoggerFactory loggerFactory, IRegisterDb register)
+        public GetOrganisationsListUseCase(ILoggerFactory loggerFactory, IRegisterDb register, IConfiguration configuration)
         {
             _logger = loggerFactory.CreateLogger<GetOrganisationsListUseCase>();
             _registerDb = register;
+            _configuration = configuration;
         }
 
         public ListResponse<Organisation>? ListOrganisations(string? search, int? limit, int page)
@@ -32,10 +35,23 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             return new ListResponse<Organisation>()
             {
                 Count = dbResponse != null ? dbResponse.Count : 0,
-                Results = dbResponse != null ? dbResponse?.Results?.ToDomain() : null,
+                Results = dbResponse?.Results?
+                    .ToDomain()
+                    .Select(PopulateCanonicalUrl)
+                    .ToList(),
                 Limit = limit,
                 CurrentPage = page
             };
+        }
+
+        private Organisation PopulateCanonicalUrl(Organisation org)
+        {
+            string apiUrl = _configuration.GetValue<string>("APIMgmtURL")!;
+
+            org.CanonicalUrl =
+                $"{apiUrl}/api/organisations/{org.RecognitionNumber}";
+
+            return org;
         }
     }
 }

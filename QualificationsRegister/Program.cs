@@ -1,10 +1,8 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Ofqual.Common.RegisterAPI.UseCase;
 using Ofqual.Common.RegisterAPI.UseCase.Interfaces;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
-using System.Text.Json;
 using Ofqual.Common.RegisterAPI.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using Ofqual.Common.RegisterAPI.Database;
@@ -13,7 +11,6 @@ using Ofqual.Common.RegisterFrontend.RegisterAPI;
 using Refit;
 using Ofqual.Common.RegisterAPI.UseCase.RecognitionScopes;
 using Microsoft.Extensions.Configuration;
-using System.Drawing.Text;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -29,29 +26,31 @@ var host = new HostBuilder()
 
         RegisterUseCases(services);
 
-        var connString = GetConfigurationValue(context, "MDDBConnString");
+        var connString = context.Configuration.GetValue<string>("MDDBConnString");
 
-        services.AddDbContext<RegisterDbContext>(
-            options =>
-            {
-                options.UseSqlServer(connString);
-            });
+        services.AddDbContext<RegisterDbContext>(options =>
+        {
+            options.UseSqlServer(connString);
+        });
 
         services.AddScoped<IRegisterDb, RegisterDb>();
 
         services.AddHttpClient();
+
         services.AddHttpClient("APIMgmt", client =>
         {
-            client.BaseAddress = new Uri(GetConfigurationValue(context, "APIMgmtURL")!);
+            client.BaseAddress = new Uri(
+                context.Configuration.GetValue<string>("APIMgmtURL")!);
         });
 
-        services.AddRefitClient<IRefDataAPIClient>().ConfigureHttpClient(httpClient =>
-        {
-            httpClient.BaseAddress = new Uri(GetConfigurationValue(context, "RefDataAPIUrl")!);
-        });
+        services.AddRefitClient<IRefDataAPIClient>()
+            .ConfigureHttpClient(httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(
+                    context.Configuration.GetValue<string>("RefDataAPIUrl")!);
+            });
     })
     .Build();
-
 
 host.Run();
 
@@ -65,9 +64,3 @@ static void RegisterUseCases(IServiceCollection services)
 
     services.AddScoped<IGetScopesByOrganisationNumberUseCase, GetScopesByOrganisationNumberUseCase>();
 }
-
-
-static string GetConfigurationValue(HostBuilderContext context, string key) =>
-        context.Configuration?.GetValue<string>(key) ??
-        Environment.GetEnvironmentVariable(key)!;    
-

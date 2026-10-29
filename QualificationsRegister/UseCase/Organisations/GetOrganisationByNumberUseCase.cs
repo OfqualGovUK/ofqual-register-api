@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Ofqual.Common.RegisterAPI.Database;
 using Ofqual.Common.RegisterAPI.Mappers;
@@ -17,11 +18,13 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
 
         private readonly IRegisterDb _registerDb;
         private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
 
-        public GetOrganisationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb)
+        public GetOrganisationByNumberUseCase(ILoggerFactory loggerFactory, IRegisterDb registerDb, IConfiguration configuration)
         {
             _logger = loggerFactory.CreateLogger<GetOrganisationByNumberUseCase>();
             _registerDb = registerDb;
+            _configuration = configuration;
         }
 
         public Organisation? GetOrganisationByNumber(string? number)
@@ -49,8 +52,20 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
             else
                 throw new BadRequestException("Please provide a valid organisation number");
 
+            var org =  _registerDb.GetOrganisationByNumber(numberNoRN, numberRN)?.ToDomain();
+            return org == null
+                ? null
+                : PopulateCanonicalUrl(org);
+        }
 
-            return _registerDb.GetOrganisationByNumber(numberNoRN, numberRN)?.ToDomain();
+        private Organisation PopulateCanonicalUrl(Organisation org)
+        {
+            string apiUrl = _configuration.GetValue<string>("APIMgmtURL")!;
+
+            org.CanonicalUrl =
+                $"{apiUrl}/api/organisations/{org.RecognitionNumber}";
+
+            return org;
         }
     }
 }
