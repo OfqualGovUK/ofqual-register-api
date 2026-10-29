@@ -24,7 +24,7 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
         {
             _logger = loggerFactory.CreateLogger<GetOrganisationByNumberUseCase>();
             _registerDb = registerDb;
-             _configuration = configuration;
+            _configuration = configuration;
         }
 
         public Organisation? GetOrganisationByNumber(string? number)
@@ -53,14 +53,18 @@ namespace Ofqual.Common.RegisterAPI.UseCase.Organisations
                 throw new BadRequestException("Please provide a valid organisation number");
 
             var org =  _registerDb.GetOrganisationByNumber(numberNoRN, numberRN)?.ToDomain();
-            if (org == null)
-            {
-                return null;
-            }
+            return org == null
+                ? null
+                : PopulateCanonicalUrl(org);
+        }
 
+        private Organisation PopulateCanonicalUrl(Organisation org)
+        {
             string apiUrl = _configuration.GetValue<string>("APIMgmtURL")!;
-            org.CanonicalUrl = $"{apiUrl}/api/organisations/{org.RecognitionNumber}";
-        
+
+            org.CanonicalUrl =
+                $"{apiUrl}/api/organisations/{org.RecognitionNumber}";
+
             return org;
         }
     }

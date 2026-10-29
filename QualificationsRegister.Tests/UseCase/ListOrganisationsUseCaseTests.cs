@@ -1,6 +1,6 @@
 using AutoFixture;
 using FluentAssertions;
-using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofqual.Common.RegisterAPI.Database;
@@ -8,7 +8,6 @@ using Ofqual.Common.RegisterAPI.Models;
 using Ofqual.Common.RegisterAPI.Models.DB;
 using Ofqual.Common.RegisterAPI.Models.Exceptions;
 using Ofqual.Common.RegisterAPI.UseCase.Organisations;
-using System.Diagnostics;
 
 namespace Ofqual.Common.RegisterAPI.Tests.UseCase
 {
@@ -18,12 +17,21 @@ namespace Ofqual.Common.RegisterAPI.Tests.UseCase
         private Mock<IRegisterDb> _mockDB;
         private GetOrganisationsListUseCase _classUnderTest;
         private Fixture _fixture;
+        private IConfiguration _configuration;
 
         [SetUp]
         public void Setup()
         {
             _mockDB = new Mock<IRegisterDb>();
-            _classUnderTest = new GetOrganisationsListUseCase(new NullLoggerFactory(), _mockDB.Object);
+
+            _configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                { "APIMgmtURL", "https://api.mgmt.com" }
+                })
+                .Build();
+            
+            _classUnderTest = new GetOrganisationsListUseCase(new NullLoggerFactory(), _mockDB.Object, _configuration);
             _fixture = new Fixture();
         }
 
